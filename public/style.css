@@ -1,17 +1,17 @@
 /* style.css */
 
-/* 1) Deep‐mint gradient on <body> */
+/* 1) Deep‐mint gradient on <body> + full‐screen flex centering */
 body {
     margin: 0;
     padding: 0;
     min-height: 100vh;
     background: linear-gradient(to bottom,
-            #7fd09d,
-            /* top (slightly darker mint) */
-            #a3e6c1,
-            /* middle (lighter mint) */
-            #a6dab9
-            /* bottom (darker mint again) */
+            #a0d9b5,
+            /* deeper mint top */
+            #b1eacb,
+            /* lighter mint center */
+            #a0d9b5
+            /* deeper mint bottom */
         );
     display: flex;
     align-items: center;
@@ -40,8 +40,12 @@ a:focus {
     border-radius: 3px;
 }
 
-/* 4) Ensure all “full‐screen” sections stack properly on mobile */
-#auth-overlay,
+/* 4) Make sure each “full‐screen” overlay truly covers 100% on mobile */
+#login-screen,
+#admin-login-screen,
+#admin-panel,
+#user-login-screen,
+#user-signup-screen,
 #welcome-screen,
 #form-screen,
 #loader-screen,
@@ -50,7 +54,7 @@ a:focus {
     height: 100%;
 }
 
-/* 5) On very small devices, make the card narrower */
+/* 5) On very small devices, shrink the max‐width of cards */
 @media (max-width: 400px) {
     .max-w-lg {
         max-width: 90%;

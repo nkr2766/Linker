@@ -4,19 +4,17 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Protected Linktree Generator</title>
+    <title>Linker — Firebase Secured</title>
 
-    <!-- 1) TailwindCSS CDN for styling -->
+    <!-- TailwindCSS (CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- 2) Font Awesome CDN for icons -->
+    <!-- Font Awesome (Icons) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- 3) Custom CSS (gradient, focus styles, responsive tweaks) -->
+    <!-- Your custom styles -->
     <link rel="stylesheet" href="style.css" />
-
-    <!-- 4) Fade‐in / Fade‐up animations (no changes here) -->
     <style>
+        /* Fade‐in / Fade‐up animations */
         .fade-in {
             animation: fadeIn 0.5s ease-out forwards;
             will-change: opacity;
@@ -49,6 +47,7 @@
             }
         }
 
+        /* Loader skeleton styling */
         .skeleton {
             background-color: #374151;
             /* Tailwind gray-700 */
@@ -57,7 +56,7 @@
         }
 
         .skeleton::after {
-            content: '';
+            content: "";
             position: absolute;
             top: 0;
             left: -100%;
@@ -83,53 +82,194 @@
 </head>
 
 <body class="h-full bg-[linear-gradient(to_bottom,_#a0d9b5,_#b1eacb,_#a0d9b5)]">
-    <!--
-    ─────────────────────────────────────────────────────────
-    A) AUTH OVERLAY: Password Prompt (Lock & Key)
-    ─────────────────────────────────────────────────────────
-  -->
-    <div id="auth-overlay" class="fixed inset-0 bg-gray-900 bg-opacity-90 flex items-center justify-center z-50 px-4">
-        <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm mx-auto">
-            <h2 class="text-xl font-semibold mb-4 text-center">Enter Password</h2>
-            <input id="auth-password" type="password" placeholder="Password"
-                class="w-full mb-4 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-            <button id="auth-submit"
-                class="w-full bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                Unlock
-            </button>
-            <p id="auth-error" class="mt-2 text-sm text-red-500 hidden text-center">
-                Incorrect password.
-            </p>
-        </div>
-    </div>
-
-    <!--
-    ─────────────────────────────────────────────────────────
-    B) Floating “Reset” Button (top-left)
-    ─────────────────────────────────────────────────────────
-  -->
-    <button id="reset-btn" aria-label="Clear local storage and reset"
+    <!-- ─────────────────────────────────────────────────────────
+       0) Reset Button (clear all localStorage + sign out)
+       ───────────────────────────────────────────────────────── -->
+    <button id="reset-btn" aria-label="Clear all data and sign out"
         class="fixed top-4 left-4 z-40 bg-white text-gray-800 p-2 rounded-full shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500">
         <i class="fa fa-rotate"></i>
     </button>
 
-    <!--
-    ─────────────────────────────────────────────────────────
-    1) Welcome Screen
-    ─────────────────────────────────────────────────────────
-  -->
+    <!-- ─────────────────────────────────────────────────────────
+       1) LOGIN / SIGNUP SCREEN
+       ───────────────────────────────────────────────────────── -->
+    <div id="login-screen" class="absolute inset-0 flex items-center justify-center px-4">
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 mx-auto">
+            <h2 class="text-2xl font-bold text-center mb-4">Welcome to Linker</h2>
+            <div class="space-y-4">
+                <!-- Admin Login -->
+                <button id="btn-admin-login"
+                    class="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    Admin Login
+                </button>
+
+                <!-- Normal User Login -->
+                <button id="btn-user-login"
+                    class="w-full bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    User Login
+                </button>
+
+                <!-- Sign Up with Access Code -->
+                <button id="btn-use-access-code"
+                    class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Sign Up with Access Code
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────
+       2) ADMIN LOGIN FORM
+       ───────────────────────────────────────────────────────── -->
+    <div id="admin-login-screen" class="hidden absolute inset-0 flex items-center justify-center px-4">
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-sm p-6 mx-auto">
+            <h2 class="text-xl font-semibold text-center mb-4">Admin Login</h2>
+            <div>
+                <label for="admin-email" class="block text-gray-700">Email</label>
+                <input id="admin-email" type="email" placeholder="admin@linkerapp.com"
+                    class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+
+                <label for="admin-password" class="block text-gray-700">Password</label>
+                <input id="admin-password" type="password" placeholder="?616811Nt"
+                    class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+
+                <p id="admin-error" class="text-red-500 text-sm hidden mb-4">
+                    Incorrect admin credentials.
+                </p>
+
+                <button id="admin-login-submit"
+                    class="w-full bg-gray-900 text-white py-2 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    Log In as Admin
+                </button>
+                <button id="admin-login-back"
+                    class="w-full mt-2 bg-gray-300 text-gray-800 py-2 rounded-lg hover:bg-gray-200 focus:outline-none">
+                    ← Back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────
+       3) ADMIN PANEL
+       ───────────────────────────────────────────────────────── -->
+    <div id="admin-panel" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-lg p-6 mx-auto space-y-6">
+            <h2 class="text-2xl font-bold text-center mb-4">Admin Panel</h2>
+
+            <!-- Create New Access Code -->
+            <div class="space-y-2">
+                <label for="new-access-code" class="block text-gray-700">
+                    Create a New Access Code
+                </label>
+                <input id="new-access-code" type="text" placeholder="e.g. FRIEND123"
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <button id="create-code-btn"
+                    class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Generate Access Code
+                </button>
+                <p id="admin-code-success" class="text-green-600 text-sm hidden">
+                    Access code created successfully!
+                </p>
+            </div>
+
+            <!-- Go to Builder (linktree form) -->
+            <button id="admin-build-form"
+                class="w-full bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                Build Form (Go to Builder)
+            </button>
+
+            <!-- Admin Logout -->
+            <button id="admin-logout"
+                class="w-full bg-red-500 text-white py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500">
+                Log Out
+            </button>
+        </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────
+       4) USER LOGIN FORM
+       ───────────────────────────────────────────────────────── -->
+    <div id="user-login-screen" class="hidden absolute inset-0 flex items-center justify-center px-4">
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-sm p-6 mx-auto">
+            <h2 class="text-xl font-semibold text-center mb-4">User Login</h2>
+            <div>
+                <label for="user-email" class="block text-gray-700">Email</label>
+                <input id="user-email" type="email" placeholder="user@example.com"
+                    class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+
+                <label for="user-password" class="block text-gray-700">Password</label>
+                <input id="user-password" type="password" placeholder="••••••••"
+                    class="w-full px-3 py-2 mb-4 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+
+                <p id="user-error" class="text-red-500 text-sm hidden mb-4">
+                    Invalid email or password.
+                </p>
+
+                <button id="user-login-submit"
+                    class="w-full bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    Log In
+                </button>
+                <button id="user-login-back"
+                    class="w-full mt-2 bg-gray-300 text-gray-800 py-2 rounded-lg hover:bg-gray-200 focus:outline-none">
+                    ← Back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────
+       5) USER SIGNUP FORM (with Access Code)
+       ───────────────────────────────────────────────────────── -->
+    <div id="user-signup-screen" class="hidden absolute inset-0 flex items-center justify-center px-4">
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6 mx-auto">
+            <h2 class="text-xl font-semibold text-center mb-4">
+                Sign Up with Access Code
+            </h2>
+            <div class="space-y-4">
+                <label for="signup-code" class="block text-gray-700">Access Code</label>
+                <input id="signup-code" type="text" placeholder="Enter Access Code"
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                <p id="signup-code-error" class="text-red-500 text-sm hidden">
+                    Invalid or expired access code.
+                </p>
+
+                <label for="signup-email" class="block text-gray-700">Email</label>
+                <input id="signup-email" type="email" placeholder="user@example.com"
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+
+                <label for="signup-password" class="block text-gray-700">Password</label>
+                <input id="signup-password" type="password" placeholder="••••••••"
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500" />
+
+                <p id="signup-success" class="text-green-600 text-sm hidden">
+                    Account created! Redirecting to Builder…
+                </p>
+
+                <button id="signup-submit"
+                    class="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    Create Account
+                </button>
+                <button id="signup-back"
+                    class="w-full mt-2 bg-gray-300 text-gray-800 py-2 rounded-lg hover:bg-gray-200 focus:outline-none">
+                    ← Back
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─────────────────────────────────────────────────────────
+       6) WELCOME ANIMATION (post‐login)
+       ───────────────────────────────────────────────────────── -->
     <div id="welcome-screen" class="hidden absolute inset-0 flex items-center justify-center px-4">
         <h1 id="welcome-text" role="status" aria-live="polite"
             class="text-3xl sm:text-4xl font-semibold text-black opacity-0">
-            Welcome! Thanks for purchasing ✨
+            Welcome! Let’s build your Linktree 🎉
         </h1>
     </div>
 
-    <!--
-    ─────────────────────────────────────────────────────────
-    2) Setup Form Screen (Dark‐Grey Card)
-    ─────────────────────────────────────────────────────────
-  -->
+    <!-- ─────────────────────────────────────────────────────────
+       7) BUILDER FORM (Linktree)
+       ───────────────────────────────────────────────────────── -->
     <div id="form-screen" role="form" aria-labelledby="form-heading"
         class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="relative w-full max-w-lg md:max-w-md bg-gray-800 rounded-2xl p-6 shadow-lg mx-auto">
@@ -149,7 +289,7 @@
                 </p>
             </div>
 
-            <!-- Username -->
+            <!-- Username (@handle) -->
             <div class="mb-4">
                 <label for="username" class="block text-gray-300 mb-1">
                     Username <span class="text-red-500">*</span>
@@ -173,10 +313,10 @@
                 </p>
             </div>
 
-            <!-- Link Rows Container -->
+            <!-- Link Rows -->
             <div id="links-wrapper" class="mb-4 space-y-4">
                 <label class="block text-gray-300 mb-1">Your Links (min 1, max 10)</label>
-                <!-- JavaScript will inject link‐row blocks here -->
+                <!-- JS will inject rows here -->
             </div>
 
             <!-- + Add New Link -->
@@ -203,11 +343,9 @@
         </div>
     </div>
 
-    <!--
-    ─────────────────────────────────────────────────────────
-    3) Loader Screen (Skeleton)
-    ─────────────────────────────────────────────────────────
-  -->
+    <!-- ─────────────────────────────────────────────────────────
+       8) LOADER SCREEN
+       ───────────────────────────────────────────────────────── -->
     <div id="loader-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="w-full max-w-lg md:max-w-md bg-gray-800 rounded-2xl p-6 shadow-lg mx-auto space-y-4">
             <div class="w-24 h-24 rounded-full mx-auto skeleton"></div>
@@ -218,18 +356,16 @@
         </div>
     </div>
 
-    <!--
-    ─────────────────────────────────────────────────────────
-    4) Linktree Output Screen (Dark‐Grey + Profile Pic & Tagline)
-    ─────────────────────────────────────────────────────────
-  -->
+    <!-- ─────────────────────────────────────────────────────────
+       9) LINKTREE OUTPUT SCREEN
+       ───────────────────────────────────────────────────────── -->
     <div id="linktree-screen" role="region" aria-live="polite"
         class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="relative w-full max-w-lg md:max-w-md bg-gray-800 rounded-2xl p-6 shadow-lg mx-auto">
-            <!-- Profile Picture (hidden by default) -->
+            <!-- Profile Picture -->
             <img id="output-profile-pic" src="" alt="Profile Picture"
                 class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-gray-700 hidden" />
-            <!-- Tagline (hidden by default) -->
+            <!-- Tagline -->
             <p id="output-tagline" class="text-gray-300 text-center mb-2 italic hidden"></p>
             <!-- Username -->
             <h2 id="display-username" class="text-2xl font-bold text-white mb-4 text-center">
@@ -238,7 +374,7 @@
 
             <!-- Links Container -->
             <div id="links-container" class="space-y-3 mb-6">
-                <!-- JavaScript will inject link buttons here -->
+                <!-- JS will inject link buttons here -->
             </div>
 
             <!-- Back to Edit -->
@@ -247,7 +383,7 @@
                 ← Back to Edit
             </button>
 
-            <!-- Download My Linktree (new!) -->
+            <!-- Download My Linktree -->
             <button id="download-btn"
                 class="w-full mt-3 bg-blue-500 text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
                 Download My Linktree
@@ -255,8 +391,10 @@
         </div>
     </div>
 
-    <!-- 5) Our JavaScript (app logic, auth gate, etc.) -->
-    <script src="app.js"></script>
+    <!-- ─────────────────────────────────────────────────────────
+       10) Your custom JavaScript (ESM module)
+       ───────────────────────────────────────────────────────── -->
+    <script type="module" src="app.js"></script>
 </body>
 
 </html>
