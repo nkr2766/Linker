@@ -5,7 +5,7 @@
     // ------------- Configuration -------------
     // Replace this with whatever password you choose.
     // (Anyone without this password cannot see the form.)
-    const CORRECT_PASSWORD = "YourSecretPassword123";
+    const CORRECT_PASSWORD = "LAD";
 
     // LocalStorage keys
     const STORAGE_KEY = 'linktreeData';
