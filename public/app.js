@@ -536,7 +536,6 @@ function showBuilderForm(prefillData = null) {
         cardColorInput.value = "#ffffff";
         cardTextColorInput.value = "#111827";
         cardImageInput.value = "";
-
         addLinkRow();
 
     }
@@ -786,7 +785,6 @@ cardImageClearBtn.addEventListener("click", () => {
     cardImageDataURL = "";
     cardImageInput.value = "";
 });
-
 
 
 // Username validation on blur
