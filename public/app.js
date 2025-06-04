@@ -51,16 +51,18 @@ const db = getFirestore(app);
 // C) EMULATOR CONFIGURATION (only for local testing)
 // ───────────────────────────────────────────────────────────────────────────────
 
-// We’ll check if we’re running on “localhost” and, if so, connect Auth & Firestore to the emulators.
-// If you are not on localhost (i.e. in production), these lines will be skipped.
+// We want to connect to the local emulators whenever we’re running on localhost or 127.0.0.1.
+// That way, your “Generate Access Code” and “Sign Up” writes go to the emulator instead of production.
 
-if (location.hostname === "localhost") {
+const hostname = location.hostname;
+if (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "::1"    // in case IPv6 loopback is used
+) {
     console.log("⚙️  Connecting to Firebase emulators…");
     connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
     connectFirestoreEmulator(db, "localhost", 8080);
-    // If you ever add Storage/Functions emulators, you’d do:
-    // connectStorageEmulator(storage, "localhost", 9199);
-    // connectFunctionsEmulator(functions, "localhost", 5001);
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -270,7 +272,7 @@ adminLoginSubmit.addEventListener("click", async () => {
 
     if (email === ADMIN_EMAIL.toLowerCase() && pass === ADMIN_PASSWORD) {
         try {
-            // Sign in as Admin (this user must exist in Auth, either manually created in Console or via emulator)
+            // Sign in as Admin (this user must exist in Auth emulator or production)
             await signInWithEmailAndPassword(auth, email, pass);
             hideAllScreens();
             showAdminPanel();
