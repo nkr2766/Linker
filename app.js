@@ -1,4 +1,4 @@
-// Sprint 4: LocalStorage & “Back to Edit” integration
+// Sprint 4 + “Welcome Back” behavior: always show welcome, change text if returning, then skip/form accordingly
 (function () {
     // Screen references
     const welcomeScreen = document.getElementById('welcome-screen');
@@ -26,7 +26,7 @@
     const linksContainer = document.getElementById('links-container');
 
     // State
-    let linkRows = []; // Array of { container, labelInput, iconSelect, urlInput, errorText }
+    let linkRows = []; // Each item: { container, labelInput, iconSelect, urlInput, errorText }
 
     // Utility Validators
     function isValidURL(url) {
@@ -43,22 +43,30 @@
 
     // LocalStorage Keys
     const STORAGE_KEY = 'linktreeData';
+    const HAS_VISITED_KEY = 'hasVisited';
 
-    // 1) On load, check localStorage
+    // 1) On load, always show Welcome—but set text based on hasVisited
     window.addEventListener('DOMContentLoaded', () => {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            // If data exists, skip welcome → form, go straight to loader → output
-            const data = JSON.parse(saved);
-            skipToOutput(data);
+        const hasVisited = localStorage.getItem(HAS_VISITED_KEY);
+        const savedData = localStorage.getItem(STORAGE_KEY);
+
+        if (hasVisited) {
+            welcomeText.textContent = 'Welcome back! 👋';
+            // After welcome, skip to output if data exists, else skip to form
+            showWelcome(true, !!savedData);
         } else {
-            // Otherwise, show welcome as normal
-            showWelcome();
+            welcomeText.textContent = 'Welcome! Thanks for purchasing ✨';
+            // After welcome, go to form
+            showWelcome(false, false);
         }
+        // Mark that we have now visited (so next load is “return”)
+        localStorage.setItem(HAS_VISITED_KEY, 'true');
     });
 
     // 2) Show Welcome: fade in (0.5s), hold (1.5s), then fade up & out (3s)
-    function showWelcome() {
+    //    isReturning: boolean, skip form/output logic if true
+    //    hasSavedData: boolean, indicates whether to skip to output once animation ends
+    function showWelcome(isReturning, hasSavedData) {
         welcomeScreen.classList.remove('hidden');
         welcomeScreen.classList.add('flex');
 
@@ -66,11 +74,20 @@
         setTimeout(() => {
             welcomeText.classList.remove('fade-in');
             welcomeText.classList.add('fade-up-out');
-            setTimeout(showForm, 3000);
+            setTimeout(() => {
+                welcomeScreen.classList.add('hidden');
+                if (isReturning && hasSavedData) {
+                    // If returning & we have saved data, go straight to loader→output
+                    skipToOutput(JSON.parse(localStorage.getItem(STORAGE_KEY)));
+                } else {
+                    // Otherwise, show form
+                    showForm(isReturning ? JSON.parse(localStorage.getItem(STORAGE_KEY)) : null);
+                }
+            }, 3000);
         }, 2000);
     }
 
-    // 3) Show Form Screen
+    // 3) Show Form Screen (optionally with prefill data)
     function showForm(prefillData = null) {
         welcomeScreen.classList.add('hidden');
         linktreeScreen.classList.add('hidden');
@@ -78,11 +95,11 @@
         formScreen.classList.remove('hidden');
         formScreen.classList.add('flex');
 
-        // Clear existing rows
+        // Clear existing rows & inputs
         linksWrapper.innerHTML = '';
         linkRows = [];
 
-        // If prefillData provided, populate fields
+        // Populate form fields if prefillData provided
         if (prefillData) {
             profilePicInput.value = prefillData.profilePic || '';
             usernameInput.value = prefillData.username || '@yourhandle';
@@ -93,7 +110,6 @@
                 addLinkRow(link);
             });
         } else {
-            // Otherwise, create one blank row
             addLinkRow();
         }
 
@@ -104,6 +120,7 @@
     function addLinkRow(prefill = null) {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'space-y-1 bg-gray-800 p-4 rounded-lg';
+
         const labelInput = document.createElement('input');
         labelInput.type = 'text';
         labelInput.placeholder = 'Label (e.g. Website)';
@@ -112,7 +129,7 @@
 
         const iconSelect = document.createElement('select');
         iconSelect.className = 'w-full px-3 py-2 rounded-md bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500';
-        const iconOptions = ['fa-globe', 'fa-camera', 'fa-pinterest', 'fa-instagram', 'fa-link', 'fa-github'];
+        const iconOptions = ['fa-globe', 'fa-camera', 'fa-pinterest', 'fa-instagram', 'fa-github', 'fa-link'];
         iconOptions.forEach(ic => {
             const opt = document.createElement('option');
             opt.value = ic;
@@ -249,7 +266,7 @@
         e.preventDefault();
         formScreen.classList.add('hidden');
 
-        // Gather all form data into an object
+        // Gather form data into an object
         const data = {
             profilePic: profilePicInput.value.trim(),
             username: usernameInput.value.trim(),
@@ -260,7 +277,7 @@
                 url: r.urlInput.value.trim()
             }))
         };
-        // Save to localStorage
+        // Save data to localStorage
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 
         // Show loader
@@ -275,7 +292,7 @@
         }, 300);
     });
 
-    // 8) Bypass (Testing) Button Logic (filling localStorage with placeholder)
+    // 8) Bypass (Testing) Button Logic
     bypassBtn.addEventListener('click', () => {
         formScreen.classList.add('hidden');
 
@@ -319,17 +336,14 @@
                 linksContainer.appendChild(btn);
             }
         });
-        // Show the linktree screen
         linktreeScreen.classList.remove('hidden');
         linktreeScreen.classList.add('flex');
     }
 
-    // 10) Skip directly to loader → output (used on initial load if localStorage exists)
+    // 10) Skip directly to loader → output (used on initial load if returning with data)
     function skipToOutput(data) {
-        // Immediately show loader
         loaderScreen.classList.remove('hidden');
         loaderScreen.classList.add('flex');
-        // After 300 ms, hide loader and show output
         setTimeout(() => {
             loaderScreen.classList.add('hidden');
             loaderScreen.classList.remove('flex');
@@ -339,14 +353,9 @@
 
     // 11) Back to Edit Button Logic
     backBtn.addEventListener('click', () => {
-        // Retrieve saved data
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-        // Show form with prefilled data
         showForm(saved);
     });
-
-    // Kick off (handled in event listener for DOMContentLoaded)
-    // window.addEventListener('DOMContentLoaded', ...) was already set above.
 
 })();
   
