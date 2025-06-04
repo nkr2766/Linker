@@ -1,10 +1,12 @@
-// Sprint 6 + Step 7 Analytics + Step 8 (Profile Pic & Tagline in Output)
+// Sprint 6 + Step 7 (Analytics) + Step 8 (Profile Pic & Tagline)
+// Remember: index.html now has the deep‐mint gradient & dark‐grey cards.
+
 (function () {
     // LocalStorage Keys
     const STORAGE_KEY = 'linktreeData';
     const HAS_VISITED_KEY = 'hasVisited';
 
-    // Simple analytics stub (debounced event logging)
+    // 1) Simple analytics stub (debounced event logging)
     function logEvent(eventName) {
         if (!window._analyticsDebounce) window._analyticsDebounce = {};
         if (window._analyticsDebounce[eventName]) return;
@@ -18,7 +20,7 @@
         }, 500);
     }
 
-    // URL validator
+    // 2) URL validator
     function isValidURL(url) {
         try {
             const u = new URL(url);
@@ -27,13 +29,15 @@
             return false;
         }
     }
-    // Username validator (starts with @, 3–30 chars)
+    // 3) Username validator (must start with @, 3–30 chars total)
     function isValidUsername(u) {
         return /^@[A-Za-z0-9_]{2,29}$/.test(u);
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+        // ───────────────
         // Screen references
+        // ───────────────
         const welcomeScreen = document.getElementById('welcome-screen');
         const formScreen = document.getElementById('form-screen');
         const loaderScreen = document.getElementById('loader-screen');
@@ -55,7 +59,7 @@
         const errorUsername = document.getElementById('error-username');
         const errorLinks = document.getElementById('error-links');
 
-        // Loader & output references
+        // Loader & Output references
         const outputProfilePic = document.getElementById('output-profile-pic');
         const outputTagline = document.getElementById('output-tagline');
         const displayUsername = document.getElementById('display-username');
@@ -65,7 +69,7 @@
         let linkRows = [];
 
         //
-        // 1) “Reset” Button: clear localStorage & reload
+        // 4) “Reset” Button: clear all stored data & reload
         //
         resetBtn.addEventListener('click', () => {
             localStorage.removeItem(HAS_VISITED_KEY);
@@ -74,7 +78,7 @@
         });
 
         //
-        // 2) On load → decide first‐time vs. returning
+        // 5) On load → decide whether it’s first-time or returning
         //
         const hasVisited = localStorage.getItem(HAS_VISITED_KEY);
         const savedData = localStorage.getItem(STORAGE_KEY);
@@ -89,7 +93,7 @@
         localStorage.setItem(HAS_VISITED_KEY, 'true');
 
         //
-        // 3) Show “Welcome” with fade animation, then form or output
+        // 6) Show “Welcome” with fade animation, then either Form or Output
         //
         function showWelcome(isReturning, hasSavedData) {
             welcomeScreen.classList.remove('hidden');
@@ -111,7 +115,7 @@
         }
 
         //
-        // 4) Show Form (prefill if data exists)
+        // 7) Show Form (prefill if data exists)
         //
         function showForm(prefillData = null) {
             welcomeScreen.classList.add('hidden');
@@ -141,22 +145,22 @@
         }
 
         //
-        // 5) Add a Link Row (with optional prefill)
+        // 8) Add a Link Row (optionally with prefill)
         //
         function addLinkRow(prefill = null) {
             const rowDiv = document.createElement('div');
-            rowDiv.className = 'space-y-1 bg-gray-100 p-4 rounded-lg';
+            rowDiv.className = 'space-y-1 bg-gray-700 p-4 rounded-lg';
 
             // Label input
             const labelInput = document.createElement('input');
             labelInput.type = 'text';
             labelInput.placeholder = 'Label (e.g. Website)';
             labelInput.required = true;
-            labelInput.className = 'w-full px-3 py-2 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 border border-transparent focus:border-emerald-500 transition';
+            labelInput.className = 'w-full px-3 py-2 rounded-md bg-gray-600 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition';
 
             // Icon dropdown
             const iconSelect = document.createElement('select');
-            iconSelect.className = 'w-full px-3 py-2 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500';
+            iconSelect.className = 'w-full px-3 py-2 rounded-md bg-gray-600 text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-400';
             const iconOptions = ['fa-globe', 'fa-instagram', 'fa-github', 'fa-link', 'fa-camera', 'fa-pinterest'];
             iconOptions.forEach(ic => {
                 const opt = document.createElement('option');
@@ -170,7 +174,7 @@
             urlInput.type = 'url';
             urlInput.placeholder = 'https://example.com';
             urlInput.required = true;
-            urlInput.className = 'w-full px-3 py-2 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 border border-transparent focus:border-emerald-500 transition';
+            urlInput.className = 'w-full px-3 py-2 rounded-md bg-gray-600 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition';
             urlInput.setAttribute('aria-describedby', 'error-url');
 
             const errorText = document.createElement('p');
@@ -243,7 +247,7 @@
         });
 
         //
-        // 6) Input Validations (debounced)
+        // 9) Input Validations (debounced)
         //
         function debounce(fn, delay) {
             let timer;
@@ -303,17 +307,17 @@
 
             if (picValid && unameValid && anyLinkValid) {
                 generateBtn.removeAttribute('disabled');
-                generateBtn.classList.remove('bg-gray-400', 'text-gray-200', 'cursor-not-allowed');
+                generateBtn.classList.remove('bg-gray-600', 'text-gray-300', 'cursor-not-allowed');
                 generateBtn.classList.add('bg-emerald-500', 'text-white', 'hover:bg-emerald-600');
             } else {
                 generateBtn.setAttribute('disabled', 'true');
                 generateBtn.classList.remove('bg-emerald-500', 'text-white', 'hover:bg-emerald-600');
-                generateBtn.classList.add('bg-gray-400', 'text-gray-200', 'cursor-not-allowed');
+                generateBtn.classList.add('bg-gray-600', 'text-gray-300', 'cursor-not-allowed');
             }
         }
 
         //
-        // 7) “Generate” → Loader → Output (save data + analytics)
+        // 10) “Generate” → Loader → Output (save + analytics)
         //
         generateBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -344,7 +348,7 @@
         });
 
         //
-        // 8) “Bypass” → Loader → Placeholder Output (analytics)
+        // 11) “Bypass” → Loader → Placeholder Output (analytics)
         //
         bypassBtn.addEventListener('click', () => {
             logEvent('bypass_clicked');
@@ -373,14 +377,14 @@
         });
 
         //
-        // 9) Render Output & “Back to Edit” (with Profile Pic & Tagline)
+        // 12) Render Output & “Back to Edit” (with Profile Pic & Tagline)
         //
         function renderOutput(data) {
-            // Profile picture (fallback to placeholder if empty)
+            // Profile picture (use fallback placeholder if empty/invalid)
             if (data.profilePic && isValidURL(data.profilePic)) {
                 outputProfilePic.src = data.profilePic;
             } else {
-                outputProfilePic.src = 'https://via.placeholder.com/150?text=Avatar';
+                outputProfilePic.src = 'https://via.placeholder.com/150/CCCCCC/555555?text=Avatar';
             }
 
             // Tagline (hide if blank)
@@ -391,7 +395,7 @@
                 outputTagline.classList.add('hidden');
             }
 
-            // Username
+            // Username (always shown)
             displayUsername.textContent = data.username || '@yourhandle';
 
             // Links
@@ -401,7 +405,7 @@
                     const btn = document.createElement('a');
                     btn.href = link.url;
                     btn.target = '_blank';
-                    btn.className = 'flex flex-wrap items-center justify-center bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-500';
+                    btn.className = 'flex flex-wrap items-center justify-center bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-400';
                     btn.innerHTML = `<i class="fa ${link.icon} mr-2"></i><span>${link.label}</span>`;
                     linksContainer.appendChild(btn);
                 }
@@ -411,7 +415,7 @@
             linktreeScreen.classList.add('flex');
         }
 
-        // If returning + we have saved data, skip straight to output
+        // If returning + we have saved data, skip to output directly
         function skipToOutput(data) {
             loaderScreen.classList.remove('hidden');
             loaderScreen.classList.add('flex');

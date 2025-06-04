@@ -4,31 +4,30 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Linktree Clone – Step 8 Added + Stronger Green</title>
+    <title>Linktree Clone – Dark Card + Deeper Mint</title>
 
-    <!-- TailwindCSS CDN (light mode only) -->
+    <!-- 1) Tailwind Config must come BEFORE the CDN script -->
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        // Keep original mint palette for reference if used elsewhere
-                        mintLight: '#B1EACB',
-                        mintMid: '#CCF0D7',
-                        mintDark: '#E0FBFC'
+                        // A deeper mint gradient for a stronger green feel
+                        mintDeepTop: '#9ED9B9',  /* darker than #B1EACB */
+                        mintDeepMiddle: '#B1EACB',
+                        mintDeepBot: '#9ED9B9'
                     }
                 }
             }
         }
     </script>
+    <!-- 2) Load Tailwind from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-        integrity="sha512-bQygb3G9uXdv46f8PJzdvJDhQgOyzYWiw3Qog1W4Spj8PdQ8I8leZHgSlRcwqT4znf+PBO79jzj1Q7Ma8a5xg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- 3) Font Awesome (no integrity/crossorigin to avoid blocking) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-    <!-- Fade animations (unchanged) -->
+    <!-- 4) Fade animations (unchanged) -->
     <style>
         .fade-in {
             animation: fadeIn 0.5s ease-out forwards;
@@ -95,25 +94,25 @@
         }
     </style>
 
-    <!-- You can keep style.css empty or add overrides if needed -->
+    <!-- 5) Optional: style.css for any overrides -->
     <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="h-full bg-gradient-to-b from-[#ccf0d7] via-[#b1eacb] to-[#ccf0d7] relative overflow-hidden">
+<body class="h-full bg-gradient-to-b from-mintDeepTop via-mintDeepMiddle to-mintDeepBot relative overflow-hidden">
     <!--
-    ────────────────────────────────────────────────────
+    ────────────────────────────────────────────────
     Floating “Reset” Button (top-left)
-    ────────────────────────────────────────────────────
+    ────────────────────────────────────────────────
   -->
     <button id="reset-btn" aria-label="Clear local storage and reset"
-        class="fixed top-4 left-4 z-50 bg-white text-gray-700 p-2 rounded-full shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500">
+        class="fixed top-4 left-4 z-50 bg-white text-gray-800 p-2 rounded-full shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500">
         <i class="fa fa-rotate"></i>
     </button>
 
     <!--
-    ────────────────────────────────────────────────────
+    ────────────────────────────────────────────────
     1) Welcome Screen
-    ────────────────────────────────────────────────────
+    ────────────────────────────────────────────────
   -->
     <div id="welcome-screen" class="absolute inset-0 flex items-center justify-center bg-transparent overflow-hidden">
         <h1 id="welcome-text" class="text-3xl sm:text-4xl font-semibold text-black opacity-0">
@@ -123,59 +122,59 @@
     </div>
 
     <!--
-    ────────────────────────────────────────────────────
-    2) Setup Form Screen
-    ────────────────────────────────────────────────────
+    ────────────────────────────────────────────────
+    2) Setup Form Screen (Dark‐Grey Card)
+    ────────────────────────────────────────────────
   -->
     <div id="form-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
-        <div class="relative w-full max-w-lg md:max-w-md bg-white rounded-2xl p-6 shadow-lg mx-auto">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">Set Up Your Linktree</h2>
+        <div class="relative w-full max-w-lg md:max-w-md bg-gray-800 rounded-2xl p-6 shadow-lg mx-auto">
+            <h2 class="text-2xl font-bold text-white mb-4 text-center">Set Up Your Linktree</h2>
 
             <!-- Profile Picture URL -->
             <div class="mb-4">
-                <label for="profile-pic" class="block text-gray-600 mb-1">Profile Picture URL <span
+                <label for="profile-pic" class="block text-gray-300 mb-1">Profile Picture URL <span
                         class="text-red-500">*</span></label>
                 <input id="profile-pic" type="url" placeholder="https://example.com/avatar.jpg" required
                     aria-describedby="error-profile-pic"
-                    class="w-full px-4 py-2 rounded-lg bg-gray-100 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 border border-transparent focus:border-emerald-500 transition" />
+                    class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition" />
                 <p id="error-profile-pic" class="mt-1 text-sm text-red-500 hidden">Please enter a valid URL
                     (http/https).</p>
             </div>
 
             <!-- Username -->
             <div class="mb-4">
-                <label for="username" class="block text-gray-600 mb-1">Username <span
+                <label for="username" class="block text-gray-300 mb-1">Username <span
                         class="text-red-500">*</span></label>
                 <input id="username" type="text" placeholder="@yourhandle" required aria-describedby="error-username"
-                    class="w-full px-4 py-2 rounded-lg bg-gray-100 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 border border-transparent focus:border-emerald-500 transition" />
+                    class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition" />
                 <p id="error-username" class="mt-1 text-sm text-red-500 hidden">Username must start with “@” and be 3–30
                     chars.</p>
             </div>
 
             <!-- Tagline -->
             <div class="mb-4">
-                <label for="tagline" class="block text-gray-600 mb-1">Tagline (optional)</label>
+                <label for="tagline" class="block text-gray-300 mb-1">Tagline (optional)</label>
                 <input id="tagline" type="text" placeholder="Discover my work & more ✨" maxlength="100"
-                    class="w-full px-4 py-2 rounded-lg bg-gray-100 text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 border border-transparent focus:border-emerald-500 transition" />
-                <p id="tagline-count" class="mt-1 text-sm text-gray-500">0/100</p>
+                    class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition" />
+                <p id="tagline-count" class="mt-1 text-sm text-gray-400">0/100</p>
             </div>
 
             <!-- Link Rows Container -->
             <div id="links-wrapper" class="mb-4 space-y-4">
-                <label class="block text-gray-600 mb-1">Your Links (min 1, max 10)</label>
+                <label class="block text-gray-300 mb-1">Your Links (min 1, max 10)</label>
                 <!-- JavaScript will inject link‐row blocks here -->
             </div>
 
             <!-- Add New Link Button -->
             <button id="add-link-btn" type="button"
-                class="w-full mb-4 bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                class="w-full mb-4 bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-400">
                 + Add New Link
             </button>
             <p id="error-links" class="mt-1 text-sm text-red-500 hidden">At least one valid link is required.</p>
 
             <!-- Generate Button -->
             <button id="generate-btn"
-                class="w-full mt-4 bg-gray-400 text-gray-200 py-3 rounded-lg font-medium cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
+                class="w-full mt-4 bg-gray-600 text-gray-300 py-3 rounded-lg font-medium cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-emerald-400 transition"
                 disabled>
                 Generate My Linktree
             </button>
@@ -189,9 +188,9 @@
     </div>
 
     <!--
-    ────────────────────────────────────────────────────
-    3) Loader Screen
-    ────────────────────────────────────────────────────
+    ────────────────────────────────────────────────
+    3) Loader Screen (Skeleton on Dark‐Grey)
+    ────────────────────────────────────────────────
   -->
     <div id="loader-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="w-full max-w-lg md:max-w-md bg-gray-800 rounded-2xl p-6 shadow-lg mx-auto space-y-4">
@@ -207,32 +206,36 @@
     </div>
 
     <!--
-    ────────────────────────────────────────────────────
-    4) Linktree Output Screen (with Profile Picture & Tagline)
-    ────────────────────────────────────────────────────
+    ────────────────────────────────────────────────
+    4) Linktree Output Screen (Dark‐Grey + Profile Pic + Tagline)
+    ────────────────────────────────────────────────
   -->
     <div id="linktree-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
-        <div class="relative w-full max-w-lg md:max-w-md bg-white rounded-2xl p-6 shadow-lg mx-auto">
-            <!-- Profile Picture -->
+        <div class="relative w-full max-w-lg md:max-w-md bg-gray-800 rounded-2xl p-6 shadow-lg mx-auto">
+            <!-- Profile Picture (circular) -->
             <img id="output-profile-pic" src="" alt="Profile Picture"
-                class="w-24 h-24 rounded-full mx-auto mb-4 object-cover" />
-            <!-- Tagline -->
-            <p id="output-tagline" class="text-gray-600 text-center mb-2 italic"></p>
-            <!-- Username -->
-            <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center" id="display-username">@username_goes_here</h2>
+                class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-gray-700" />
+            <!-- Tagline (in italic, light gray) -->
+            <p id="output-tagline" class="text-gray-300 text-center mb-2 italic"></p>
+            <!-- Username (white) -->
+            <h2 id="display-username" class="text-2xl font-bold text-white mb-4 text-center">
+                @username_goes_here
+            </h2>
 
+            <!-- Links Container -->
             <div id="links-container" class="space-y-3 mb-6">
                 <!-- JavaScript will inject buttons here -->
             </div>
+
             <!-- Back to Edit Button -->
             <button id="back-btn"
-                class="w-full bg-gray-400 text-gray-200 py-2 rounded-lg font-medium hover:bg-gray-500 transition focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                class="w-full bg-gray-600 text-gray-300 py-2 rounded-lg font-medium hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-emerald-400">
                 ← Back to Edit
             </button>
         </div>
     </div>
 
-    <!-- Include updated app.js -->
+    <!-- 6) Link to our JavaScript (Step 7 & Step 8 already inlined there) -->
     <script src="app.js"></script>
 </body>
 
