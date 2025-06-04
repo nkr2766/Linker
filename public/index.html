@@ -11,7 +11,7 @@
         integrity="sha512-papZHh3cY3VpsQa0bpo0uZtBi8gm38UH3rzZBZagh1SWlDwptG25pbLBO0e4XgbV4QYxRo/mOZxjwRF+dc+0Fg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Tailwind (CDN - OK for development) -->
+    <!-- Tailwind (CDN - for development only) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <!-- Custom CSS -->
@@ -21,17 +21,17 @@
 <body class="bg-gradient-to-br from-green-200 to-green-400 min-h-screen overflow-hidden">
 
     <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- A) STARTUP OVERLAY: black → fade to transparent (reveals green behind)    -->
-    <!--    The text transitions from white → black + fades out at the same time.    -->
+    <!-- A) STARTUP OVERLAY: black → fade to transparent over 1.5 s;               -->
+    <!--    “Welcome to Linker” text slides up + white→black/opacity→0 simultaneously -->
     <!-- ──────────────────────────────────────────────────────────────────────────── -->
     <div id="startup-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
-        <h1 id="startup-text" class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white">
+        <h1 id="startup-text" class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white transform">
             Welcome to Linker
         </h1>
     </div>
 
     <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- B) RESET BUTTON (in top-left corner) -->
+    <!-- B) RESET BUTTON (hidden until someone logs in) -->
     <!-- ──────────────────────────────────────────────────────────────────────────── -->
     <button id="reset-btn"
         class="fixed top-4 left-4 bg-white text-gray-800 px-3 py-1 rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 hidden"
@@ -151,7 +151,7 @@
     </div>
 
     <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- H) WELCOME ANIMATION SCREEN (after login) -->
+    <!-- H) WELCOME ANIMATION SCREEN (after login, before builder) -->
     <!-- ──────────────────────────────────────────────────────────────────────────── -->
     <div id="welcome-screen" class="hidden flex items-center justify-center h-full text-center px-4">
         <h2 id="welcome-text" class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 opacity-0">

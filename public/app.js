@@ -44,7 +44,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // ───────────────────────────────────────────────────────────────────────────────
-// C) CONNECT TO EMULATORS WHEN RUNNING LOCALLY (hostname matches “localhost” or “127.0.0.1”)
+// C) CONNECT TO EMULATORS WHEN RUNNING LOCALLY (hostname matches “localhost” etc.)
 // ───────────────────────────────────────────────────────────────────────────────
 const hostname = location.hostname;
 if (
@@ -206,26 +206,24 @@ function downloadBlob(filename, blob) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// G) STARTUP: Fade the black overlay → Then Initialize App (Auth state)       |
+// G) STARTUP: Wait 500 ms, then kick off 1.5 s fade + slide-up‐text; then show login
 // ───────────────────────────────────────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
-    // Give the browser a tiny moment, then begin the fade
+    // Keep everything hidden until we run the animation.
+    // After 500 ms, start the fade + slide‐up text animation over 1.5 s:
     setTimeout(() => {
-        // Add classes so CSS animations fade background & text over 1s
         startupScreen.classList.add("fade-bg-out");
-        startupText.classList.add("fade-text-out");
-
-        // After 1s (when fade finishes), remove the overlay entirely
+        startupText.classList.add("slide-text-up");
+        // After the full 1.5 s finishes, remove the overlay & initialize the app
         setTimeout(() => {
             startupScreen.style.display = "none";
-            // Now that the overlay is gone, kick off the normal Auth‐state logic:
             initApp();
-        }, 1000);
-    }, 100);
+        }, 1500);
+    }, 500);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// H) INITIALIZE APP: Listen for Auth State Changes                           |
+// H) INITIALIZE APP: Listen for Auth State Changes                              |
 // ───────────────────────────────────────────────────────────────────────────────
 function initApp() {
     onAuthStateChanged(auth, async (firebaseUser) => {
@@ -252,7 +250,7 @@ function initApp() {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// I) LOGIN / SIGNUP BUTTON HANDLERS (Landing screen)                        |
+// I) LOGIN / SIGNUP BUTTON HANDLERS (Landing screen)                            |
 // ───────────────────────────────────────────────────────────────────────────────
 btnAdminLogin.addEventListener("click", () => {
     hideAllScreens();
@@ -282,7 +280,7 @@ btnUseAccessCode.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// J) ADMIN LOGIN LOGIC (Email/Password)                                       |
+// J) ADMIN LOGIN LOGIC (Email/Password)                                         |
 // ───────────────────────────────────────────────────────────────────────────────
 adminLoginSubmit.addEventListener("click", async () => {
     const email = adminEmailInput.value.trim().toLowerCase();
@@ -309,7 +307,7 @@ adminLoginBack.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// K) SHOW ADMIN PANEL (upon login)                                             |
+// K) SHOW ADMIN PANEL (upon login)                                               |
 // ───────────────────────────────────────────────────────────────────────────────
 async function showAdminPanel() {
     hideAllScreens();
@@ -459,7 +457,7 @@ async function startAppFlow(currentEmail) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// O) BUILDER FORM (display form, optionally prefill)                            |
+// O) BUILDER FORM (display form, optionally prefill)                            │
 // ───────────────────────────────────────────────────────────────────────────────
 function showBuilderForm(prefillData = null) {
     hideAllScreens();
@@ -496,7 +494,7 @@ function showBuilderForm(prefillData = null) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// P) ADD A LINK ROW (with optional prefill)                                     |
+// P) ADD A LINK ROW (with optional prefill)                                     │
 // ───────────────────────────────────────────────────────────────────────────────
 function addLinkRow(prefill = null) {
     const rowIndex = linkRows.length;
