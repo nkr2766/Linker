@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Linktree Clone – Sprint 6</title>
+    <title>Linktree Clone – Sprint 6 + Analytics</title>
 
     <!-- TailwindCSS CDN (light mode only) -->
     <script>
@@ -14,7 +14,7 @@
                     colors: {
                         mintLight: '#B1EACB',
                         mintMid: '#CCF0D7',
-                        mintDark: '#E0FBFC',
+                        mintDark: '#E0FBFC'
                     }
                 }
             }
@@ -94,16 +94,15 @@
         }
     </style>
 
-    <!-- External styles (still empty, since Tailwind covers most) -->
     <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="h-full bg-gradient-to-b from-white to-mintLight relative overflow-hidden">
+<body class="h-full bg-gradient-to-b from-mintLight via-mintMid to-mintDark relative overflow-hidden">
 
     <!--
-    ───────────
-    Floating “Reset” Button (top-left)
-    ───────────
+    ──────────────────────
+    Floating “Reset” Button
+    ──────────────────────
   -->
     <button id="reset-btn" aria-label="Clear local storage and reset"
         class="fixed top-4 left-4 z-50 bg-white text-gray-700 p-2 rounded-full shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500">
@@ -111,9 +110,9 @@
     </button>
 
     <!--
-    ───────────
+    ──────────────────────
     1) Welcome Screen
-    ───────────
+    ──────────────────────
   -->
     <div id="welcome-screen" class="absolute inset-0 flex items-center justify-center bg-transparent overflow-hidden">
         <h1 id="welcome-text" class="text-3xl sm:text-4xl font-semibold text-black opacity-0">
@@ -123,9 +122,9 @@
     </div>
 
     <!--
-    ───────────
+    ──────────────────────
     2) Setup Form Screen
-    ───────────
+    ──────────────────────
   -->
     <div id="form-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="relative w-full max-w-lg md:max-w-md bg-white rounded-2xl p-6 shadow-lg mx-auto">
@@ -189,9 +188,9 @@
     </div>
 
     <!--
-    ───────────
+    ──────────────────────
     3) Loader Screen
-    ───────────
+    ──────────────────────
   -->
     <div id="loader-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="w-full max-w-lg md:max-w-md bg-gray-800 rounded-2xl p-6 shadow-lg mx-auto space-y-4">
@@ -207,9 +206,9 @@
     </div>
 
     <!--
-    ───────────
+    ──────────────────────
     4) Linktree Output Screen
-    ───────────
+    ──────────────────────
   -->
     <div id="linktree-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="relative w-full max-w-lg md:max-w-md bg-white rounded-2xl p-6 shadow-lg mx-auto">

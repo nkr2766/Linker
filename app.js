@@ -1,10 +1,24 @@
-// Sprint 6: Performance & Responsiveness (light mode only)
+// Sprint 6 + Step 7 Analytics Hooks
 (function () {
     // LocalStorage Keys
     const STORAGE_KEY = 'linktreeData';
     const HAS_VISITED_KEY = 'hasVisited';
 
-    // Utility Validators
+    // Simple analytics stub (logs to console; debounced per event)
+    function logEvent(eventName) {
+        if (!window._analyticsDebounce) window._analyticsDebounce = {};
+        if (window._analyticsDebounce[eventName]) return;
+
+        console.log(`[Analytics] Event: ${eventName}`);
+        window._analyticsDebounce[eventName] = true;
+
+        // Reset debounce after 500ms
+        setTimeout(() => {
+            window._analyticsDebounce[eventName] = false;
+        }, 500);
+    }
+
+    // Validates URL format
     function isValidURL(url) {
         try {
             const u = new URL(url);
@@ -13,11 +27,11 @@
             return false;
         }
     }
+    // Validates username starting with '@', 3–30 chars
     function isValidUsername(u) {
         return /^@[A-Za-z0-9_]{2,29}$/.test(u);
     }
 
-    // Wait until DOM is ready
     window.addEventListener('DOMContentLoaded', () => {
         // Screen references
         const welcomeScreen = document.getElementById('welcome-screen');
@@ -30,7 +44,7 @@
         const backBtn = document.getElementById('back-btn');
         const resetBtn = document.getElementById('reset-btn');
 
-        // Form field references
+        // Form fields
         const profilePicInput = document.getElementById('profile-pic');
         const usernameInput = document.getElementById('username');
         const taglineInput = document.getElementById('tagline');
@@ -41,15 +55,15 @@
         const errorUsername = document.getElementById('error-username');
         const errorLinks = document.getElementById('error-links');
 
-        // Loader and output references
+        // Loader/output
         const displayUsername = document.getElementById('display-username');
         const linksContainer = document.getElementById('links-container');
 
-        // State
-        let linkRows = []; // Array of { container, labelInput, iconSelect, urlInput, errorText }
+        // State: array of { container, labelInput, iconSelect, urlInput, errorText }
+        let linkRows = [];
 
         //
-        // 1) Reset Button: clear all and reload
+        // 1) “Reset” Button: clear stored data & reload
         //
         resetBtn.addEventListener('click', () => {
             localStorage.removeItem(HAS_VISITED_KEY);
@@ -58,7 +72,7 @@
         });
 
         //
-        // 2) On load: show welcome (first‐time or returning)
+        // 2) On page load: decide “Welcome” vs. “Welcome back”
         //
         const hasVisited = localStorage.getItem(HAS_VISITED_KEY);
         const savedData = localStorage.getItem(STORAGE_KEY);
@@ -73,7 +87,7 @@
         localStorage.setItem(HAS_VISITED_KEY, 'true');
 
         //
-        // 3) Show Welcome Animation
+        // 3) Show “Welcome” with fade in/out, then either form or output
         //
         function showWelcome(isReturning, hasSavedData) {
             welcomeScreen.classList.remove('hidden');
@@ -95,7 +109,7 @@
         }
 
         //
-        // 4) Show Form (optionally with prefill)
+        // 4) Show Form (prefill if data exists)
         //
         function showForm(prefillData = null) {
             welcomeScreen.classList.add('hidden');
@@ -104,7 +118,7 @@
             formScreen.classList.remove('hidden');
             formScreen.classList.add('flex');
 
-            // Clear & recreate link rows
+            // Clear any existing link rows
             linksWrapper.innerHTML = '';
             linkRows = [];
 
@@ -125,18 +139,20 @@
         }
 
         //
-        // 5) Add a New Link Row (optionally prefill)
+        // 5) Add a Link Row (optionally with prefill)
         //
         function addLinkRow(prefill = null) {
             const rowDiv = document.createElement('div');
             rowDiv.className = 'space-y-1 bg-gray-100 p-4 rounded-lg';
 
+            // Label input
             const labelInput = document.createElement('input');
             labelInput.type = 'text';
             labelInput.placeholder = 'Label (e.g. Website)';
             labelInput.required = true;
             labelInput.className = 'w-full px-3 py-2 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 border border-transparent focus:border-emerald-500 transition';
 
+            // Icon dropdown
             const iconSelect = document.createElement('select');
             iconSelect.className = 'w-full px-3 py-2 rounded-md bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-emerald-500';
             const iconOptions = ['fa-globe', 'fa-instagram', 'fa-github', 'fa-link', 'fa-camera', 'fa-pinterest'];
@@ -147,6 +163,7 @@
                 iconSelect.appendChild(opt);
             });
 
+            // URL input
             const urlInput = document.createElement('input');
             urlInput.type = 'url';
             urlInput.placeholder = 'https://example.com';
@@ -159,6 +176,7 @@
             errorText.className = 'text-sm text-red-500 hidden';
             errorText.textContent = 'Please enter a valid URL.';
 
+            // Delete button
             const deleteBtn = document.createElement('button');
             deleteBtn.type = 'button';
             deleteBtn.innerHTML = '<i class="fa fa-trash text-red-500"></i>';
@@ -184,7 +202,7 @@
                 }
             }
 
-            // Debounce URL input validation (100ms)
+            // Debounced URL validation
             let debounceTimer;
             urlInput.addEventListener('input', () => {
                 clearTimeout(debounceTimer);
@@ -223,7 +241,7 @@
         });
 
         //
-        // 6) Input Validations (with tiny debounce for performance)
+        // 6) Input Validations (debounced where appropriate)
         //
         function debounce(fn, delay) {
             let timer;
@@ -293,10 +311,12 @@
         }
 
         //
-        // 7) Generate → Loader → Output (and save)
+        // 7) “Generate” → Loader → Output (save data & analytics)
         //
         generateBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            logEvent('generate_clicked');
+
             formScreen.classList.add('hidden');
 
             const data = {
@@ -322,10 +342,12 @@
         });
 
         //
-        // 8) Bypass (Testing) Button Logic (no validation)
+        // 8) “Bypass” → Loader → Placeholder Output (analytics)
         //
         bypassBtn.addEventListener('click', () => {
+            logEvent('bypass_clicked');
             formScreen.classList.add('hidden');
+
             const placeholderData = {
                 profilePic: '',
                 username: '@testuser',
@@ -337,8 +359,10 @@
                 ]
             };
             localStorage.setItem(STORAGE_KEY, JSON.stringify(placeholderData));
+
             loaderScreen.classList.remove('hidden');
             loaderScreen.classList.add('flex');
+
             setTimeout(() => {
                 loaderScreen.classList.add('hidden');
                 loaderScreen.classList.remove('flex');
@@ -347,7 +371,7 @@
         });
 
         //
-        // 9) Render Output + Back to Edit
+        // 9) Render Output & “Back to Edit”
         //
         function renderOutput(data) {
             displayUsername.textContent = data.username || '@yourhandle';
