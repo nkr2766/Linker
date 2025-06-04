@@ -250,6 +250,31 @@
                 <p id="tagline-count" class="text-gray-600 text-sm">0/100</p>
             </div>
 
+            <!-- Theme Customization -->
+            <div class="flex flex-col items-start">
+                <label for="gradient-start" class="font-medium text-gray-700 mb-1">Background Gradient Start</label>
+                <input id="gradient-start" type="color" value="#a7f3d0" class="w-full h-10" />
+            </div>
+            <div class="flex flex-col items-start">
+                <label for="gradient-end" class="font-medium text-gray-700 mb-1">Background Gradient End</label>
+                <input id="gradient-end" type="color" value="#6ee7b7" class="w-full h-10" />
+            </div>
+            <div class="flex flex-col items-start">
+                <label for="card-color" class="font-medium text-gray-700 mb-1">Card Background Color</label>
+                <input id="card-color" type="color" value="#ffffff" class="w-full h-10" />
+            </div>
+            <div class="flex flex-col items-start">
+                <label for="card-text-color" class="font-medium text-gray-700 mb-1">Card Text Color</label>
+                <input id="card-text-color" type="color" value="#111827" class="w-full h-10" />
+            </div>
+            <div class="flex flex-col items-start">
+                <label for="card-image" class="font-medium text-gray-700 mb-1">Card Background Image (optional)</label>
+                <div class="flex items-center space-x-2 w-full">
+                    <input id="card-image" type="file" accept="image/*" class="flex-grow" />
+                    <button id="remove-card-image" type="button" class="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">Remove</button>
+                </div>
+            </div>
+
             <!-- Links Wrapper (each link row is added via JS) -->
             <div id="links-wrapper" class="space-y-4 bg-gray-800 p-4 rounded-lg"></div>
             <button id="add-link-btn"
@@ -281,7 +306,7 @@
     <!-- K) LINKTREE OUTPUT SCREEN (Profile + Links + Back / Download)                -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="linktree-screen" class="hidden flex-col items-center justify-center min-h-screen px-4">
-        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6">
+        <div id="output-card" class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6">
             <div class="flex flex-col items-center space-y-4">
                 <img id="output-profile-pic" src="" alt="Profile Picture"
                     class="w-24 h-24 rounded-full object-cover hidden" />

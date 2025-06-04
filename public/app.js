@@ -29,7 +29,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyDwfQcrwMCbbX6CA-_1UgelCNfVKCVTQ0A",
     authDomain: "linkerapp-9dd4d.firebaseapp.com",
     projectId: "linkerapp-9dd4d",
-    storageBucket: "linkerapp-9dd4d.firebasestorage.app",
+    storageBucket: "linkerapp-9dd4d.appspot.com",
     messagingSenderId: "1098052666181",
     appId: "1:1098052666181:web:526d045f1c8f44f59fb42c",
     measurementId: "G-LBV1P494PR"
@@ -69,6 +69,8 @@ const STORAGE_KEY_LINKTREE = "linkerLinktreeData";
 let linkRows = [];
 // Will hold the base64‐DataURL for the uploaded profile pic
 let profilePicDataURL = "";
+// Optional background image for the card
+let cardImageDataURL = "";
 
 // ───────────────────────────────────────────────────────────────────────────────
 // E) UI ELEMENT REFERENCES
@@ -123,6 +125,12 @@ const formUsernameInput = document.getElementById("username");
 const errorUsername = document.getElementById("error-username");
 const formTaglineInput = document.getElementById("tagline");
 const formTaglineCount = document.getElementById("tagline-count");
+const gradientStartInput = document.getElementById("gradient-start");
+const gradientEndInput = document.getElementById("gradient-end");
+const cardColorInput = document.getElementById("card-color");
+const cardTextColorInput = document.getElementById("card-text-color");
+const cardImageInput = document.getElementById("card-image");
+const cardImageClearBtn = document.getElementById("remove-card-image");
 const linksWrapper = document.getElementById("links-wrapper");
 const addLinkBtn = document.getElementById("add-link-btn");
 const errorLinks = document.getElementById("error-links");
@@ -131,6 +139,7 @@ const generateBtn = document.getElementById("generate-btn");
 const loaderScreen = document.getElementById("loader-screen");
 
 const linktreeScreen = document.getElementById("linktree-screen");
+const outputCard = document.getElementById("output-card");
 const outputProfilePic = document.getElementById("output-profile-pic");
 const displayUsername = document.getElementById("display-username");
 const outputTagline = document.getElementById("output-tagline");
@@ -184,6 +193,15 @@ function downloadBlob(filename, blob) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+function escapeHTML(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -474,6 +492,8 @@ function showBuilderForm(prefillData = null) {
     linksWrapper.innerHTML = "";
     linkRows = [];
     profilePicDataURL = "";
+    cardImageDataURL = "";
+    cardImageInput.value = "";
 
     // Hide errors
     errorProfilePic.classList.add("hidden");
@@ -488,12 +508,25 @@ function showBuilderForm(prefillData = null) {
         formUsernameInput.value = prefillData.username || "";
         formTaglineInput.value = prefillData.tagline || "";
         formTaglineCount.textContent = `${prefillData.tagline?.length || 0}/100`;
+        gradientStartInput.value = prefillData.gradientStart || "#a7f3d0";
+        gradientEndInput.value = prefillData.gradientEnd || "#6ee7b7";
+        cardColorInput.value = prefillData.cardColor || "#ffffff";
+        cardTextColorInput.value = prefillData.cardTextColor || "#111827";
+        if (prefillData.cardImage) {
+            cardImageDataURL = prefillData.cardImage;
+        }
+        cardImageInput.value = "";
 
         (prefillData.links || []).forEach((link) => addLinkRow(link));
     } else {
         formUsernameInput.value = "";
         formTaglineInput.value = "";
         formTaglineCount.textContent = "0/100";
+        gradientStartInput.value = "#a7f3d0";
+        gradientEndInput.value = "#6ee7b7";
+        cardColorInput.value = "#ffffff";
+        cardTextColorInput.value = "#111827";
+        cardImageInput.value = "";
         addLinkRow();
     }
     updateGenerateButtonState();
@@ -550,7 +583,7 @@ function addLinkRow(prefill = null) {
     // 5) Delete button
     const deleteBtn = document.createElement("button");
     deleteBtn.type = "button";
-    deleteBtn.innerHTML = '<i class="fa fa-trash text-red-500"></i>';
+    deleteBtn.innerHTML = '<i class="fa fa-trash text-red-500" aria-hidden="true"></i>';
     deleteBtn.setAttribute("aria-label", "Remove this link");
     deleteBtn.className = "mt-2 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-full";
     deleteBtn.addEventListener("click", () => {
@@ -566,7 +599,7 @@ function addLinkRow(prefill = null) {
     // 6) Move Up button
     const moveUpBtn = document.createElement("button");
     moveUpBtn.type = "button";
-    moveUpBtn.innerHTML = '<i class="fa fa-arrow-up"></i>';
+    moveUpBtn.innerHTML = '<i class="fa fa-arrow-up" aria-hidden="true"></i>';
     moveUpBtn.setAttribute("aria-label", "Move this link up");
     moveUpBtn.className =
         "ml-2 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
@@ -581,7 +614,7 @@ function addLinkRow(prefill = null) {
     // 7) Move Down button
     const moveDownBtn = document.createElement("button");
     moveDownBtn.type = "button";
-    moveDownBtn.innerHTML = '<i class="fa fa-arrow-down"></i>';
+    moveDownBtn.innerHTML = '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
     moveDownBtn.setAttribute("aria-label", "Move this link down");
     moveDownBtn.className =
         "ml-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
@@ -694,6 +727,25 @@ profilePicFileInput.addEventListener("change", () => {
     updateGenerateButtonState();
 });
 
+// Card background image upload (optional)
+cardImageInput.addEventListener("change", () => {
+    const file = cardImageInput.files[0];
+    if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            cardImageDataURL = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        cardImageDataURL = "";
+    }
+});
+
+cardImageClearBtn.addEventListener("click", () => {
+    cardImageDataURL = "";
+    cardImageInput.value = "";
+});
+
 // Username validation on blur
 formUsernameInput.addEventListener("blur", () => {
     let val = formUsernameInput.value.trim();
@@ -755,6 +807,11 @@ generateBtn.addEventListener("click", async (e) => {
         profilePic: profilePicDataURL,
         username: formUsernameInput.value.trim(),
         tagline: formTaglineInput.value.trim(),
+        gradientStart: gradientStartInput.value,
+        gradientEnd: gradientEndInput.value,
+        cardColor: cardColorInput.value,
+        cardTextColor: cardTextColorInput.value,
+        cardImage: cardImageDataURL,
         links: linkRows.map((r) => ({
             label: r.labelInput.value.trim(),
             icon: r.iconSelect.value,
@@ -775,6 +832,14 @@ generateBtn.addEventListener("click", async (e) => {
 // T) RENDER OUTPUT (in-app Linktree with Download + Back-to-Edit)                 //
 // ───────────────────────────────────────────────────────────────────────────────
 function renderOutput(data) {
+    document.body.style.background = `linear-gradient(to bottom right, ${data.gradientStart || "#a7f3d0"}, ${data.gradientEnd || "#6ee7b7"})`;
+    outputCard.style.backgroundColor = data.cardColor || "#ffffff";
+    if (data.cardImage) {
+        outputCard.style.backgroundImage = `url(${data.cardImage})`;
+        outputCard.style.backgroundSize = "cover";
+    } else {
+        outputCard.style.backgroundImage = "none";
+    }
     if (data.profilePic) {
         outputProfilePic.src = data.profilePic;
         outputProfilePic.classList.remove("hidden");
@@ -789,6 +854,10 @@ function renderOutput(data) {
         outputTagline.classList.add("hidden");
     }
 
+    const textColor = data.cardTextColor || "#111827";
+    displayUsername.style.color = textColor;
+    outputTagline.style.color = textColor;
+
     displayUsername.textContent = data.username || "@yourhandle";
 
     linksContainer.innerHTML = "";
@@ -799,7 +868,13 @@ function renderOutput(data) {
             btn.target = "_blank";
             btn.className =
                 "flex items-center justify-center bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-400";
-            btn.innerHTML = `<i class="fa ${link.icon} mr-2"></i><span>${link.label}</span>`;
+            const icon = document.createElement("i");
+            icon.className = `fa ${link.icon} mr-2`;
+            icon.setAttribute("aria-hidden", "true");
+            const span = document.createElement("span");
+            span.textContent = link.label;
+            btn.appendChild(icon);
+            btn.appendChild(span);
             linksContainer.appendChild(btn);
         }
     });
@@ -823,10 +898,13 @@ downloadBtn.addEventListener("click", () => {
     if (!data || !data.links || data.links.length === 0) return;
 
     const safeUsername = data.username.replace("@", "") || "linker";
-    const safeTagline = data.tagline || "";
+    const safeTagline = escapeHTML(data.tagline || "");
     const safePic = data.profilePic || "";
-    const bgColorStart = "#a7f3d0"; // Tailwind green-200
-    const bgColorEnd = "#6ee7b7"; // Tailwind green-300
+    const bgColorStart = data.gradientStart || "#a7f3d0";
+    const bgColorEnd = data.gradientEnd || "#6ee7b7";
+    const cardColor = data.cardColor || "#ffffff";
+    const textColor = data.cardTextColor || "#111827";
+    const cardImage = data.cardImage || "";
 
     // Build minimal HTML
     const outputHtml = `<!DOCTYPE html>
@@ -834,7 +912,7 @@ downloadBtn.addEventListener("click", () => {
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${data.username}’s Linktree</title>
+<title>${escapeHTML(data.username)}’s Linktree</title>
 <style>
   body {
     margin: 0;
@@ -848,7 +926,8 @@ downloadBtn.addEventListener("click", () => {
     min-height: 100vh;
   }
   .card {
-    background-color: #ffffff;
+    background-color: ${cardColor};
+    ${cardImage ? `background-image: url('${cardImage}'); background-size: cover;` : ""}
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 32px;
@@ -866,16 +945,17 @@ downloadBtn.addEventListener("click", () => {
   h1 {
     margin: 0 0 8px 0;
     font-size: 1.5rem;
-    color: #111827;
+    color: ${textColor};
   }
   p.tag {
     margin: 0 0 16px 0;
     font-size: 1rem;
-    color: #4b5563;
+    color: ${textColor};
   }
   .link-btn {
     display: block;
     width: 100%;
+    box-sizing: border-box;
     margin: 8px 0;
     padding: 12px 16px;
     background-color: #10b981; /* emerald-500 */
@@ -904,12 +984,12 @@ downloadBtn.addEventListener("click", () => {
 <body>
   <div class="card">
     ${safePic ? `<img src="${safePic}" alt="Profile picture" class="profile" />` : ""}
-    <h1>${data.username}</h1>
+    <h1>${escapeHTML(data.username)}</h1>
     ${safeTagline ? `<p class="tag">${safeTagline}</p>` : ""}
     ${data.links
             .map(
                 (link) =>
-                    `<a href="${link.url}" target="_blank" class="link-btn"><i class="fa ${link.icon}"></i>${link.label}</a>`
+                    `<a href="${escapeHTML(link.url)}" target="_blank" class="link-btn"><i class="fa ${link.icon}" aria-hidden="true"></i>${escapeHTML(link.label)}</a>`
             )
             .join("\n    ")}
   </div>
