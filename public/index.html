@@ -1,255 +1,311 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-    <title>Linker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Linker – Build Your Linktree</title>
 
-    <!-- Font Awesome for icons -->
+    <!-- Tailwind CSS (CDN for quick dev; in production you’d extract this via PostCSS) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome (for the link icons, trash, arrows, etc.) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-papZHh3cY3VpsQa0bpo0uZtBi8gm38UH3rzZBZagh1SWlDwptG25pbLBO0e4XgbV4QYxRo/mOZxjwRF+dc+0Fg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Tailwind (CDN - for development only) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* ────────────────────────────────────────────────────── */
+        /*  Startup / Fade Animations:                          */
+        /* ────────────────────────────────────────────────────── */
+        /* Fullscreen black overlay: */
+        #startup-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+            transition: background-color 1.5s ease;
+        }
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css" />
+        /* When we add “fade-bg-out”, transition to transparent: */
+        #startup-screen.fade-bg-out {
+            background-color: transparent;
+        }
+
+        /* The “Welcome to Linker” text: */
+        #startup-text {
+            color: white;
+            font-size: 2rem;
+            opacity: 1;
+            transition: transform 1.5s ease, opacity 1.5s ease;
+        }
+
+        /* When “slide-text-up” is added, move it up and fade out: */
+        #startup-text.slide-text-up {
+            transform: translateY(-30px);
+            opacity: 0;
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-to-br from-green-200 to-green-400 min-h-screen overflow-hidden">
+<body class="bg-gradient-to-br from-green-200 to-green-300 flex items-center justify-center h-full">
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- A) STARTUP OVERLAY: black → fade to transparent over 1.5 s;               -->
-    <!--    “Welcome to Linker” text slides up + white→black/opacity→0 simultaneously -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <div id="startup-screen" class="fixed inset-0 bg-black flex items-center justify-center z-50">
-        <h1 id="startup-text" class="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white transform">
-            Welcome to Linker
-        </h1>
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- A) STARTUP OVERLAY (black → fade to transparent + slide‐up text)             -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="startup-screen">
+        <div id="startup-text">Welcome to Linker</div>
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- B) RESET BUTTON (hidden until someone logs in) -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- B) RESET BUTTON (Top‐left corner; hidden by default)                          -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <button id="reset-btn"
-        class="fixed top-4 left-4 bg-white text-gray-800 px-3 py-1 rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500 hidden"
-        aria-label="Reset App">
+        class="hidden absolute top-4 left-4 px-4 py-2 bg-red-500 text-white rounded-lg shadow-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
         Reset
     </button>
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- C) LOGIN / SIGNUP SCREEN (landing) -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <div id="login-screen" class="hidden flex-col items-center justify-center h-full text-center space-y-6 px-4">
-        <h2 class="text-3xl font-bold text-gray-900">Linker</h2>
-        <p class="text-lg text-gray-700">
-            The ultimate “link in bio” builder. Please log in to continue.
-        </p>
-        <button id="btn-admin-login"
-            class="w-full max-w-xs bg-gray-900 text-white py-3 rounded-lg hover:bg-gray-800 transition">
-            Admin Login
-        </button>
-        <button id="btn-user-login"
-            class="w-full max-w-xs bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition">
-            User Login
-        </button>
-        <button id="btn-use-access-code"
-            class="w-full max-w-xs bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition">
-            Sign Up with Access Code
-        </button>
-    </div>
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- D) ADMIN LOGIN FORM -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <div id="admin-login-screen" class="hidden flex-col items-center justify-center h-full text-center space-y-4 px-4">
-        <h2 class="text-2xl font-semibold text-gray-900">Admin Login</h2>
-        <p class="text-gray-700">Enter your admin credentials below to generate codes.</p>
-        <input id="admin-email" type="email" placeholder="admin@linkerapp.com"
-            class="w-full max-w-sm px-3 py-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <input id="admin-password" type="password" placeholder="Password"
-            class="w-full max-w-sm px-3 py-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <p id="admin-error" class="text-sm text-red-600 hidden">Error message here.</p>
-        <button id="admin-login-submit"
-            class="w-full max-w-sm bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition">
-            Unlock Admin Panel
-        </button>
-        <button id="admin-login-back" class="mt-2 text-gray-600 hover:underline focus:outline-none">
-            ← Back to Home
-        </button>
-    </div>
-
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- E) ADMIN PANEL (Generate Access Codes) -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <div id="admin-panel" class="hidden flex-col items-center justify-start h-full space-y-6 px-4 pt-8 overflow-auto">
-        <h2 class="text-2xl font-semibold text-gray-900">Admin Panel</h2>
-        <p class="text-gray-700">Generate a new access code for creators:</p>
-        <div class="w-full max-w-md space-y-2">
-            <input id="new-access-code" type="text" placeholder="e.g. MySpecialCode"
-                class="w-full px-3 py-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
-            <button id="create-code-btn"
-                class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition">
-                Generate Access Code
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- C) LOGIN SCREEN (Landing Page with three big buttons)                        -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="login-screen" class="hidden flex-col items-center justify-center min-h-screen text-center space-y-6 px-4">
+        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+            <h1 class="text-2xl font-semibold text-gray-900 mb-6">Welcome to Linker</h1>
+            <button id="btn-admin-login"
+                class="w-full py-3 mb-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
+                Admin Login
             </button>
-            <p id="admin-code-success" class="text-sm text-green-600 hidden"></p>
+            <button id="btn-user-login"
+                class="w-full py-3 mb-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
+                User Login
+            </button>
+            <button id="btn-use-access-code"
+                class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                Sign Up with Access Code
+            </button>
         </div>
-        <button id="admin-build-form"
-            class="w-full max-w-md bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition">
-            Thank you for logging in 🔥 Let’s build your Linktree
-        </button>
-        <button id="admin-logout" class="text-gray-600 hover:underline focus:outline-none">
-            Sign Out
-        </button>
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- F) USER LOGIN FORM -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <div id="user-login-screen" class="hidden flex-col items-center justify-center h-full space-y-4 px-4 text-center">
-        <h2 class="text-2xl font-semibold text-gray-900">User Login</h2>
-        <p class="text-gray-700">Enter your credentials to build your Linktree:</p>
-        <input id="user-email" type="email" placeholder="you@example.com"
-            class="w-full max-w-sm px-3 py-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <input id="user-password" type="password" placeholder="Password"
-            class="w-full max-w-sm px-3 py-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <p id="user-error" class="text-sm text-red-600 hidden">Error message here.</p>
-        <button id="user-login-submit"
-            class="w-full max-w-sm bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition">
-            Log In
-        </button>
-        <button id="user-login-back" class="mt-2 text-gray-600 hover:underline focus:outline-none">
-            ← Back to Home
-        </button>
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- D) ADMIN LOGIN SCREEN                                                         -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="admin-login-screen"
+        class="hidden flex-col items-center justify-center min-h-screen text-center space-y-4 px-4">
+        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Admin Login</h2>
+            <p id="admin-error" class="text-red-500 text-sm hidden mb-2" role="alert"></p>
+            <input id="admin-email" type="email" placeholder="admin@linkerapp.com"
+                class="w-full px-4 py-2 rounded-md border border-gray-300 mb-4 focus:outline-none focus:ring-2 focus:ring-gray-400" />
+            <input id="admin-password" type="password" placeholder="Password"
+                class="w-full px-4 py-2 rounded-md border border-gray-300 mb-6 focus:outline-none focus:ring-2 focus:ring-gray-400" />
+            <button id="admin-login-submit"
+                class="w-full py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700 mb-4">
+                Login
+            </button>
+            <button id="admin-login-back" class="mt-2 text-gray-700 hover:underline focus:outline-none">
+                ← Back
+            </button>
+        </div>
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- G) USER SIGNUP FORM (Access Code → Sign Up) -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <div id="user-signup-screen" class="hidden flex-col items-center justify-center h-full space-y-4 px-4 text-center">
-        <h2 class="text-2xl font-semibold text-gray-900">Sign Up with Access Code</h2>
-        <p class="text-gray-700">Enter your code & create a new account:</p>
-        <input id="signup-code" type="text" placeholder="Access Code"
-            class="w-full max-w-sm px-3 py-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <input id="signup-email" type="email" placeholder="you@example.com"
-            class="w-full max-w-sm px-3 py-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <input id="signup-password" type="password" placeholder="Password"
-            class="w-full max-w-sm px-3 py-2 rounded-md bg-gray-100 focus:outline-none focus:ring-2 focus:ring-green-500" />
-        <p id="signup-code-error" class="text-sm text-red-600 hidden">Error message here.</p>
-        <p id="signup-success" class="text-sm text-green-600 hidden">
-            Signup successful! Redirecting…
-        </p>
-        <button id="signup-submit"
-            class="w-full max-w-sm bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition">
-            Sign Up
-        </button>
-        <button id="signup-back" class="mt-2 text-gray-600 hover:underline focus:outline-none">
-            ← Back to Home
-        </button>
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- E) ADMIN PANEL (Create Codes / Build Form / Logout)                           -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="admin-panel" class="hidden flex-col items-center justify-center min-h-screen space-y-6 px-4">
+        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6">
+            <h2 class="text-2xl font-semibold text-gray-900">Admin Panel</h2>
+
+            <!-- Create Access Code -->
+            <div class="space-y-2">
+                <input id="new-access-code" type="text" placeholder="Enter new access code"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+                <button id="create-code-btn"
+                    class="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Generate Access Code
+                </button>
+                <p id="admin-code-success" class="text-green-600 text-sm hidden"></p>
+            </div>
+
+            <!-- Build Form Shortcut -->
+            <button id="admin-build-form"
+                class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
+                Build Form
+            </button>
+
+            <!-- Logout -->
+            <button id="admin-logout"
+                class="w-full py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition focus:outline-none focus:ring-2 focus:ring-red-400">
+                Logout
+            </button>
+        </div>
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- H) WELCOME ANIMATION SCREEN (after login, before builder) -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <div id="welcome-screen" class="hidden flex items-center justify-center h-full text-center px-4">
-        <h2 id="welcome-text" class="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 opacity-0">
-            Welcome, we’re building your Linktree now…
-        </h2>
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- F) USER LOGIN SCREEN                                                          -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="user-login-screen"
+        class="hidden flex-col items-center justify-center min-h-screen text-center space-y-4 px-4">
+        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+            <h2 class="text-2xl font-semibold text-gray-900 mb-4">User Login</h2>
+            <p id="user-error" class="text-red-500 text-sm hidden mb-2" role="alert"></p>
+            <input id="user-email" type="email" placeholder="you@example.com"
+                class="w-full px-4 py-2 rounded-md border border-gray-300 mb-4 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            <input id="user-password" type="password" placeholder="Password"
+                class="w-full px-4 py-2 rounded-md border border-gray-300 mb-6 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            <button id="user-login-submit"
+                class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400 mb-4">
+                Login
+            </button>
+            <button id="user-login-back" class="mt-2 text-gray-700 hover:underline focus:outline-none">
+                ← Back
+            </button>
+        </div>
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- I) BUILDER FORM SCREEN (create your Linktree) -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <div id="form-screen" class="hidden flex-col items-center justify-start h-full overflow-auto py-8 px-4 space-y-4">
-        <h2 class="text-2xl font-semibold text-gray-900">Build Your Linktree</h2>
-        <p class="text-gray-700">
-            Upload a profile picture, add your handle, tagline, and links below.
-        </p>
 
-        <!-- Profile Picture Upload -->
-        <div class="w-full max-w-lg space-y-1">
-            <label class="block text-gray-700">Profile Picture</label>
-            <input id="profile-pic-file" type="file" accept="image/*"
-                class="w-full bg-gray-100 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-            <p id="error-profile-pic" class="text-sm text-red-600 hidden">
-                Please upload a valid image.
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- G) USER SIGNUP SCREEN (Access Code → Email → Password)                        -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="user-signup-screen"
+        class="hidden flex-col items-center justify-center min-h-screen text-center space-y-4 px-4">
+        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-4">
+            <h2 class="text-2xl font-semibold text-gray-900">Sign Up with Access Code</h2>
+            <p id="signup-code-error" class="text-red-500 text-sm hidden" role="alert"></p>
+            <input id="signup-code" type="text" placeholder="Enter access code"
+                class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            <input id="signup-email" type="email" placeholder="you@example.com"
+                class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            <input id="signup-password" type="password" placeholder="Choose a password"
+                class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            <button id="signup-submit"
+                class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                Create Account
+            </button>
+            <p id="signup-success" class="text-green-600 text-sm hidden">Account created!</p>
+            <button id="signup-back" class="mt-2 text-gray-700 hover:underline focus:outline-none">
+                ← Back
+            </button>
+        </div>
+    </div>
+
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- H) WELCOME SCREEN (After Login, Before Builder)                               -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="welcome-screen"
+        class="hidden flex-col items-center justify-center min-h-screen text-center space-y-4 px-4">
+        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
+            <h2 id="welcome-text"
+                class="text-2xl font-semibold text-gray-900 opacity-0 transition-opacity duration-500">
+                <!-- Filled dynamically -->
+            </h2>
+        </div>
+    </div>
+
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- I) BUILDER FORM SCREEN (Upload Picture / Handle / Tagline / Links)            -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="form-screen" class="hidden flex-col items-center justify-start min-h-screen text-center pt-12 px-4">
+        <div class="w-full max-w-md space-y-6">
+            <h2 class="text-2xl font-semibold text-gray-900">Build Your Linktree</h2>
+            <p class="text-gray-800">
+                Upload a profile picture, add your handle, tagline, and links below.
             </p>
-        </div>
 
-        <!-- Username (@handle) -->
-        <div class="w-full max-w-lg space-y-1">
-            <label class="block text-gray-700">Username (handle)</label>
-            <input id="username" type="text" placeholder="@yourhandle"
-                class="w-full bg-gray-100 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500" />
-            <p id="error-username" class="text-sm text-red-600 hidden">
-                Handle must begin with “@” and be 3-30 characters (letters, numbers, underscores).
-            </p>
-        </div>
+            <!-- Profile Picture -->
+            <div class="flex flex-col items-start">
+                <label for="profile-pic-file" class="font-medium text-gray-700 mb-1">Profile Picture</label>
+                <input id="profile-pic-file" type="file" accept="image/*"
+                    class="w-full block text-sm text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+                <p id="error-profile-pic" class="text-red-500 text-sm hidden mt-1">Please upload a valid image.</p>
+            </div>
 
-        <!-- Tagline -->
-        <div class="w-full max-w-lg space-y-1">
-            <label class="block text-gray-700">Tagline (optional)</label>
-            <textarea id="tagline" rows="2" maxlength="100"
-                class="w-full bg-gray-100 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
-                placeholder="Tell people what you do (max 100 chars)"></textarea>
-            <p id="tagline-count" class="text-sm text-gray-600">0/100</p>
-        </div>
+            <!-- Username (Handle) -->
+            <div class="flex flex-col items-start">
+                <label for="username" class="font-medium text-gray-700 mb-1">Username (handle)</label>
+                <input id="username" type="text" placeholder="@yourhandle"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+                <p id="error-username" class="text-red-500 text-sm hidden mt-1">Please enter a valid handle (e.g.
+                    @john_doe).</p>
+            </div>
 
-        <!-- Dynamic link rows go here -->
-        <div id="links-wrapper" class="w-full max-w-lg space-y-4"></div>
+            <!-- Tagline (optional) -->
+            <div class="flex flex-col items-start">
+                <label for="tagline" class="font-medium text-gray-700 mb-1">Tagline (optional)</label>
+                <textarea id="tagline" rows="2" placeholder="Tell people what you do (max 100 chars)" maxlength="100"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400"></textarea>
+                <p id="tagline-count" class="text-gray-600 text-sm">0/100</p>
+            </div>
 
-        <!-- Add Link & Generate Buttons -->
-        <div class="w-full max-w-lg space-y-2">
+            <!-- Links Wrapper (each link row is added via JS) -->
+            <div id="links-wrapper" class="space-y-4 bg-gray-800 p-4 rounded-lg"></div>
             <button id="add-link-btn"
-                class="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition">
+                class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
                 + Add New Link
             </button>
-            <p id="error-links" class="text-sm text-red-600 hidden">
+            <p id="error-links" class="text-red-500 text-sm hidden">
                 At least one valid link is required.
             </p>
-            <button id="generate-btn" class="w-full bg-gray-600 text-gray-300 py-2 rounded-lg cursor-not-allowed"
+
+            <!-- Generate Button -->
+            <button id="generate-btn" class="w-full py-3 bg-gray-600 text-gray-300 rounded-lg cursor-not-allowed"
                 disabled>
                 Generate My Linktree
             </button>
         </div>
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- J) LOADER SCREEN (display while building) -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <div id="loader-screen" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
-        <div class="animate-spin rounded-full h-16 w-16 border-4 border-green-400 border-t-transparent"></div>
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- J) LOADER SCREEN (Spinning Icon)                                             -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="loader-screen" class="hidden flex-col items-center justify-center min-h-screen bg-gray-900 bg-opacity-50">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-green-400"></div>
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- K) LINKTREE OUTPUT SCREEN (final result) -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <div id="linktree-screen"
-        class="hidden flex-col items-center justify-start h-full overflow-auto py-8 px-4 space-y-6">
-        <img id="output-profile-pic" src="" alt="Profile" class="w-32 h-32 rounded-full object-cover mb-2 hidden" />
-        <h2 id="display-username" class="text-2xl font-semibold text-gray-900"></h2>
-        <p id="output-tagline" class="text-gray-700 text-center max-w-md"></p>
 
-        <!-- The list of link buttons -->
-        <div id="links-container" class="w-full max-w-md space-y-4"></div>
-
-        <!-- Download button -->
-        <button id="download-btn"
-            class="w-full max-w-md bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition">
-            Download Your Linktree
-        </button>
-
-        <!-- Back to Edit (NOT shown in downloaded page) -->
-        <button id="back-btn" class="mt-4 text-gray-600 hover:underline focus:outline-none">
-            ← Back to Edit
-        </button>
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- K) LINKTREE OUTPUT SCREEN (Profile + Links + Back / Download)                -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="linktree-screen" class="hidden flex-col items-center justify-center min-h-screen px-4">
+        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6">
+            <div class="flex flex-col items-center space-y-4">
+                <img id="output-profile-pic" src="" alt="Profile Picture"
+                    class="w-24 h-24 rounded-full object-cover hidden" />
+                <h1 id="display-username" class="text-xl font-semibold text-gray-900">@yourhandle</h1>
+                <p id="output-tagline" class="text-gray-700">
+                    <!-- tagline text here -->
+                </p>
+            </div>
+            <div id="links-container" class="space-y-4"></div>
+            <button id="back-btn"
+                class="w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
+                ← Back to Edit
+            </button>
+            <button id="download-btn"
+                class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                Download My Linktree
+            </button>
+        </div>
     </div>
 
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
-    <!-- L) FIREBASE + APP SCRIPT (deferred) -->
-    <!-- ──────────────────────────────────────────────────────────────────────────── -->
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- L) APP.JS (All the logic—auth, Firestore, UI flow, etc.)                      -->
+    <!--────────────────────────────────────────────────────────────────────────────────-->
     <script type="module" src="app.js"></script>
 </body>
 
