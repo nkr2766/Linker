@@ -1,6 +1,6 @@
 /* style.css */
 
-/* 1) Deep mint gradient on <body> (no Tailwind config needed) */
+/* 1) Deep mint gradient on <body> */
 body {
     margin: 0;
     padding: 0;
@@ -15,17 +15,17 @@ body {
         );
 }
 
-/* Focus outline for all interactive elements */
+/* 2) Focus outline for keyboard users */
 button:focus,
 input:focus,
 select:focus,
 a:focus {
     outline: 3px solid #34D399;
-    /* emerald green */
+    /* emerald green outline */
     outline-offset: 2px;
 }
 
-/* Thin scrollbar on form/output if desired */
+/* 3) Thinner scrollbars on form/output if you like */
 #form-screen::-webkit-scrollbar,
 #linktree-screen::-webkit-scrollbar {
     width: 6px;
