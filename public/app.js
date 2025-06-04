@@ -29,7 +29,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyDwfQcrwMCbbX6CA-_1UgelCNfVKCVTQ0A",
     authDomain: "linkerapp-9dd4d.firebaseapp.com",
     projectId: "linkerapp-9dd4d",
-    storageBucket: "linkerapp-9dd4d.firebasestorage.app",
+    storageBucket: "linkerapp-9dd4d.appspot.com",
     messagingSenderId: "1098052666181",
     appId: "1:1098052666181:web:526d045f1c8f44f59fb42c",
     measurementId: "G-LBV1P494PR"
@@ -128,7 +128,9 @@ const formTaglineCount = document.getElementById("tagline-count");
 const gradientStartInput = document.getElementById("gradient-start");
 const gradientEndInput = document.getElementById("gradient-end");
 const cardColorInput = document.getElementById("card-color");
+const cardTextColorInput = document.getElementById("card-text-color");
 const cardImageInput = document.getElementById("card-image");
+const cardImageClearBtn = document.getElementById("remove-card-image");
 const linksWrapper = document.getElementById("links-wrapper");
 const addLinkBtn = document.getElementById("add-link-btn");
 const errorLinks = document.getElementById("error-links");
@@ -191,6 +193,15 @@ function downloadBlob(filename, blob) {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+}
+
+function escapeHTML(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -482,6 +493,7 @@ function showBuilderForm(prefillData = null) {
     linkRows = [];
     profilePicDataURL = "";
     cardImageDataURL = "";
+    cardImageInput.value = "";
 
     // Hide errors
     errorProfilePic.classList.add("hidden");
@@ -499,9 +511,12 @@ function showBuilderForm(prefillData = null) {
         gradientStartInput.value = prefillData.gradientStart || "#a7f3d0";
         gradientEndInput.value = prefillData.gradientEnd || "#6ee7b7";
         cardColorInput.value = prefillData.cardColor || "#ffffff";
+        cardTextColorInput.value = prefillData.cardTextColor || "#111827";
         if (prefillData.cardImage) {
             cardImageDataURL = prefillData.cardImage;
         }
+        cardImageInput.value = "";
+
 
         (prefillData.links || []).forEach((link) => addLinkRow(link));
     } else {
@@ -511,7 +526,9 @@ function showBuilderForm(prefillData = null) {
         gradientStartInput.value = "#a7f3d0";
         gradientEndInput.value = "#6ee7b7";
         cardColorInput.value = "#ffffff";
-        addLinkRow();
+        cardTextColorInput.value = "#111827";
+        cardImageInput.value = "";
+
     }
     updateGenerateButtonState();
 }
@@ -567,7 +584,7 @@ function addLinkRow(prefill = null) {
     // 5) Delete button
     const deleteBtn = document.createElement("button");
     deleteBtn.type = "button";
-    deleteBtn.innerHTML = '<i class="fa fa-trash text-red-500"></i>';
+    deleteBtn.innerHTML = '<i class="fa fa-trash text-red-500" aria-hidden="true"></i>';
     deleteBtn.setAttribute("aria-label", "Remove this link");
     deleteBtn.className = "mt-2 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-full";
     deleteBtn.addEventListener("click", () => {
@@ -583,7 +600,7 @@ function addLinkRow(prefill = null) {
     // 6) Move Up button
     const moveUpBtn = document.createElement("button");
     moveUpBtn.type = "button";
-    moveUpBtn.innerHTML = '<i class="fa fa-arrow-up"></i>';
+    moveUpBtn.innerHTML = '<i class="fa fa-arrow-up" aria-hidden="true"></i>';
     moveUpBtn.setAttribute("aria-label", "Move this link up");
     moveUpBtn.className =
         "ml-2 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
@@ -598,7 +615,7 @@ function addLinkRow(prefill = null) {
     // 7) Move Down button
     const moveDownBtn = document.createElement("button");
     moveDownBtn.type = "button";
-    moveDownBtn.innerHTML = '<i class="fa fa-arrow-down"></i>';
+    moveDownBtn.innerHTML = '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
     moveDownBtn.setAttribute("aria-label", "Move this link down");
     moveDownBtn.className =
         "ml-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
@@ -725,6 +742,12 @@ cardImageInput.addEventListener("change", () => {
     }
 });
 
+cardImageClearBtn.addEventListener("click", () => {
+    cardImageDataURL = "";
+    cardImageInput.value = "";
+});
+
+
 // Username validation on blur
 formUsernameInput.addEventListener("blur", () => {
     let val = formUsernameInput.value.trim();
@@ -789,6 +812,7 @@ generateBtn.addEventListener("click", async (e) => {
         gradientStart: gradientStartInput.value,
         gradientEnd: gradientEndInput.value,
         cardColor: cardColorInput.value,
+        cardTextColor: cardTextColorInput.value,
         cardImage: cardImageDataURL,
         links: linkRows.map((r) => ({
             label: r.labelInput.value.trim(),
@@ -832,6 +856,10 @@ function renderOutput(data) {
         outputTagline.classList.add("hidden");
     }
 
+    const textColor = data.cardTextColor || "#111827";
+    displayUsername.style.color = textColor;
+    outputTagline.style.color = textColor;
+
     displayUsername.textContent = data.username || "@yourhandle";
 
     linksContainer.innerHTML = "";
@@ -842,7 +870,13 @@ function renderOutput(data) {
             btn.target = "_blank";
             btn.className =
                 "flex items-center justify-center bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-400";
-            btn.innerHTML = `<i class="fa ${link.icon} mr-2"></i><span>${link.label}</span>`;
+            const icon = document.createElement("i");
+            icon.className = `fa ${link.icon} mr-2`;
+            icon.setAttribute("aria-hidden", "true");
+            const span = document.createElement("span");
+            span.textContent = link.label;
+            btn.appendChild(icon);
+            btn.appendChild(span);
             linksContainer.appendChild(btn);
         }
     });
@@ -866,11 +900,12 @@ downloadBtn.addEventListener("click", () => {
     if (!data || !data.links || data.links.length === 0) return;
 
     const safeUsername = data.username.replace("@", "") || "linker";
-    const safeTagline = data.tagline || "";
+    const safeTagline = escapeHTML(data.tagline || "");
     const safePic = data.profilePic || "";
     const bgColorStart = data.gradientStart || "#a7f3d0";
     const bgColorEnd = data.gradientEnd || "#6ee7b7";
     const cardColor = data.cardColor || "#ffffff";
+    const textColor = data.cardTextColor || "#111827";
     const cardImage = data.cardImage || "";
 
     // Build minimal HTML
@@ -879,7 +914,7 @@ downloadBtn.addEventListener("click", () => {
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${data.username}’s Linktree</title>
+<title>${escapeHTML(data.username)}’s Linktree</title>
 <style>
   body {
     margin: 0;
@@ -912,12 +947,12 @@ downloadBtn.addEventListener("click", () => {
   h1 {
     margin: 0 0 8px 0;
     font-size: 1.5rem;
-    color: #111827;
+    color: ${textColor};
   }
   p.tag {
     margin: 0 0 16px 0;
     font-size: 1rem;
-    color: #4b5563;
+    color: ${textColor};
   }
   .link-btn {
     display: block;
@@ -951,12 +986,12 @@ downloadBtn.addEventListener("click", () => {
 <body>
   <div class="card">
     ${safePic ? `<img src="${safePic}" alt="Profile picture" class="profile" />` : ""}
-    <h1>${data.username}</h1>
+    <h1>${escapeHTML(data.username)}</h1>
     ${safeTagline ? `<p class="tag">${safeTagline}</p>` : ""}
     ${data.links
             .map(
                 (link) =>
-                    `<a href="${link.url}" target="_blank" class="link-btn"><i class="fa ${link.icon}"></i>${link.label}</a>`
+                    `<a href="${escapeHTML(link.url)}" target="_blank" class="link-btn"><i class="fa ${link.icon}" aria-hidden="true"></i>${escapeHTML(link.label)}</a>`
             )
             .join("\n    ")}
   </div>
