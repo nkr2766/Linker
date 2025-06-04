@@ -15,9 +15,17 @@ body {
         );
 }
 
-/* 2) If you want to override any other Tailwind utility, add it here. */
+/* Focus outline for all interactive elements */
+button:focus,
+input:focus,
+select:focus,
+a:focus {
+    outline: 3px solid #34D399;
+    /* emerald green */
+    outline-offset: 2px;
+}
 
-/* Example: Make scrollbars thinner on the form/output screens */
+/* Thin scrollbar on form/output if desired */
 #form-screen::-webkit-scrollbar,
 #linktree-screen::-webkit-scrollbar {
     width: 6px;
