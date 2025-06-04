@@ -1,12 +1,11 @@
 // app.js
-// Firebase (modular) + Emulators (Auth & Firestore) + Linktree Builder
+// Linker: Firestore + Auth emulators, login/signup flows, builder, download
 
 // ───────────────────────────────────────────────────────────────────────────────
-// A) FIREBASE IMPORTS
+// A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
-
 import {
     getAuth,
     signInWithEmailAndPassword,
@@ -15,7 +14,6 @@ import {
     signOut,
     connectAuthEmulator
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-auth.js";
-
 import {
     getFirestore,
     doc,
@@ -27,10 +25,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 // ───────────────────────────────────────────────────────────────────────────────
-// B) FIREBASE CONFIGURATION
+// B) FIREBASE CONFIGURATION (copy/paste from Console → Project Settings)
 // ───────────────────────────────────────────────────────────────────────────────
-
-// Paste your Firebase config exactly as you copied from the console:
 const firebaseConfig = {
     apiKey: "AIzaSyDwfQcrwMCbbX6CA-_1UgelCNfVKCVTQ0A",
     authDomain: "linkerapp-9dd4d.firebaseapp.com",
@@ -41,24 +37,20 @@ const firebaseConfig = {
     measurementId: "G-LBV1P494PR"
 };
 
-// Initialize Firebase App, Analytics, Auth, Firestore
+// Initialize App
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 // ───────────────────────────────────────────────────────────────────────────────
-// C) EMULATOR CONFIGURATION (only for local testing)
+// C) CONNECT TO EMULATORS WHEN RUNNING LOCALLY (localhost OR 127.0.0.1)
 // ───────────────────────────────────────────────────────────────────────────────
-
-// We want to connect to the local emulators whenever we’re running on localhost or 127.0.0.1.
-// That way, your “Generate Access Code” and “Sign Up” writes go to the emulator instead of production.
-
 const hostname = location.hostname;
 if (
     hostname === "localhost" ||
     hostname === "127.0.0.1" ||
-    hostname === "::1"    // in case IPv6 loopback is used
+    hostname === "::1"
 ) {
     console.log("⚙️  Connecting to Firebase emulators…");
     connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
@@ -68,28 +60,31 @@ if (
 // ───────────────────────────────────────────────────────────────────────────────
 // D) CONSTANTS & STATE
 // ───────────────────────────────────────────────────────────────────────────────
-
-// The only “Admin” user allowed to create/delete codes:
+// Admin credentials (must match your Firestore Auth user in emulator/production)
 const ADMIN_EMAIL = "admin@linkerapp.com";
 const ADMIN_PASSWORD = "?616811Nt";
 
-// localStorage key for saving the built Linktree data
+// Key for localStorage
 const STORAGE_KEY_LINKTREE = "linkerLinktreeData";
+
+// State for dynamic link rows
+let linkRows = [];
+let profilePicDataURL = "";
 
 // ───────────────────────────────────────────────────────────────────────────────
 // E) UI ELEMENT REFERENCES
 // ───────────────────────────────────────────────────────────────────────────────
 
-// 0) Reset button (clear localStorage + sign out)
+// 1) Reset
 const resetBtn = document.getElementById("reset-btn");
 
-// 1) Login / Signup screen
+// 2) Login landing
 const loginScreen = document.getElementById("login-screen");
 const btnAdminLogin = document.getElementById("btn-admin-login");
 const btnUserLogin = document.getElementById("btn-user-login");
 const btnUseAccessCode = document.getElementById("btn-use-access-code");
 
-// 2) Admin login form
+// 3) Admin login
 const adminLoginScreen = document.getElementById("admin-login-screen");
 const adminEmailInput = document.getElementById("admin-email");
 const adminPasswordInput = document.getElementById("admin-password");
@@ -97,7 +92,7 @@ const adminError = document.getElementById("admin-error");
 const adminLoginSubmit = document.getElementById("admin-login-submit");
 const adminLoginBack = document.getElementById("admin-login-back");
 
-// 3) Admin panel
+// 4) Admin panel
 const adminPanel = document.getElementById("admin-panel");
 const newAccessCodeInput = document.getElementById("new-access-code");
 const createCodeBtn = document.getElementById("create-code-btn");
@@ -105,7 +100,7 @@ const adminCodeSuccess = document.getElementById("admin-code-success");
 const adminBuildFormBtn = document.getElementById("admin-build-form");
 const adminLogoutBtn = document.getElementById("admin-logout");
 
-// 4) User login form
+// 5) User login
 const userLoginScreen = document.getElementById("user-login-screen");
 const userEmailInput = document.getElementById("user-email");
 const userPasswordInput = document.getElementById("user-password");
@@ -113,7 +108,7 @@ const userError = document.getElementById("user-error");
 const userLoginSubmit = document.getElementById("user-login-submit");
 const userLoginBack = document.getElementById("user-login-back");
 
-// 5) User signup form (with Access Code)
+// 6) User signup
 const userSignupScreen = document.getElementById("user-signup-screen");
 const signupCodeInput = document.getElementById("signup-code");
 const signupEmailInput = document.getElementById("signup-email");
@@ -123,28 +118,27 @@ const signupSuccess = document.getElementById("signup-success");
 const signupSubmit = document.getElementById("signup-submit");
 const signupBackBtn = document.getElementById("signup-back");
 
-// 6) Welcome animation screen
+// 7) Welcome (post-login)
 const welcomeScreen = document.getElementById("welcome-screen");
 const welcomeText = document.getElementById("welcome-text");
 
-// 7) Builder form (Linktree form)
+// 8) Builder form
 const formScreen = document.getElementById("form-screen");
 const profilePicFileInput = document.getElementById("profile-pic-file");
-const formUsernameInput = document.getElementById("username"); // “@handle”
+const formUsernameInput = document.getElementById("username");
 const formTaglineInput = document.getElementById("tagline");
 const formTaglineCount = document.getElementById("tagline-count");
 const linksWrapper = document.getElementById("links-wrapper");
 const addLinkBtn = document.getElementById("add-link-btn");
 const generateBtn = document.getElementById("generate-btn");
-const bypassBtn = document.getElementById("bypass-btn");
 const errorProfilePic = document.getElementById("error-profile-pic");
 const errorUsername = document.getElementById("error-username");
 const errorLinks = document.getElementById("error-links");
 
-// 8) Loader screen
+// 9) Loader screen
 const loaderScreen = document.getElementById("loader-screen");
 
-// 9) Linktree output screen
+// 10) Output (Linktree) screen
 const linktreeScreen = document.getElementById("linktree-screen");
 const outputProfilePic = document.getElementById("output-profile-pic");
 const outputTagline = document.getElementById("output-tagline");
@@ -153,20 +147,16 @@ const linksContainer = document.getElementById("links-container");
 const backBtn = document.getElementById("back-btn");
 const downloadBtn = document.getElementById("download-btn");
 
-// State for builder (keeps an array of { container, labelInput, iconSelect, urlInput, errorText })
-let linkRows = [];
-let profilePicDataURL = "";
-
 // ───────────────────────────────────────────────────────────────────────────────
 // F) UTILITY FUNCTIONS
 // ───────────────────────────────────────────────────────────────────────────────
 
-// 1) Validate “@handle”: must start with “@”, 3–30 characters long, alphanumeric or underscore
+// 1) Validate handle: must start with "@" and be 3–30 chars (letters, numbers, underscore)
 function isValidHandle(u) {
     return /^@[A-Za-z0-9_]{2,29}$/.test(u);
 }
 
-// 2) Validate URLs
+// 2) Validate a URL
 function isValidURL(url) {
     try {
         const u = new URL(url);
@@ -176,12 +166,12 @@ function isValidURL(url) {
     }
 }
 
-// 3) Delay helper (ms)
+// 3) Delay (ms)
 function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// 4) Hide all “screens”/<div> overlays
+// 4) Hide all screens by toggling .hidden / .flex
 function hideAllScreens() {
     [
         loginScreen,
@@ -199,27 +189,39 @@ function hideAllScreens() {
     });
 }
 
-// ───────────────────────────────────────────────────────────────────────────────
-// G) INITIAL ENTRY POINT: Check Auth State
-// ───────────────────────────────────────────────────────────────────────────────
+// 5) Cleanly trigger a download of a Blob
+function downloadBlob(filename, blob) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
 
+// ───────────────────────────────────────────────────────────────────────────────
+// G) INITIALIZE APP: Listen for Auth State Changes
+// ───────────────────────────────────────────────────────────────────────────────
 function initApp() {
     onAuthStateChanged(auth, async (firebaseUser) => {
         if (!firebaseUser) {
-            // No one is signed in → show the main Login screen
+            // No one signed in → landing
             hideAllScreens();
             loginScreen.classList.remove("hidden");
             loginScreen.classList.add("flex");
+            resetBtn.classList.add("hidden");
         } else {
-            // Someone is signed in → check if they are Admin
+            // Someone is signed in → check if Admin
             const email = firebaseUser.email.toLowerCase();
             if (email === ADMIN_EMAIL.toLowerCase()) {
-                // Admin user → show Admin Panel
                 showAdminPanel();
+                resetBtn.classList.remove("hidden");
             } else {
-                // Regular user → go into the “startAppFlow” path
                 hideAllScreens();
-                startAppFlow();
+                resetBtn.classList.remove("hidden");
+                startAppFlow(firebaseUser.email);
             }
         }
     });
@@ -227,10 +229,8 @@ function initApp() {
 initApp();
 
 // ───────────────────────────────────────────────────────────────────────────────
-// H) LOGIN / SIGNUP SCREEN BUTTONS
+// H) LOGIN / SIGNUP BUTTON HANDLERS (Landing screen)
 // ───────────────────────────────────────────────────────────────────────────────
-
-// 1) When “Admin Login” is clicked on the first screen:
 btnAdminLogin.addEventListener("click", () => {
     hideAllScreens();
     adminLoginScreen.classList.remove("hidden");
@@ -239,8 +239,6 @@ btnAdminLogin.addEventListener("click", () => {
     adminEmailInput.value = "";
     adminPasswordInput.value = "";
 });
-
-// 2) When “User Login” is clicked on the first screen:
 btnUserLogin.addEventListener("click", () => {
     hideAllScreens();
     userLoginScreen.classList.remove("hidden");
@@ -249,8 +247,6 @@ btnUserLogin.addEventListener("click", () => {
     userEmailInput.value = "";
     userPasswordInput.value = "";
 });
-
-// 3) When “Sign Up with Access Code” is clicked on the first screen:
 btnUseAccessCode.addEventListener("click", () => {
     hideAllScreens();
     userSignupScreen.classList.remove("hidden");
@@ -263,22 +259,19 @@ btnUseAccessCode.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// I) ADMIN LOGIN LOGIC (Firebase Auth)
+// I) ADMIN LOGIN LOGIC (Email/Password + Firestore Auth)
 // ───────────────────────────────────────────────────────────────────────────────
-
 adminLoginSubmit.addEventListener("click", async () => {
     const email = adminEmailInput.value.trim().toLowerCase();
     const pass = adminPasswordInput.value.trim();
-
     if (email === ADMIN_EMAIL.toLowerCase() && pass === ADMIN_PASSWORD) {
         try {
-            // Sign in as Admin (this user must exist in Auth emulator or production)
             await signInWithEmailAndPassword(auth, email, pass);
             hideAllScreens();
             showAdminPanel();
         } catch (err) {
-            console.error("Firebase admin signIn error:", err);
-            adminError.textContent = "Auth error—check console.";
+            console.error("Admin signIn error:", err);
+            adminError.textContent = "Authentication error—check the console.";
             adminError.classList.remove("hidden");
         }
     } else {
@@ -286,7 +279,6 @@ adminLoginSubmit.addEventListener("click", async () => {
         adminError.classList.remove("hidden");
     }
 });
-
 adminLoginBack.addEventListener("click", () => {
     hideAllScreens();
     loginScreen.classList.remove("hidden");
@@ -294,9 +286,8 @@ adminLoginBack.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// J) ADMIN PANEL LOGIC (Firestore: Create/Delete Access Codes)
+// J) SHOW ADMIN PANEL (upon successful login)
 // ───────────────────────────────────────────────────────────────────────────────
-
 async function showAdminPanel() {
     hideAllScreens();
     adminPanel.classList.remove("hidden");
@@ -305,20 +296,16 @@ async function showAdminPanel() {
     adminCodeSuccess.classList.add("hidden");
 }
 
-// When the Admin clicks “Generate Access Code”
+// Generate or re-generate an Access Code
 createCodeBtn.addEventListener("click", async () => {
     const code = newAccessCodeInput.value.trim();
     if (!code) return;
-
-    // Build a reference to /codes/{code}
     const docRef = doc(db, "codes", code);
     const docSnap = await getDoc(docRef);
-
     if (docSnap.exists()) {
         adminCodeSuccess.textContent = `Code “${code}” already exists.`;
         adminCodeSuccess.classList.remove("hidden");
     } else {
-        // Create that document (with a timestamp field)
         await setDoc(docRef, { createdAt: serverTimestamp() });
         adminCodeSuccess.textContent = `Code “${code}” created!`;
         adminCodeSuccess.classList.remove("hidden");
@@ -326,47 +313,46 @@ createCodeBtn.addEventListener("click", async () => {
     newAccessCodeInput.value = "";
 });
 
-// When the Admin clicks “Build Form (Go to Builder)”
+// Build form (go to builder) after admin logs in
 adminBuildFormBtn.addEventListener("click", () => {
     hideAllScreens();
-    startAppFlow();
+    startAppFlow(ADMIN_EMAIL);
 });
 
-// Admin Logout
+// Admin sign out
 adminLogoutBtn.addEventListener("click", async () => {
     try {
         await signOut(auth);
         hideAllScreens();
         loginScreen.classList.remove("hidden");
         loginScreen.classList.add("flex");
+        resetBtn.classList.add("hidden");
     } catch (err) {
         console.error("Error signing out admin:", err);
     }
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// K) USER LOGIN LOGIC (Firebase Auth)
+// K) USER LOGIN LOGIC (Email/Password + Firestore Auth)
 // ───────────────────────────────────────────────────────────────────────────────
-
 userLoginSubmit.addEventListener("click", async () => {
     const email = userEmailInput.value.trim().toLowerCase();
     const pass = userPasswordInput.value.trim();
     if (!email || !pass) {
-        userError.textContent = "Email and password are required.";
+        userError.textContent = "Email & password are required.";
         userError.classList.remove("hidden");
         return;
     }
     try {
         await signInWithEmailAndPassword(auth, email, pass);
         hideAllScreens();
-        startAppFlow();
+        startAppFlow(email);
     } catch (err) {
         console.error("User login error:", err);
         userError.textContent = "Invalid email or password.";
         userError.classList.remove("hidden");
     }
 });
-
 userLoginBack.addEventListener("click", () => {
     hideAllScreens();
     loginScreen.classList.remove("hidden");
@@ -374,52 +360,47 @@ userLoginBack.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// L) USER SIGNUP LOGIC (Access Code → Firebase Auth)
+// L) USER SIGNUP LOGIC (Access Code → Create Auth User → Delete Code)
 // ───────────────────────────────────────────────────────────────────────────────
-
 signupSubmit.addEventListener("click", async () => {
     const code = signupCodeInput.value.trim();
     const email = signupEmailInput.value.trim().toLowerCase();
     const pass = signupPasswordInput.value.trim();
 
-    // 1) All fields required
     if (!code || !email || !pass) {
         signupCodeError.textContent = "All fields are required.";
         signupCodeError.classList.remove("hidden");
         return;
     }
 
-    // 2) Check Access Code in Firestore (/codes/{code})
+    // Check code in Firestore
     const docRef = doc(db, "codes", code);
     const docSnap = await getDoc(docRef);
-
     if (!docSnap.exists()) {
         signupCodeError.textContent = "Invalid or expired access code.";
         signupCodeError.classList.remove("hidden");
         return;
     }
 
-    // 3) Create the Firebase Auth user
+    // Create Auth user
     try {
         await createUserWithEmailAndPassword(auth, email, pass);
-
-        // 4) Consume (delete) the access code document
+        // Delete the code so it can’t be reused
         await deleteDoc(docRef);
-
-        // 5) Show success & redirect to Builder
         signupCodeError.classList.add("hidden");
         signupSuccess.classList.remove("hidden");
+
+        // After a short delay, proceed to builder
         setTimeout(() => {
             hideAllScreens();
-            startAppFlow();
+            startAppFlow(email);
         }, 1200);
     } catch (err) {
         console.error("Error creating user:", err);
-        signupCodeError.textContent = "Signup failed—email may already be in use.";
+        signupCodeError.textContent = "Signup failed—maybe email is already used.";
         signupCodeError.classList.remove("hidden");
     }
 });
-
 signupBackBtn.addEventListener("click", () => {
     hideAllScreens();
     loginScreen.classList.remove("hidden");
@@ -427,42 +408,38 @@ signupBackBtn.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// M) MAIN APP FLOW: Welcome → Builder or Skip To Output
+// M) MAIN APP FLOW (Welcome animation → Builder or Skip if saved)              |
+//    - Upon login (Admin or User), display a "Thank you for logging in" text,  |
+//      then fade it away, then show the Builder form (unless data exists)       |
 // ───────────────────────────────────────────────────────────────────────────────
-
-async function startAppFlow() {
+async function startAppFlow(currentEmail) {
     hideAllScreens();
     welcomeScreen.classList.remove("hidden");
     welcomeScreen.classList.add("flex");
 
-    const firebaseUser = auth.currentUser;
-    const isAdmin = firebaseUser && firebaseUser.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-
+    // Choose an inspiring welcome message
+    const isAdmin = currentEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase();
     welcomeText.textContent = isAdmin
-        ? `Hello Admin! Build your Linktree.`
-        : `Welcome, ${firebaseUser.email}! Let's build your Linktree.`;
+        ? `Thank you for logging in, Admin. Let’s build your Linktree next!`
+        : `Thank you for logging in, ${currentEmail}! Let’s build your Linktree!`;
 
-    // Fade‐in then fade‐up‐out
-    welcomeText.classList.remove("opacity-0", "fade-up-out");
-    welcomeText.classList.add("fade-in");
+    // Fade the welcome text in & out
+    welcomeText.classList.remove("opacity-0");
     await delay(2500);
-    welcomeText.classList.remove("fade-in");
-    welcomeText.classList.add("fade-up-out");
-    await delay(2500);
+    welcomeText.classList.add("opacity-0");
 
-    // Check localStorage for saved Linktree data
+    // Check localStorage for a saved Linktree
     const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "null");
     if (savedData) {
         skipToOutput(savedData);
     } else {
-        showBuilderForm(null);
+        showBuilderForm(savedData);
     }
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// N) BUILDER FORM (Linktree) – Prefill if Saved
+// N) BUILDER FORM: display form, optionally prefill from previous data         |
 // ───────────────────────────────────────────────────────────────────────────────
-
 function showBuilderForm(prefillData = null) {
     hideAllScreens();
     formScreen.classList.remove("hidden");
@@ -479,30 +456,29 @@ function showBuilderForm(prefillData = null) {
     errorLinks.classList.add("hidden");
 
     if (prefillData) {
-        // Prefill profile picture
+        // Prefill all fields
         if (prefillData.profilePic) {
             profilePicDataURL = prefillData.profilePic;
         }
         formUsernameInput.value = prefillData.username || "";
         formTaglineInput.value = prefillData.tagline || "";
         formTaglineCount.textContent = `${prefillData.tagline?.length || 0}/100`;
-        (prefillData.links || []).forEach((link) => {
-            addLinkRow(link);
-        });
+        (prefillData.links || []).forEach((link) => addLinkRow(link));
     } else {
-        // Default to one blank link row
-        addLinkRow();
+        // Start with one blank row
         formUsernameInput.value = "";
         formTaglineInput.value = "";
         formTaglineCount.textContent = "0/100";
+        addLinkRow();
     }
     updateGenerateButtonState();
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// O) ADD A LINK ROW (with optional prefill)
+// O) ADD A LINK ROW (Dynamic)                                                     |
+//    - Each row has: Label, Icon select, URL input, URL error text, Delete, Up/Down |
+//    - Prefill optional                                                          │
 // ───────────────────────────────────────────────────────────────────────────────
-
 function addLinkRow(prefill = null) {
     const rowIndex = linkRows.length;
     const rowDiv = document.createElement("div");
@@ -594,7 +570,7 @@ function addLinkRow(prefill = null) {
         }
     });
 
-    // Drag & Drop (optional reordering)
+    // Drag & Drop behavior
     rowDiv.addEventListener("dragstart", (e) => {
         e.dataTransfer.setData("text/plain", linkRows.findIndex((r) => r.container === rowDiv));
         e.dataTransfer.effectAllowed = "move";
@@ -619,7 +595,7 @@ function addLinkRow(prefill = null) {
         }
     });
 
-    // Prefill fields if “prefill” was passed in
+    // Prefill if requested
     if (prefill) {
         labelInput.value = prefill.label || "";
         if (prefill.icon) iconSelect.value = prefill.icon;
@@ -629,7 +605,7 @@ function addLinkRow(prefill = null) {
         }
     }
 
-    // URL validation (debounced)
+    // URL validation (with a short debounce)
     let debounceTimer;
     urlInput.addEventListener("input", () => {
         clearTimeout(debounceTimer);
@@ -648,7 +624,7 @@ function addLinkRow(prefill = null) {
         }, 100);
     });
 
-    // Append everything in order
+    // Build row DOM
     rowDiv.appendChild(labelInput);
     rowDiv.appendChild(iconSelect);
     rowDiv.appendChild(urlInput);
@@ -656,15 +632,14 @@ function addLinkRow(prefill = null) {
     rowDiv.appendChild(deleteBtn);
     rowDiv.appendChild(moveUpBtn);
     rowDiv.appendChild(moveDownBtn);
-    linksWrapper.appendChild(rowDiv);
 
+    linksWrapper.appendChild(rowDiv);
     linkRows.push({ container: rowDiv, labelInput, iconSelect, urlInput, errorText });
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
 // P) “+ Add New Link” Button
 // ───────────────────────────────────────────────────────────────────────────────
-
 addLinkBtn.addEventListener("click", () => {
     if (linkRows.length < 10) {
         addLinkRow();
@@ -677,7 +652,7 @@ addLinkBtn.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// Q) INPUT VALIDATIONS & FILE UPLOAD (Builder Form)
+// Q) VALIDATE INPUTS & ENABLE / DISABLE “Generate”
 // ───────────────────────────────────────────────────────────────────────────────
 
 // Profile picture upload
@@ -697,10 +672,10 @@ profilePicFileInput.addEventListener("change", () => {
     updateGenerateButtonState();
 });
 
-// Username (@handle) validation on blur
+// Username validation on blur (auto-prepend “@”)
 formUsernameInput.addEventListener("blur", () => {
     let val = formUsernameInput.value.trim();
-    if (!val.startsWith("@")) {
+    if (!val.startsWith("@") && val.length > 0) {
         val = "@" + val;
         formUsernameInput.value = val;
     }
@@ -716,7 +691,7 @@ formUsernameInput.addEventListener("blur", () => {
     updateGenerateButtonState();
 });
 
-// Tagline character counter
+// Tagline count
 formTaglineInput.addEventListener("input", () => {
     formTaglineCount.textContent = `${formTaglineInput.value.length}/100`;
 });
@@ -748,13 +723,13 @@ function updateGenerateButtonState() {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// R) “Generate My Linktree” → Show Loader → Show Output
+// R) “Generate My Linktree” → SHOW LOADER → RENDER OUTPUT                          |
 // ───────────────────────────────────────────────────────────────────────────────
-
 generateBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     hideAllScreens();
 
+    // Build data object
     const data = {
         profilePic: profilePicDataURL,
         username: formUsernameInput.value.trim(),
@@ -765,49 +740,24 @@ generateBtn.addEventListener("click", async (e) => {
             url: r.urlInput.value.trim()
         }))
     };
+    // Persist to localStorage
     localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(data));
 
+    // Show loader
     loaderScreen.classList.remove("hidden");
     loaderScreen.classList.add("flex");
-
     await delay(300);
     loaderScreen.classList.add("hidden");
     loaderScreen.classList.remove("flex");
+
     renderOutput(data);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// S) “Bypass (Testing)” Button
+// S) RENDER OUTPUT (in-app Linktree with Download + Back-to-Edit)                 |
 // ───────────────────────────────────────────────────────────────────────────────
-
-bypassBtn.addEventListener("click", () => {
-    hideAllScreens();
-    const placeholderData = {
-        profilePic: "",
-        username: "@testuser",
-        tagline: "",
-        links: [
-            { label: "Website", icon: "fa-globe", url: "https://example.com" },
-            { label: "Instagram", icon: "fa-instagram", url: "https://instagram.com" },
-            { label: "GitHub", icon: "fa-github", url: "https://github.com" }
-        ]
-    };
-    localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(placeholderData));
-    loaderScreen.classList.remove("hidden");
-    loaderScreen.classList.add("flex");
-    setTimeout(() => {
-        loaderScreen.classList.add("hidden");
-        loaderScreen.classList.remove("flex");
-        renderOutput(placeholderData);
-    }, 300);
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// T) RENDER OUTPUT (Linktree) & “Back to Edit”
-// ───────────────────────────────────────────────────────────────────────────────
-
 function renderOutput(data) {
-    // Profile picture
+    // Profile pic
     if (data.profilePic) {
         outputProfilePic.src = data.profilePic;
         outputProfilePic.classList.remove("hidden");
@@ -834,7 +784,7 @@ function renderOutput(data) {
             btn.href = link.url;
             btn.target = "_blank";
             btn.className =
-                "flex flex-wrap items-center justify-center bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-400";
+                "flex items-center justify-center bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-400";
             btn.innerHTML = `<i class="fa ${link.icon} mr-2"></i><span>${link.label}</span>`;
             linksContainer.appendChild(btn);
         }
@@ -845,15 +795,126 @@ function renderOutput(data) {
     linktreeScreen.classList.add("flex");
 }
 
+// Back to Edit
 backBtn.addEventListener("click", () => {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "{}");
     showBuilderForm(saved);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// U) SKIP‐TO‐OUTPUT (on revisit)
+// T) DOWNLOAD: Generate a standalone HTML file with just the Linktree itself   |
 // ───────────────────────────────────────────────────────────────────────────────
+downloadBtn.addEventListener("click", () => {
+    const data = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "{}");
+    if (!data || !data.links || data.links.length === 0) return;
 
+    // Build a minimal standalone HTML
+    const safeUsername = data.username || "@yourhandle";
+    const safeTagline = data.tagline || "";
+    const safePic = data.profilePic || "";
+    const bgColorStart = "#a7f3d0"; // Tailwind’s green-200
+    const bgColorEnd = "#6ee7b7"; // Tailwind’s green-300
+
+    // Build <head> with inline CSS for a similar look
+    const outputHtml = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>${safeUsername}’s Linktree</title>
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: "Inter", sans-serif;
+    background: linear-gradient(to bottom right, ${bgColorStart}, ${bgColorEnd});
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  .card {
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 32px;
+    text-align: center;
+    max-width: 360px;
+    width: 90%;
+  }
+  img.profile {
+    width: 128px;
+    height: 128px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 16px;
+  }
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 1.5rem;
+    color: #111827;
+  }
+  p.tag {
+    margin: 0 0 16px 0;
+    font-size: 1rem;
+    color: #4b5563;
+  }
+  .link-btn {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+    padding: 12px 16px;
+    background-color: #10b981; /* emerald-500 */
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: background-color 0.2s ease-in-out;
+  }
+  .link-btn:hover {
+    background-color: #059669; /* emerald-600 */
+  }
+  .link-btn i {
+    margin-right: 8px;
+  }
+</style>
+<link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  integrity="sha512-papZHh3cY3VpsQa0bpo0uZtBi8gm38UH3rzZBZagh1SWlDwptG25pbLBO0e4XgbV4QYxRo/mOZxjwRF+dc+0Fg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+/>
+</head>
+<body>
+  <div class="card">
+    ${safePic
+            ? `<img src="${safePic}" alt="Profile picture" class="profile" />`
+            : ``
+        }
+    <h1>${safeUsername}</h1>
+    ${safeTagline ? `<p class="tag">${safeTagline}</p>` : ``}
+    ${data.links
+            .map(
+                (link) =>
+                    `<a href="${link.url}" target="_blank" class="link-btn"><i class="fa ${link.icon}"></i>${link.label}</a>`
+            )
+            .join("\n    ")}
+  </div>
+</body>
+</html>`;
+
+    // Create a Blob and trigger download
+    const blob = new Blob([outputHtml], { type: "text/html" });
+    const filename = `${safeUsername.replace("@", "")}-linktree.html`;
+    downloadBlob(filename, blob);
+});
+
+// ───────────────────────────────────────────────────────────────────────────────
+// U) “Skip to Output” (if data already exists in localStorage)
+// ───────────────────────────────────────────────────────────────────────────────
 function skipToOutput(data) {
     loaderScreen.classList.remove("hidden");
     loaderScreen.classList.add("flex");
@@ -865,9 +926,8 @@ function skipToOutput(data) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// V) RESET BUTTON (Clear localStorage + signOut)
+// V) RESET: Clear Storage + Sign Out + Reload
 // ───────────────────────────────────────────────────────────────────────────────
-
 resetBtn.addEventListener("click", async () => {
     localStorage.removeItem(STORAGE_KEY_LINKTREE);
     try {

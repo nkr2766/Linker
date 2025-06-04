@@ -1,62 +1,89 @@
 /* style.css */
 
-/* 1) Deep‐mint gradient on <body> + full‐screen flex centering */
-body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-    background: linear-gradient(to bottom,
-            #a0d9b5,
-            /* deeper mint top */
-            #b1eacb,
-            /* lighter mint center */
-            #a0d9b5
-            /* deeper mint bottom */
-        );
-    display: flex;
-    align-items: center;
-    justify-content: center;
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* A) ANIMATIONS for the startup screen “Welcome to Linker”                    */
+/* ──────────────────────────────────────────────────────────────────────────── */
+@keyframes fade-in-out {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    10% {
+        opacity: 1;
+        transform: scale(1.0);
+    }
+
+    80% {
+        opacity: 1;
+        transform: scale(1.0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.2);
+    }
 }
 
-/* 2) Visible focus outline for accessibility */
-button:focus,
-input:focus,
-select:focus,
-a:focus {
-    outline: 3px solid #34D399;
-    /* emerald green */
-    outline-offset: 2px;
+.animate-fade-in-out {
+    animation: fade-in-out 3s ease-in-out forwards;
 }
 
-/* 3) Thinner scrollbars if you’d like */
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* B) UTILITY to hide elements (we toggle “hidden”/“flex” in JS)              */
+/* ──────────────────────────────────────────────────────────────────────────── */
+.hidden {
+    display: none !important;
+}
+
+.flex {
+    display: flex !important;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* C) CUSTOM SCROLLBAR for the builder panel and output (optional “slick” look) */
+/* ──────────────────────────────────────────────────────────────────────────── */
 #form-screen::-webkit-scrollbar,
-#linktree-screen::-webkit-scrollbar {
-    width: 6px;
+#linktree-screen::-webkit-scrollbar,
+#admin-panel::-webkit-scrollbar {
+    width: 8px;
 }
 
 #form-screen::-webkit-scrollbar-thumb,
-#linktree-screen::-webkit-scrollbar-thumb {
+#linktree-screen::-webkit-scrollbar-thumb,
+#admin-panel::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
+    border-radius: 4px;
 }
 
-/* 4) Make sure each “full‐screen” overlay truly covers 100% on mobile */
-#login-screen,
-#admin-login-screen,
-#admin-panel,
-#user-login-screen,
-#user-signup-screen,
-#welcome-screen,
-#form-screen,
-#loader-screen,
-#linktree-screen {
-    width: 100%;
-    height: 100%;
+#form-screen::-webkit-scrollbar-thumb:hover,
+#linktree-screen::-webkit-scrollbar-thumb:hover,
+#admin-panel::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* 5) On very small devices, shrink the max‐width of cards */
-@media (max-width: 400px) {
-    .max-w-lg {
-        max-width: 90%;
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* D) OVERRIDE default Tailwind focus styles (for a bit more polish)          */
+/* ──────────────────────────────────────────────────────────────────────────── */
+:focus {
+    outline: none;
+}
+
+:focus-visible {
+    outline: 2px solid #10b981;
+    /* green-500 */
+    outline-offset: 2px;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────── */
+/* E) TABLET / MOBILE ADJUSTMENTS for form elements (optional)                 */
+/* ──────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 640px) {
+    #username {
+        font-size: 1.1rem;
+    }
+
+    #display-username {
+        font-size: 1.5rem;
     }
 }
