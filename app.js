@@ -1,4 +1,4 @@
-// Sprint 3: Add 300 ms skeleton loader before showing final Linktree output
+// Sprint 3 + Bypass: include a bypass button that uses placeholder data
 (function () {
     // Screen references
     const welcomeScreen = document.getElementById('welcome-screen');
@@ -7,6 +7,7 @@
     const linktreeScreen = document.getElementById('linktree-screen');
     const welcomeText = document.getElementById('welcome-text');
     const generateBtn = document.getElementById('generate-btn');
+    const bypassBtn = document.getElementById('bypass-btn');
 
     // Form field references
     const profilePicInput = document.getElementById('profile-pic');
@@ -196,7 +197,7 @@
         }
     }
 
-    // 6) Show Linktree Output with Skeleton Loader
+    // 6) Show Linktree Output with Skeleton Loader (using real data)
     generateBtn.addEventListener('click', (e) => {
         e.preventDefault();
         formScreen.classList.add('hidden');
@@ -228,6 +229,43 @@
                     btn.innerHTML = `<i class="fa ${iconVal} mr-2"></i><span>${labelVal}</span>`;
                     linksContainer.appendChild(btn);
                 }
+            });
+
+            linktreeScreen.classList.remove('hidden');
+            linktreeScreen.classList.add('flex');
+        }, 300);
+    });
+
+    // 7) Bypass (Testing) Button Logic
+    bypassBtn.addEventListener('click', () => {
+        formScreen.classList.add('hidden');
+
+        // Show loader
+        loaderScreen.classList.remove('hidden');
+        loaderScreen.classList.add('flex');
+
+        // After 300 ms, hide loader and show placeholder output
+        setTimeout(() => {
+            loaderScreen.classList.add('hidden');
+            loaderScreen.classList.remove('flex');
+
+            // Placeholder username
+            displayUsername.textContent = '@testuser';
+
+            // Placeholder links
+            linksContainer.innerHTML = '';
+            const placeholders = [
+                { label: 'Website', icon: 'fa-globe', url: 'https://example.com' },
+                { label: 'Instagram', icon: 'fa-instagram', url: 'https://instagram.com' },
+                { label: 'GitHub', icon: 'fa-github', url: 'https://github.com' }
+            ];
+            placeholders.forEach(ph => {
+                const btn = document.createElement('a');
+                btn.href = ph.url;
+                btn.target = '_blank';
+                btn.className = 'flex items-center justify-center bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition';
+                btn.innerHTML = `<i class="fa ${ph.icon} mr-2"></i><span>${ph.label}</span>`;
+                linksContainer.appendChild(btn);
             });
 
             linktreeScreen.classList.remove('hidden');

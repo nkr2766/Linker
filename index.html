@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Linktree Clone – Sprint 3</title>
+    <title>Linktree Clone – Sprint 3 with Bypass</title>
 
     <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -100,7 +100,7 @@
 
     <!--
     ───────────
-    2) Setup Form Screen (Sprint 2 version)
+    2) Setup Form Screen (with Bypass button)
     ───────────
   -->
     <div id="form-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
@@ -153,12 +153,18 @@
                 class="w-full mt-4 bg-gray-600 text-gray-300 py-3 rounded-lg font-medium cursor-not-allowed" disabled>
                 Generate My Linktree
             </button>
+
+            <!-- Bypass (Testing) Button -->
+            <button id="bypass-btn" type="button"
+                class="w-full mt-4 bg-yellow-500 text-black py-3 rounded-lg font-medium hover:bg-yellow-600 transition">
+                Bypass (Testing)
+            </button>
         </div>
     </div>
 
     <!--
     ───────────
-    3) Loader Screen (Sprint 3 – new)
+    3) Loader Screen (Sprint 3 – unchanged)
     ───────────
   -->
     <div id="loader-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
@@ -176,7 +182,7 @@
 
     <!--
     ───────────
-    4) Linktree Output Screen (unchanged placeholder container)
+    4) Linktree Output Screen (placeholder container)
     ───────────
   -->
     <div id="linktree-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
