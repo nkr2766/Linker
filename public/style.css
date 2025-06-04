@@ -1,36 +1,41 @@
 /* style.css */
 
 /* ──────────────────────────────────────────────────────────────────────────── */
-/* A) ANIMATIONS for the startup screen “Welcome to Linker”                    */
+/* A) FADE‐OUT ANIMATIONS (startup screen)                                      */
 /* ──────────────────────────────────────────────────────────────────────────── */
-@keyframes fade-in-out {
+@keyframes fade-bg {
     0% {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-
-    10% {
-        opacity: 1;
-        transform: scale(1.0);
-    }
-
-    80% {
-        opacity: 1;
-        transform: scale(1.0);
+        background-color: #000000;
     }
 
     100% {
-        opacity: 0;
-        transform: scale(1.2);
+        background-color: transparent;
     }
 }
 
-.animate-fade-in-out {
-    animation: fade-in-out 3s ease-in-out forwards;
+@keyframes fade-text {
+    0% {
+        color: #ffffff;
+        opacity: 1;
+    }
+
+    100% {
+        color: #000000;
+        opacity: 0;
+    }
+}
+
+/* When we add these classes via JS, the fade begins: */
+.fade-bg-out {
+    animation: fade-bg 1s ease-in-out forwards;
+}
+
+.fade-text-out {
+    animation: fade-text 1s ease-in-out forwards;
 }
 
 /* ──────────────────────────────────────────────────────────────────────────── */
-/* B) UTILITY to hide elements (we toggle “hidden”/“flex” in JS)              */
+/* B) UTILITY: hide vs. flex (JS toggles these)                                */
 /* ──────────────────────────────────────────────────────────────────────────── */
 .hidden {
     display: none !important;
@@ -41,7 +46,7 @@
 }
 
 /* ──────────────────────────────────────────────────────────────────────────── */
-/* C) CUSTOM SCROLLBAR for the builder panel and output (optional “slick” look) */
+/* C) CUSTOM SCROLLBAR for builder & admin (optional “slick” look)             */
 /* ──────────────────────────────────────────────────────────────────────────── */
 #form-screen::-webkit-scrollbar,
 #linktree-screen::-webkit-scrollbar,
@@ -63,7 +68,7 @@
 }
 
 /* ──────────────────────────────────────────────────────────────────────────── */
-/* D) OVERRIDE default Tailwind focus styles (for a bit more polish)          */
+/* D) FOCUS STYLES OVERRIDE (slightly more polished than default)             */
 /* ──────────────────────────────────────────────────────────────────────────── */
 :focus {
     outline: none;
@@ -71,12 +76,12 @@
 
 :focus-visible {
     outline: 2px solid #10b981;
-    /* green-500 */
+    /* Tailwind’s emerald-500 */
     outline-offset: 2px;
 }
 
 /* ──────────────────────────────────────────────────────────────────────────── */
-/* E) TABLET / MOBILE ADJUSTMENTS for form elements (optional)                 */
+/* E) RESPONSIVE ADJUSTMENTS (optional)                                         */
 /* ──────────────────────────────────────────────────────────────────────────── */
 @media (max-width: 640px) {
     #username {
