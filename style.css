@@ -1,6 +1,6 @@
 /* style.css */
 
-/* 1) Deep mint gradient on <body> */
+/* 1) Deep‐mint gradient on <body> */
 body {
     margin: 0;
     padding: 0;
@@ -13,19 +13,22 @@ body {
             #a6dab9
             /* bottom (darker mint again) */
         );
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* 2) Focus outline for keyboard users */
+/* 2) Visible focus outline for accessibility */
 button:focus,
 input:focus,
 select:focus,
 a:focus {
     outline: 3px solid #34D399;
-    /* emerald green outline */
+    /* emerald green */
     outline-offset: 2px;
 }
 
-/* 3) Thinner scrollbars on form/output if you like */
+/* 3) Thinner scrollbars if you’d like */
 #form-screen::-webkit-scrollbar,
 #linktree-screen::-webkit-scrollbar {
     width: 6px;
@@ -35,4 +38,21 @@ a:focus {
 #linktree-screen::-webkit-scrollbar-thumb {
     background-color: rgba(0, 0, 0, 0.2);
     border-radius: 3px;
+}
+
+/* 4) Ensure all “full‐screen” sections stack properly on mobile */
+#auth-overlay,
+#welcome-screen,
+#form-screen,
+#loader-screen,
+#linktree-screen {
+    width: 100%;
+    height: 100%;
+}
+
+/* 5) On very small devices, make the card narrower */
+@media (max-width: 400px) {
+    .max-w-lg {
+        max-width: 90%;
+    }
 }

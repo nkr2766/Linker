@@ -1,17 +1,16 @@
 // app.js
-// Sprint 10: Upload‐Photo + Password Protection + Accessibility + Reordering + Analytics
+// Sprint 10: Upload‐Photo + Password Protection + Accessibility + Reordering + Download + Responsive Fixes
 
 (function () {
     // ------------- Configuration -------------
-    // Replace this with whatever password you choose.
-    // (Anyone without this password cannot see the form.)
+    // Change the password to "LAD"
     const CORRECT_PASSWORD = "LAD";
 
-    // LocalStorage keys
+    // Keys for localStorage
     const STORAGE_KEY = 'linktreeData';
     const HAS_VISITED_KEY = 'hasVisited';
 
-    // Simple analytics stub (debounced event logging)
+    // Debounce helper for simple analytics throttling
     function logEvent(eventName) {
         if (!window._analyticsDebounce) window._analyticsDebounce = {};
         if (window._analyticsDebounce[eventName]) return;
@@ -22,26 +21,45 @@
         }, 500);
     }
 
-    // Validate username (must start with @, 3–30 chars)
+    // Validate username: must start with @ and be 3–30 chars (alphanumeric/underscore)
     function isValidUsername(u) {
         return /^@[A-Za-z0-9_]{2,29}$/.test(u);
     }
 
-    // Validate file is an image (by MIME type)
+    // Validate that a file is an image type
     function isValidImageFile(file) {
         return file && file.type.startsWith('image/');
+    }
+
+    // Validate URL (simple check for http/https)
+    function isValidURL(url) {
+        try {
+            const u = new URL(url);
+            return u.protocol === 'http:' || u.protocol === 'https:';
+        } catch {
+            return false;
+        }
+    }
+
+    // Debounce utility (for validations)
+    function debounce(fn, delay) {
+        let timer;
+        return (...args) => {
+            clearTimeout(timer);
+            timer = setTimeout(() => fn(...args), delay);
+        };
     }
 
     window.addEventListener('DOMContentLoaded', () => {
         // ---------- DOM References -----------
 
-        // Auth overlay elements
+        // Auth overlay
         const authOverlay = document.getElementById('auth-overlay');
         const authPassword = document.getElementById('auth-password');
         const authSubmit = document.getElementById('auth-submit');
         const authError = document.getElementById('auth-error');
 
-        // Core screens
+        // Screens / Overlays
         const welcomeScreen = document.getElementById('welcome-screen');
         const welcomeText = document.getElementById('welcome-text');
         const formScreen = document.getElementById('form-screen');
@@ -53,6 +71,7 @@
         const generateBtn = document.getElementById('generate-btn');
         const bypassBtn = document.getElementById('bypass-btn');
         const backBtn = document.getElementById('back-btn');
+        const downloadBtn = document.getElementById('download-btn');
 
         // Form inputs
         const profilePicFileInput = document.getElementById('profile-pic-file');
@@ -61,9 +80,10 @@
         const taglineCount = document.getElementById('tagline-count');
         const linksWrapper = document.getElementById('links-wrapper');
 
-        // Make sure this ID matches exactly what’s in index.html
+        // Add‐Link button (IMPORTANT: ID must match exactly)
         const addLinkBtn = document.getElementById('add-link-btn');
 
+        // Error messages
         const errorProfilePic = document.getElementById('error-profile-pic');
         const errorUsername = document.getElementById('error-username');
         const errorLinks = document.getElementById('error-links');
@@ -74,17 +94,17 @@
         const displayUsername = document.getElementById('display-username');
         const linksContainer = document.getElementById('links-container');
 
-        // State: store link‐row objects in this array
-        // Each entry: { container, labelInput, iconSelect, urlInput, errorText, deleteBtn, moveUpBtn, moveDownBtn }
+        // State: track each “link row” so we can reorder/delete/validate
         let linkRows = [];
 
-        // Temporarily holds the uploaded image DataURL
+        // Temporarily hold the uploaded profile image as a Base64 Data URL
         let profilePicDataURL = "";
 
-        // ------------- 1) PASSWORD PROTECTION (Lock & Key) -------------
+        // ------------- 1) PASSWORD GATE (Lock & Key) -------------
 
-        // Hide everything except the auth overlay initially
+        // Hide all screens until password is correct
         function hideAllScreens() {
+            authOverlay.classList.remove('hidden');
             welcomeScreen.classList.add('hidden');
             formScreen.classList.add('hidden');
             loaderScreen.classList.add('hidden');
@@ -92,10 +112,10 @@
         }
         hideAllScreens();
 
+        // Unlocked: when correct password is entered
         authSubmit.addEventListener('click', () => {
             const pwd = authPassword.value.trim();
             if (pwd === CORRECT_PASSWORD) {
-                // Correct → hide overlay & start the normal flow
                 authOverlay.classList.add('hidden');
                 startAppFlow();
             } else {
@@ -103,7 +123,7 @@
             }
         });
 
-        // Trigger unlock on Enter key in password field
+        // Allow pressing “Enter” in the password field to submit
         authPassword.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 authSubmit.click();
@@ -111,9 +131,7 @@
         });
 
         // ------------- 2) START MAIN APP FLOW -------------
-
         function startAppFlow() {
-            // Once unlocked, we proceed exactly as before: show “Welcome/Welcome Back,” etc.
             const hasVisited = localStorage.getItem(HAS_VISITED_KEY);
             const savedData = localStorage.getItem(STORAGE_KEY);
 
@@ -127,14 +145,14 @@
             localStorage.setItem(HAS_VISITED_KEY, 'true');
         }
 
-        // ------------- 3) SHOW WELCOME (Fade & Route to Form/Output) -------------
+        // ------------- 3) SHOW WELCOME (Fade & Route) -------------
 
         function showWelcome(isReturning, hasSavedData) {
-            hideAllScreens();
+            // Hide everything except welcome
             welcomeScreen.classList.remove('hidden');
             welcomeScreen.classList.add('flex');
 
-            // Animate in/out
+            // Animate fade‐in/out
             welcomeText.classList.remove('opacity-0', 'fade-up-out');
             welcomeText.classList.add('fade-in');
             setTimeout(() => {
@@ -151,37 +169,41 @@
             }, 2000);
         }
 
-        // ------------- 4) SHOW FORM (Prefill if Data Exists) -------------
+        // ------------- 4) SHOW FORM (Prefill if Data) -------------
 
         function showForm(prefillData = null) {
-            hideAllScreens();
+            // Hide all others
+            welcomeScreen.classList.add('hidden');
+            loaderScreen.classList.add('hidden');
+            linktreeScreen.classList.add('hidden');
             formScreen.classList.remove('hidden');
             formScreen.classList.add('flex');
 
-            // Reset any previous state
+            // Clear previous state
             linksWrapper.innerHTML = '';
             linkRows = [];
-            profilePicDataURL = ""; // clear previous image
+            profilePicDataURL = "";
 
-            // Clear error messages:
+            // Hide errors
             errorProfilePic.classList.add('hidden');
             errorUsername.classList.add('hidden');
             errorLinks.classList.add('hidden');
 
             if (prefillData) {
-                // Prefill uploaded image data if stored
+                // Prefill image (data URL)
                 if (prefillData.profilePic) {
                     profilePicDataURL = prefillData.profilePic;
                 }
-                usernameInput.value = prefillData.username || '@yourhandle';
+                usernameInput.value = prefillData.username || '';
                 taglineInput.value = prefillData.tagline || '';
                 taglineCount.textContent = `${prefillData.tagline?.length || 0}/100`;
-                // Prefill link rows
+
+                // Prefill each link row
                 (prefillData.links || []).forEach(link => {
                     addLinkRow(link);
                 });
             } else {
-                // No prefill: create a blank first row
+                // No prefill: start with one blank row
                 addLinkRow();
                 usernameInput.value = '';
                 taglineInput.value = '';
@@ -194,12 +216,12 @@
         // ------------- 5) ADD A LINK ROW (with optional prefill) -------------
 
         function addLinkRow(prefill = null) {
-            const rowIndex = linkRows.length; // unique index for IDs
+            const rowIndex = linkRows.length;
             const rowDiv = document.createElement('div');
             rowDiv.className = 'space-y-1 bg-gray-700 p-4 rounded-lg';
-            rowDiv.setAttribute('draggable', 'true'); // for drag‐and‐drop reposition
+            rowDiv.setAttribute('draggable', 'true'); // for optional drag‐and‐drop
 
-            // ---------- A) Label Input ----------
+            // A) Label input
             const labelInput = document.createElement('input');
             labelInput.id = `link-label-${rowIndex}`;
             labelInput.type = 'text';
@@ -208,7 +230,7 @@
             labelInput.setAttribute('aria-describedby', `error-url-${rowIndex}`);
             labelInput.className = 'w-full px-3 py-2 rounded-md bg-gray-600 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition';
 
-            // ---------- B) Icon Selector ----------
+            // B) Icon selector
             const iconSelect = document.createElement('select');
             iconSelect.id = `link-icon-${rowIndex}`;
             iconSelect.className = 'w-full px-3 py-2 rounded-md bg-gray-600 text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-400';
@@ -219,7 +241,7 @@
                 iconSelect.appendChild(opt);
             });
 
-            // ---------- C) URL Input ----------
+            // C) URL input
             const urlInput = document.createElement('input');
             urlInput.id = `link-url-${rowIndex}`;
             urlInput.type = 'url';
@@ -228,14 +250,14 @@
             urlInput.setAttribute('aria-describedby', `error-url-${rowIndex}`);
             urlInput.className = 'w-full px-3 py-2 rounded-md bg-gray-600 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition';
 
-            // ---------- D) Error Message for URL ----------
+            // D) Error message for URL
             const errorText = document.createElement('p');
             errorText.id = `error-url-${rowIndex}`;
             errorText.className = 'text-sm text-red-500 hidden';
-            errorText.setAttribute('role', 'alert'); // announce to screen readers
+            errorText.setAttribute('role', 'alert');
             errorText.textContent = 'Please enter a valid URL.';
 
-            // ---------- E) Delete Button ----------
+            // E) Delete button
             const deleteBtn = document.createElement('button');
             deleteBtn.type = 'button';
             deleteBtn.innerHTML = '<i class="fa fa-trash text-red-500"></i>';
@@ -251,7 +273,7 @@
                 updateGenerateButtonState();
             });
 
-            // ---------- F) Move Up Button (Keyboard Reordering) ----------
+            // F) Move Up button (keyboard reordering)
             const moveUpBtn = document.createElement('button');
             moveUpBtn.type = 'button';
             moveUpBtn.innerHTML = '<i class="fa fa-arrow-up"></i>';
@@ -260,14 +282,12 @@
             moveUpBtn.addEventListener('click', () => {
                 const idx = linkRows.findIndex(r => r.container === rowDiv);
                 if (idx > 0) {
-                    // Swap in DOM
                     linksWrapper.insertBefore(rowDiv, linkRows[idx - 1].container);
-                    // Swap in array
                     [linkRows[idx - 1], linkRows[idx]] = [linkRows[idx], linkRows[idx - 1]];
                 }
             });
 
-            // ---------- G) Move Down Button (Keyboard Reordering) ----------
+            // G) Move Down button (keyboard reordering)
             const moveDownBtn = document.createElement('button');
             moveDownBtn.type = 'button';
             moveDownBtn.innerHTML = '<i class="fa fa-arrow-down"></i>';
@@ -276,14 +296,12 @@
             moveDownBtn.addEventListener('click', () => {
                 const idx = linkRows.findIndex(r => r.container === rowDiv);
                 if (idx < linkRows.length - 1) {
-                    // Swap in DOM
                     linksWrapper.insertBefore(linkRows[idx + 1].container, rowDiv);
-                    // Swap in array
                     [linkRows[idx], linkRows[idx + 1]] = [linkRows[idx + 1], linkRows[idx]];
                 }
             });
 
-            // ---------- H) Drag & Drop (Mouse‐based Reordering) ----------
+            // H) Drag & Drop (optional)
             rowDiv.addEventListener('dragstart', (e) => {
                 e.dataTransfer.setData('text/plain', linkRows.findIndex(r => r.container === rowDiv));
                 e.dataTransfer.effectAllowed = 'move';
@@ -301,17 +319,14 @@
                 const draggedIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
                 const targetIdx = linkRows.findIndex(r => r.container === rowDiv);
                 if (draggedIndex !== targetIdx) {
-                    // Extract dragged item from array
                     const draggedItem = linkRows.splice(draggedIndex, 1)[0];
-                    // Insert at new position
                     linkRows.splice(targetIdx, 0, draggedItem);
-                    // Re‐render in correct order
                     linksWrapper.innerHTML = '';
                     linkRows.forEach(r => linksWrapper.appendChild(r.container));
                 }
             });
 
-            // ---------- I) Prefill (if provided) ----------
+            // I) Prefill logic
             if (prefill) {
                 labelInput.value = prefill.label || '';
                 if (prefill.icon) iconSelect.value = prefill.icon;
@@ -321,7 +336,7 @@
                 }
             }
 
-            // ---------- J) URL Validation (debounced) ----------
+            // J) URL validation (debounced)
             let debounceTimer;
             urlInput.addEventListener('input', () => {
                 clearTimeout(debounceTimer);
@@ -340,7 +355,7 @@
                 }, 100);
             });
 
-            // ---------- K) Append elements in desired order ----------
+            // K) Append elements in order
             rowDiv.appendChild(labelInput);
             rowDiv.appendChild(iconSelect);
             rowDiv.appendChild(urlInput);
@@ -349,10 +364,9 @@
             rowDiv.appendChild(moveUpBtn);
             rowDiv.appendChild(moveDownBtn);
 
-            // Insert row into the wrapper
             linksWrapper.appendChild(rowDiv);
 
-            // ---------- L) Store references in linkRows array ----------
+            // L) Store references in linkRows array
             linkRows.push({
                 container: rowDiv,
                 labelInput,
@@ -365,8 +379,7 @@
             });
         }
 
-        // ------------- 6) “Add New Link” Button Listener -------------
-
+        // ------------- 6) “Add New Link” Button -------------
         addLinkBtn.addEventListener('click', () => {
             if (linkRows.length < 10) {
                 addLinkRow();
@@ -378,25 +391,21 @@
             updateGenerateButtonState();
         });
 
-        // ------------- 7) INPUT VALIDATIONS + FILE UPLOAD -------------
+        // ------------- 7) INPUT VALIDATIONS & FILE UPLOAD -------------
 
         // A) Profile Picture Upload Validation
         profilePicFileInput.addEventListener('change', () => {
             const file = profilePicFileInput.files[0];
             if (isValidImageFile(file)) {
-                // Hide any previous error
                 errorProfilePic.classList.add('hidden');
-
-                // Read file as Data URL (Base64)
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    profilePicDataURL = e.target.result; // store in global variable
+                    profilePicDataURL = e.target.result; // Base64 string
                 };
                 reader.readAsDataURL(file);
             } else {
-                // Show error
                 errorProfilePic.classList.remove('hidden');
-                profilePicDataURL = ""; // clear any previous data
+                profilePicDataURL = "";
             }
             updateGenerateButtonState();
         });
@@ -421,10 +430,10 @@
         });
 
         // C) Tagline character counter
-        taglineInput.addEventListener('input', () => {
+        taglineInput.addEventListener('input', debounce(() => {
             const len = taglineInput.value.length;
             taglineCount.textContent = `${len}/100`;
-        });
+        }, 50));
 
         // D) Update Generate button state
         function updateGenerateButtonState() {
@@ -452,8 +461,7 @@
             }
         }
 
-        // ------------- 8) “Generate” → Loader → Output (save to localStorage) -------------
-
+        // ------------- 8) “Generate” → Loader → Output -------------
         generateBtn.addEventListener('click', (e) => {
             e.preventDefault();
             logEvent('generate_clicked');
@@ -482,8 +490,7 @@
             }, 300);
         });
 
-        // ------------- 9) “Bypass” → Loader → Placeholder Output -------------
-
+        // ------------- 9) “Bypass” (Testing) -------------
         bypassBtn.addEventListener('click', () => {
             logEvent('bypass_clicked');
             formScreen.classList.add('hidden');
@@ -513,7 +520,7 @@
         // ------------- 10) RENDER OUTPUT & “Back to Edit” -------------
 
         function renderOutput(data) {
-            // Show or hide profile pic
+            // Profile picture
             if (data.profilePic) {
                 outputProfilePic.src = data.profilePic;
                 outputProfilePic.classList.remove('hidden');
@@ -521,7 +528,7 @@
                 outputProfilePic.classList.add('hidden');
             }
 
-            // Show or hide tagline
+            // Tagline
             if (data.tagline && data.tagline.trim().length > 0) {
                 outputTagline.textContent = data.tagline;
                 outputTagline.classList.remove('hidden');
@@ -545,7 +552,10 @@
                 }
             });
 
-            hideAllScreens();
+            // Show the output screen
+            welcomeScreen.classList.add('hidden');
+            formScreen.classList.add('hidden');
+            loaderScreen.classList.add('hidden');
             linktreeScreen.classList.remove('hidden');
             linktreeScreen.classList.add('flex');
         }
@@ -563,10 +573,59 @@
         }
 
         // ------------- 12) “Back to Edit” -------------
-
         backBtn.addEventListener('click', () => {
             const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
             showForm(saved);
+        });
+
+        // ------------- 13) “Download My Linktree” Handler -------------
+
+        downloadBtn.addEventListener('click', () => {
+            // Grab the entire card HTML (outerHTML of <div> inside #linktree-screen)
+            const cardHTML = document.querySelector('#linktree-screen > div').outerHTML;
+
+            // Wrap it in a full HTML document (so it can stand alone)
+            const htmlBlob = `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Saved Linktree</title>
+    <!-- Tailwind CDN (to preserve styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+      body { margin: 0; padding: 0; min-height: 100vh; background: linear-gradient(to bottom, #a0d9b5, #b1eacb, #a0d9b5); display: flex; align-items: center; justify-content: center; }
+      button:focus, input:focus, select:focus, a:focus { outline: 3px solid #34D399; outline-offset: 2px; }
+    </style>
+  </head>
+  <body>
+    ${cardHTML}
+  </body>
+  </html>
+        `.trim();
+
+            // Create a Blob and download it
+            const blob = new Blob([htmlBlob], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `My_Linktree_${new Date().toISOString().slice(0, 10)}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
+
+        // ------------- 14) “Reset” Button -------------
+
+        resetBtn.addEventListener('click', () => {
+            localStorage.removeItem(HAS_VISITED_KEY);
+            localStorage.removeItem(STORAGE_KEY);
+            location.reload();
         });
     });
 })();
