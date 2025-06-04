@@ -74,45 +74,32 @@ let profilePicDataURL = "";
 // ───────────────────────────────────────────────────────────────────────────────
 // E) UI ELEMENT REFERENCES
 // ───────────────────────────────────────────────────────────────────────────────
-//
-// 1) Startup overlay
+// (unchanged from before; omitted for brevity—same IDs as in your existing index.html)
 const startupScreen = document.getElementById("startup-screen");
 const startupText = document.getElementById("startup-text");
-
-// 2) Reset button
 const resetBtn = document.getElementById("reset-btn");
-
-// 3) Login landing
 const loginScreen = document.getElementById("login-screen");
 const btnAdminLogin = document.getElementById("btn-admin-login");
 const btnUserLogin = document.getElementById("btn-user-login");
 const btnUseAccessCode = document.getElementById("btn-use-access-code");
-
-// 4) Admin login
 const adminLoginScreen = document.getElementById("admin-login-screen");
 const adminEmailInput = document.getElementById("admin-email");
 const adminPasswordInput = document.getElementById("admin-password");
 const adminError = document.getElementById("admin-error");
 const adminLoginSubmit = document.getElementById("admin-login-submit");
 const adminLoginBack = document.getElementById("admin-login-back");
-
-// 5) Admin panel
 const adminPanel = document.getElementById("admin-panel");
 const newAccessCodeInput = document.getElementById("new-access-code");
 const createCodeBtn = document.getElementById("create-code-btn");
 const adminCodeSuccess = document.getElementById("admin-code-success");
 const adminBuildFormBtn = document.getElementById("admin-build-form");
 const adminLogoutBtn = document.getElementById("admin-logout");
-
-// 6) User login
 const userLoginScreen = document.getElementById("user-login-screen");
 const userEmailInput = document.getElementById("user-email");
 const userPasswordInput = document.getElementById("user-password");
 const userError = document.getElementById("user-error");
 const userLoginSubmit = document.getElementById("user-login-submit");
 const userLoginBack = document.getElementById("user-login-back");
-
-// 7) User signup
 const userSignupScreen = document.getElementById("user-signup-screen");
 const signupCodeInput = document.getElementById("signup-code");
 const signupEmailInput = document.getElementById("signup-email");
@@ -121,12 +108,8 @@ const signupCodeError = document.getElementById("signup-code-error");
 const signupSuccess = document.getElementById("signup-success");
 const signupSubmit = document.getElementById("signup-submit");
 const signupBackBtn = document.getElementById("signup-back");
-
-// 8) Welcome (post-login)
 const welcomeScreen = document.getElementById("welcome-screen");
 const welcomeText = document.getElementById("welcome-text");
-
-// 9) Builder form
 const formScreen = document.getElementById("form-screen");
 const profilePicFileInput = document.getElementById("profile-pic-file");
 const formUsernameInput = document.getElementById("username");
@@ -138,11 +121,7 @@ const generateBtn = document.getElementById("generate-btn");
 const errorProfilePic = document.getElementById("error-profile-pic");
 const errorUsername = document.getElementById("error-username");
 const errorLinks = document.getElementById("error-links");
-
-// 10) Loader screen
 const loaderScreen = document.getElementById("loader-screen");
-
-// 11) Linktree output
 const linktreeScreen = document.getElementById("linktree-screen");
 const outputProfilePic = document.getElementById("output-profile-pic");
 const outputTagline = document.getElementById("output-tagline");
@@ -154,13 +133,10 @@ const downloadBtn = document.getElementById("download-btn");
 // ───────────────────────────────────────────────────────────────────────────────
 // F) UTILITY FUNCTIONS
 // ───────────────────────────────────────────────────────────────────────────────
-
-// 1) Validate handle → must start “@” + 3–30 chars of letters/numbers/underscore
+// (unchanged—same helpers as before)
 function isValidHandle(u) {
     return /^@[A-Za-z0-9_]{2,29}$/.test(u);
 }
-
-// 2) Validate URL
 function isValidURL(url) {
     try {
         const u = new URL(url);
@@ -169,13 +145,9 @@ function isValidURL(url) {
         return false;
     }
 }
-
-// 3) Delay (ms)
 function delay(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-
-// 4) Hide all “screens” by toggling .hidden / .flex
 function hideAllScreens() {
     [
         loginScreen,
@@ -186,14 +158,12 @@ function hideAllScreens() {
         welcomeScreen,
         formScreen,
         loaderScreen,
-        linktreeScreen
+        linktreeScreen,
     ].forEach((el) => {
         el.classList.add("hidden");
         el.classList.remove("flex");
     });
 }
-
-// 5) Download a Blob as a file
 function downloadBlob(filename, blob) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -206,29 +176,37 @@ function downloadBlob(filename, blob) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// G) STARTUP: Wait 500 ms, then kick off 1.5 s fade + slide-up‐text; then show login
+// G) STARTUP: Fade from black → transparent, slide‐up text (1.5 s); then LOG OUT
 // ───────────────────────────────────────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
-    // Keep everything hidden until we run the animation.
-    // After 500 ms, start the fade + slide‐up text animation over 1.5 s:
+    // After 500 ms, begin the 1.5 s fade + slide
     setTimeout(() => {
         startupScreen.classList.add("fade-bg-out");
         startupText.classList.add("slide-text-up");
-        // After the full 1.5 s finishes, remove the overlay & initialize the app
-        setTimeout(() => {
+        // After the 1.5 s animation, remove overlay and sign out any existing user
+        setTimeout(async () => {
             startupScreen.style.display = "none";
+
+            // 🚨 FORCE SIGN‐OUT so that we “start fresh” on every reload
+            try {
+                await signOut(auth);
+            } catch (e) {
+                console.warn("No one was signed in, or signOut failed:", e);
+            }
+
+            // Now that sign out is done, initialize the app
             initApp();
         }, 1500);
     }, 500);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// H) INITIALIZE APP: Listen for Auth State Changes                              |
+// H) INITIALIZE APP: Listen for Auth State Changes                              //
 // ───────────────────────────────────────────────────────────────────────────────
 function initApp() {
     onAuthStateChanged(auth, async (firebaseUser) => {
         if (!firebaseUser) {
-            // Nobody is signed in → show landing
+            // Nobody is signed in → show the login landing
             hideAllScreens();
             loginScreen.classList.remove("hidden");
             loginScreen.classList.add("flex");
@@ -240,7 +218,7 @@ function initApp() {
                 showAdminPanel();
                 resetBtn.classList.remove("hidden");
             } else {
-                // Regular user → show “thank you for logging in” + builder
+                // Regular user → show welcome + builder flow
                 hideAllScreens();
                 resetBtn.classList.remove("hidden");
                 startAppFlow(firebaseUser.email);
@@ -250,7 +228,7 @@ function initApp() {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// I) LOGIN / SIGNUP BUTTON HANDLERS (Landing screen)                            |
+// I) LOGIN / SIGNUP BUTTON HANDLERS (Landing screen)                            //
 // ───────────────────────────────────────────────────────────────────────────────
 btnAdminLogin.addEventListener("click", () => {
     hideAllScreens();
@@ -280,7 +258,7 @@ btnUseAccessCode.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// J) ADMIN LOGIN LOGIC (Email/Password)                                         |
+// J) ADMIN LOGIN LOGIC (Email/Password)                                         //
 // ───────────────────────────────────────────────────────────────────────────────
 adminLoginSubmit.addEventListener("click", async () => {
     const email = adminEmailInput.value.trim().toLowerCase();
@@ -307,7 +285,7 @@ adminLoginBack.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// K) SHOW ADMIN PANEL (upon login)                                               |
+// K) SHOW ADMIN PANEL                                                            //
 // ───────────────────────────────────────────────────────────────────────────────
 async function showAdminPanel() {
     hideAllScreens();
@@ -354,7 +332,7 @@ adminLogoutBtn.addEventListener("click", async () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// L) USER LOGIN LOGIC                                                            |
+// L) USER LOGIN LOGIC                                                            //
 // ───────────────────────────────────────────────────────────────────────────────
 userLoginSubmit.addEventListener("click", async () => {
     const email = userEmailInput.value.trim().toLowerCase();
@@ -381,7 +359,7 @@ userLoginBack.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// M) USER SIGNUP LOGIC (Access Code → Create Auth User → Delete Code)            |
+// M) USER SIGNUP LOGIC (Access Code → Create Auth User → Delete Code)            //
 // ───────────────────────────────────────────────────────────────────────────────
 signupSubmit.addEventListener("click", async () => {
     const code = signupCodeInput.value.trim();
@@ -429,7 +407,7 @@ signupBackBtn.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// N) MAIN APP FLOW (Welcome → Builder or Skip if saved)                          |
+// N) MAIN APP FLOW (Welcome → Builder or Skip if saved)                          //
 // ───────────────────────────────────────────────────────────────────────────────
 async function startAppFlow(currentEmail) {
     hideAllScreens();
@@ -457,7 +435,7 @@ async function startAppFlow(currentEmail) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// O) BUILDER FORM (display form, optionally prefill)                            │
+// O) BUILDER FORM (display form, optionally prefill)                            //
 // ───────────────────────────────────────────────────────────────────────────────
 function showBuilderForm(prefillData = null) {
     hideAllScreens();
@@ -494,7 +472,7 @@ function showBuilderForm(prefillData = null) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// P) ADD A LINK ROW (with optional prefill)                                     │
+// P) ADD A LINK ROW (with optional prefill)                                     //
 // ───────────────────────────────────────────────────────────────────────────────
 function addLinkRow(prefill = null) {
     const rowIndex = linkRows.length;
@@ -655,7 +633,7 @@ function addLinkRow(prefill = null) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// Q) "+ Add New Link" Button                                                     |
+// Q) "+ Add New Link" Button                                                     //
 // ───────────────────────────────────────────────────────────────────────────────
 addLinkBtn.addEventListener("click", () => {
     if (linkRows.length < 10) {
@@ -669,9 +647,8 @@ addLinkBtn.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// R) VALIDATE INPUTS & ENABLE “Generate”                                          |
+// R) VALIDATE INPUTS & ENABLE “Generate”                                          //
 // ───────────────────────────────────────────────────────────────────────────────
-
 // Profile picture upload
 profilePicFileInput.addEventListener("change", () => {
     const file = profilePicFileInput.files[0];
@@ -688,7 +665,6 @@ profilePicFileInput.addEventListener("change", () => {
     }
     updateGenerateButtonState();
 });
-
 // Username validation on blur
 formUsernameInput.addEventListener("blur", () => {
     let val = formUsernameInput.value.trim();
@@ -707,12 +683,10 @@ formUsernameInput.addEventListener("blur", () => {
     }
     updateGenerateButtonState();
 });
-
 // Tagline counter
 formTaglineInput.addEventListener("input", () => {
     formTaglineCount.textContent = `${formTaglineInput.value.length}/100`;
 });
-
 // Show/hide Generate button
 function updateGenerateButtonState() {
     const picValid = profilePicDataURL !== "";
@@ -740,7 +714,7 @@ function updateGenerateButtonState() {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// S) “Generate My Linktree” → SHOW LOADER → RENDER OUTPUT                          |
+// S) “Generate My Linktree” → SHOW LOADER → RENDER OUTPUT                          //
 // ───────────────────────────────────────────────────────────────────────────────
 generateBtn.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -767,7 +741,7 @@ generateBtn.addEventListener("click", async (e) => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// T) RENDER OUTPUT (in-app Linktree with Download + Back-to-Edit)                 |
+// T) RENDER OUTPUT (in-app Linktree with Download + Back-to-Edit)                 //
 // ───────────────────────────────────────────────────────────────────────────────
 function renderOutput(data) {
     if (data.profilePic) {
@@ -811,7 +785,7 @@ backBtn.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// U) DOWNLOAD: Standalone HTML with only the Linktree (no extra buttons)        |
+// U) DOWNLOAD: Standalone HTML with only the Linktree (no extra buttons)        //
 // ───────────────────────────────────────────────────────────────────────────────
 downloadBtn.addEventListener("click", () => {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "{}");
@@ -920,7 +894,7 @@ downloadBtn.addEventListener("click", () => {
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
-// V) “Skip to Output” (if localStorage has saved Linktree)                       |
+// V) “Skip to Output” (if localStorage has saved Linktree)                       //
 // ───────────────────────────────────────────────────────────────────────────────
 function skipToOutput(data) {
     loaderScreen.classList.remove("hidden");
@@ -933,7 +907,7 @@ function skipToOutput(data) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// W) RESET: Clear localStorage, Sign Out, Reload                                 |
+// W) RESET: Clear localStorage, Sign Out, Reload                                 //
 // ───────────────────────────────────────────────────────────────────────────────
 resetBtn.addEventListener("click", async () => {
     localStorage.removeItem(STORAGE_KEY_LINKTREE);
