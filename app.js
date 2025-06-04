@@ -1,12 +1,12 @@
 // Sprint 6 + Step 7 (Analytics) + Step 8 (Profile Pic & Tagline)
-// Now uses the deep-mint gradient + dark-grey card from index.html.
+// With deep‐mint via CSS and dark‐grey card styling in index.html.
 
 (function () {
     // LocalStorage Keys
     const STORAGE_KEY = 'linktreeData';
     const HAS_VISITED_KEY = 'hasVisited';
 
-    // 1) Simple analytics stub (debounced event logging)
+    // Simple analytics stub (debounced event logging)
     function logEvent(eventName) {
         if (!window._analyticsDebounce) window._analyticsDebounce = {};
         if (window._analyticsDebounce[eventName]) return;
@@ -20,7 +20,7 @@
         }, 500);
     }
 
-    // 2) URL validator
+    // URL validator
     function isValidURL(url) {
         try {
             const u = new URL(url);
@@ -29,7 +29,7 @@
             return false;
         }
     }
-    // 3) Username validator (must start with @, 3–30 chars total)
+    // Username validator (must start with @, 3–30 chars)
     function isValidUsername(u) {
         return /^@[A-Za-z0-9_]{2,29}$/.test(u);
     }
@@ -93,7 +93,7 @@
         localStorage.setItem(HAS_VISITED_KEY, 'true');
 
         //
-        // 6) Show “Welcome” (fade-in/out), then either form or output
+        // 6) Show “Welcome” (fade-in/out), then either Form or Output
         //
         function showWelcome(isReturning, hasSavedData) {
             welcomeScreen.classList.remove('hidden');
@@ -208,7 +208,7 @@
                 }
             }
 
-            // Debounce URL validation
+            // Debounced URL validation
             let debounceTimer;
             urlInput.addEventListener('input', () => {
                 clearTimeout(debounceTimer);
@@ -416,7 +416,7 @@
             linktreeScreen.classList.add('flex');
         }
 
-        // If returning + saved data exists, skip to output immediately
+        // If returning + saved data exists, skip to output
         function skipToOutput(data) {
             loaderScreen.classList.remove('hidden');
             loaderScreen.classList.add('flex');
@@ -427,7 +427,7 @@
             }, 300);
         }
 
-        // “Back to Edit” re-populates the form with saved data
+        // “Back to Edit” – populate form with saved data
         backBtn.addEventListener('click', () => {
             const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
             showForm(saved);

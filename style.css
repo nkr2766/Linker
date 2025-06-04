@@ -1,2 +1,30 @@
 /* style.css */
-/* (empty for now—Tailwind covers Sprint 1) */
+
+/* 1) Deep mint gradient on <body> (no Tailwind config needed) */
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(to bottom,
+            #6cb888,
+            /* top (slightly darker mint) */
+            #89c9a6,
+            /* middle (lighter mint) */
+            #a6dab9
+            /* bottom (darker mint again) */
+        );
+}
+
+/* 2) If you want to override any other Tailwind utility, add it here. */
+
+/* Example: Make scrollbars thinner on the form/output screens */
+#form-screen::-webkit-scrollbar,
+#linktree-screen::-webkit-scrollbar {
+    width: 6px;
+}
+
+#form-screen::-webkit-scrollbar-thumb,
+#linktree-screen::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+}

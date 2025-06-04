@@ -4,33 +4,16 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Linktree Clone – Deep Mint + Dark Card</title>
+    <title>Linktree Clone – Deep Mint via CSS</title>
 
-    <!--
-    1) Correct Tailwind configuration:
-       We must assign window.tailwind = { config: { … } } *before* loading the CDN.
-  -->
-    <script>
-        window.tailwind = {
-            config: {
-                theme: {
-                    extend: {
-                        colors: {
-                            /* A deeper mint gradient */
-                            mintDeepTop: '#A0D9B5',  /* slightly darker than #B1EACB */
-                            mintDeepMiddle: '#B1EACB',
-                            mintDeepBot: '#A0D9B5'
-                        }
-                    }
-                }
-            }
-        };
-    </script>
-    <!-- 2) Load Tailwind from CDN -->
+    <!-- 1) Load Tailwind (no custom JS config needed now) -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- 3) Load Font Awesome (no integrity/crossorigin to avoid blocking) -->
+    <!-- 2) Load Font Awesome (no integrity/crossorigin) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- 3) Your custom styles (gradient background, any overrides) -->
+    <link rel="stylesheet" href="style.css" />
 
     <!-- 4) Fade animations (unchanged) -->
     <style>
@@ -98,12 +81,9 @@
             }
         }
     </style>
-
-    <!-- 5) Any additional overrides can go in style.css -->
-    <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="h-full bg-gradient-to-b from-mintDeepTop via-mintDeepMiddle to-mintDeepBot relative overflow-hidden">
+<body class="h-full relative overflow-hidden">
     <!--
     ────────────────────────────────────────────────
     Floating “Reset” Button (top-left)
@@ -136,28 +116,34 @@
 
             <!-- Profile Picture URL -->
             <div class="mb-4">
-                <label for="profile-pic" class="block text-gray-300 mb-1">Profile Picture URL <span
-                        class="text-red-500">*</span></label>
+                <label for="profile-pic" class="block text-gray-300 mb-1">
+                    Profile Picture URL <span class="text-red-500">*</span>
+                </label>
                 <input id="profile-pic" type="url" placeholder="https://example.com/avatar.jpg" required
                     aria-describedby="error-profile-pic"
                     class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition" />
-                <p id="error-profile-pic" class="mt-1 text-sm text-red-500 hidden">Please enter a valid URL
-                    (http/https).</p>
+                <p id="error-profile-pic" class="mt-1 text-sm text-red-500 hidden">
+                    Please enter a valid URL (http/https).
+                </p>
             </div>
 
             <!-- Username -->
             <div class="mb-4">
-                <label for="username" class="block text-gray-300 mb-1">Username <span
-                        class="text-red-500">*</span></label>
+                <label for="username" class="block text-gray-300 mb-1">
+                    Username <span class="text-red-500">*</span>
+                </label>
                 <input id="username" type="text" placeholder="@yourhandle" required aria-describedby="error-username"
                     class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition" />
-                <p id="error-username" class="mt-1 text-sm text-red-500 hidden">Username must start with “@” and be 3–30
-                    chars.</p>
+                <p id="error-username" class="mt-1 text-sm text-red-500 hidden">
+                    Username must start with “@” and be 3–30 chars.
+                </p>
             </div>
 
             <!-- Tagline -->
             <div class="mb-4">
-                <label for="tagline" class="block text-gray-300 mb-1">Tagline (optional)</label>
+                <label for="tagline" class="block text-gray-300 mb-1">
+                    Tagline (optional)
+                </label>
                 <input id="tagline" type="text" placeholder="Discover my work & more ✨" maxlength="100"
                     class="w-full px-4 py-2 rounded-lg bg-gray-700 text-gray-200 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition" />
                 <p id="tagline-count" class="mt-1 text-sm text-gray-400">0/100</p>
@@ -166,7 +152,7 @@
             <!-- Link Rows Container -->
             <div id="links-wrapper" class="mb-4 space-y-4">
                 <label class="block text-gray-300 mb-1">Your Links (min 1, max 10)</label>
-                <!-- JS will inject link‐row blocks here -->
+                <!-- JavaScript will inject link-row blocks here -->
             </div>
 
             <!-- Add New Link Button -->
@@ -174,7 +160,9 @@
                 class="w-full mb-4 bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-400">
                 + Add New Link
             </button>
-            <p id="error-links" class="mt-1 text-sm text-red-500 hidden">At least one valid link is required.</p>
+            <p id="error-links" class="mt-1 text-sm text-red-500 hidden">
+                At least one valid link is required.
+            </p>
 
             <!-- Generate Button -->
             <button id="generate-btn"
@@ -216,19 +204,19 @@
   -->
     <div id="linktree-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="relative w-full max-w-lg md:max-w-md bg-gray-800 rounded-2xl p-6 shadow-lg mx-auto">
-            <!-- Profile Picture (circular) -->
+            <!-- Profile Picture -->
             <img id="output-profile-pic" src="" alt="Profile Picture"
                 class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-gray-700 hidden" />
-            <!-- Tagline (in italic, light gray) -->
+            <!-- Tagline -->
             <p id="output-tagline" class="text-gray-300 text-center mb-2 italic hidden"></p>
-            <!-- Username (white) -->
+            <!-- Username -->
             <h2 id="display-username" class="text-2xl font-bold text-white mb-4 text-center">
                 @username_goes_here
             </h2>
 
             <!-- Links Container -->
             <div id="links-container" class="space-y-3 mb-6">
-                <!-- JS will inject buttons here -->
+                <!-- JavaScript will inject buttons here -->
             </div>
 
             <!-- Back to Edit Button -->
@@ -239,7 +227,7 @@
         </div>
     </div>
 
-    <!-- 6) Our JavaScript (includes analytics + profile pic/tagline logic) -->
+    <!-- 6) Our JavaScript (analytics + form logic + output logic) -->
     <script src="app.js"></script>
 </body>
 
