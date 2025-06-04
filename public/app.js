@@ -69,6 +69,8 @@ const STORAGE_KEY_LINKTREE = "linkerLinktreeData";
 let linkRows = [];
 // Will hold the base64‐DataURL for the uploaded profile pic
 let profilePicDataURL = "";
+// Optional background image for the card
+let cardImageDataURL = "";
 
 // ───────────────────────────────────────────────────────────────────────────────
 // E) UI ELEMENT REFERENCES
@@ -123,6 +125,10 @@ const formUsernameInput = document.getElementById("username");
 const errorUsername = document.getElementById("error-username");
 const formTaglineInput = document.getElementById("tagline");
 const formTaglineCount = document.getElementById("tagline-count");
+const gradientStartInput = document.getElementById("gradient-start");
+const gradientEndInput = document.getElementById("gradient-end");
+const cardColorInput = document.getElementById("card-color");
+const cardImageInput = document.getElementById("card-image");
 const linksWrapper = document.getElementById("links-wrapper");
 const addLinkBtn = document.getElementById("add-link-btn");
 const errorLinks = document.getElementById("error-links");
@@ -131,6 +137,7 @@ const generateBtn = document.getElementById("generate-btn");
 const loaderScreen = document.getElementById("loader-screen");
 
 const linktreeScreen = document.getElementById("linktree-screen");
+const outputCard = document.getElementById("output-card");
 const outputProfilePic = document.getElementById("output-profile-pic");
 const displayUsername = document.getElementById("display-username");
 const outputTagline = document.getElementById("output-tagline");
@@ -474,6 +481,7 @@ function showBuilderForm(prefillData = null) {
     linksWrapper.innerHTML = "";
     linkRows = [];
     profilePicDataURL = "";
+    cardImageDataURL = "";
 
     // Hide errors
     errorProfilePic.classList.add("hidden");
@@ -488,12 +496,21 @@ function showBuilderForm(prefillData = null) {
         formUsernameInput.value = prefillData.username || "";
         formTaglineInput.value = prefillData.tagline || "";
         formTaglineCount.textContent = `${prefillData.tagline?.length || 0}/100`;
+        gradientStartInput.value = prefillData.gradientStart || "#a7f3d0";
+        gradientEndInput.value = prefillData.gradientEnd || "#6ee7b7";
+        cardColorInput.value = prefillData.cardColor || "#ffffff";
+        if (prefillData.cardImage) {
+            cardImageDataURL = prefillData.cardImage;
+        }
 
         (prefillData.links || []).forEach((link) => addLinkRow(link));
     } else {
         formUsernameInput.value = "";
         formTaglineInput.value = "";
         formTaglineCount.textContent = "0/100";
+        gradientStartInput.value = "#a7f3d0";
+        gradientEndInput.value = "#6ee7b7";
+        cardColorInput.value = "#ffffff";
         addLinkRow();
     }
     updateGenerateButtonState();
@@ -694,6 +711,20 @@ profilePicFileInput.addEventListener("change", () => {
     updateGenerateButtonState();
 });
 
+// Card background image upload (optional)
+cardImageInput.addEventListener("change", () => {
+    const file = cardImageInput.files[0];
+    if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            cardImageDataURL = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        cardImageDataURL = "";
+    }
+});
+
 // Username validation on blur
 formUsernameInput.addEventListener("blur", () => {
     let val = formUsernameInput.value.trim();
@@ -755,6 +786,10 @@ generateBtn.addEventListener("click", async (e) => {
         profilePic: profilePicDataURL,
         username: formUsernameInput.value.trim(),
         tagline: formTaglineInput.value.trim(),
+        gradientStart: gradientStartInput.value,
+        gradientEnd: gradientEndInput.value,
+        cardColor: cardColorInput.value,
+        cardImage: cardImageDataURL,
         links: linkRows.map((r) => ({
             label: r.labelInput.value.trim(),
             icon: r.iconSelect.value,
@@ -775,6 +810,14 @@ generateBtn.addEventListener("click", async (e) => {
 // T) RENDER OUTPUT (in-app Linktree with Download + Back-to-Edit)                 //
 // ───────────────────────────────────────────────────────────────────────────────
 function renderOutput(data) {
+    document.body.style.background = `linear-gradient(to bottom right, ${data.gradientStart || "#a7f3d0"}, ${data.gradientEnd || "#6ee7b7"})`;
+    outputCard.style.backgroundColor = data.cardColor || "#ffffff";
+    if (data.cardImage) {
+        outputCard.style.backgroundImage = `url(${data.cardImage})`;
+        outputCard.style.backgroundSize = "cover";
+    } else {
+        outputCard.style.backgroundImage = "none";
+    }
     if (data.profilePic) {
         outputProfilePic.src = data.profilePic;
         outputProfilePic.classList.remove("hidden");
@@ -825,8 +868,10 @@ downloadBtn.addEventListener("click", () => {
     const safeUsername = data.username.replace("@", "") || "linker";
     const safeTagline = data.tagline || "";
     const safePic = data.profilePic || "";
-    const bgColorStart = "#a7f3d0"; // Tailwind green-200
-    const bgColorEnd = "#6ee7b7"; // Tailwind green-300
+    const bgColorStart = data.gradientStart || "#a7f3d0";
+    const bgColorEnd = data.gradientEnd || "#6ee7b7";
+    const cardColor = data.cardColor || "#ffffff";
+    const cardImage = data.cardImage || "";
 
     // Build minimal HTML
     const outputHtml = `<!DOCTYPE html>
@@ -848,7 +893,8 @@ downloadBtn.addEventListener("click", () => {
     min-height: 100vh;
   }
   .card {
-    background-color: #ffffff;
+    background-color: ${cardColor};
+    ${cardImage ? `background-image: url('${cardImage}'); background-size: cover;` : ""}
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 32px;
@@ -876,6 +922,7 @@ downloadBtn.addEventListener("click", () => {
   .link-btn {
     display: block;
     width: 100%;
+    box-sizing: border-box;
     margin: 8px 0;
     padding: 12px 16px;
     background-color: #10b981; /* emerald-500 */
