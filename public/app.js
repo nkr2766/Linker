@@ -465,9 +465,18 @@ async function startAppFlow(currentEmail) {
     await delay(2500);                            // keep it visible 2.5s
     welcomeText.classList.add("opacity-0");       // fade it out
     await delay(300);                             // wait 0.3s for fade to complete
+    // Hide the welcome overlay before proceeding
+    welcomeScreen.classList.add("hidden");
+    welcomeScreen.classList.remove("flex");
 
     // Now either show loader + output or show builder form
-    const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "null");
+    let savedData = null;
+    try {
+        savedData = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "null");
+    } catch (err) {
+        console.warn("Failed to parse saved Linktree data, clearing", err);
+        localStorage.removeItem(STORAGE_KEY_LINKTREE);
+    }
     if (savedData) {
         loaderScreen.classList.remove("hidden");
         loaderScreen.classList.add("flex");
@@ -517,7 +526,6 @@ function showBuilderForm(prefillData = null) {
         }
         cardImageInput.value = "";
 
-
         (prefillData.links || []).forEach((link) => addLinkRow(link));
     } else {
         formUsernameInput.value = "";
@@ -528,6 +536,8 @@ function showBuilderForm(prefillData = null) {
         cardColorInput.value = "#ffffff";
         cardTextColorInput.value = "#111827";
         cardImageInput.value = "";
+
+        addLinkRow();
 
     }
     updateGenerateButtonState();
@@ -572,7 +582,22 @@ function addLinkRow(prefill = null) {
     iconSelect.id = `link-icon-${rowIndex}`;
     iconSelect.className =
         "w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-400";
-    ["fa-globe", "fa-instagram", "fa-github", "fa-link", "fa-camera", "fa-pinterest"].forEach((ic) => {
+    [
+        "fa-globe",
+        "fa-instagram",
+        "fa-github",
+        "fa-link",
+        "fa-camera",
+        "fa-pinterest",
+        "fa-twitter",
+        "fa-facebook",
+        "fa-youtube",
+        "fa-linkedin",
+        "fa-tiktok",
+        "fa-snapchat",
+        "fa-discord",
+        "fa-reddit",
+    ].forEach((ic) => {
         const opt = document.createElement("option");
         opt.value = ic;
         opt.textContent = ic.replace("fa-", "").charAt(0).toUpperCase() + ic.replace("fa-", "").slice(1);
@@ -763,6 +788,7 @@ cardImageClearBtn.addEventListener("click", () => {
 });
 
 
+
 // Username validation on blur
 formUsernameInput.addEventListener("blur", () => {
     let val = formUsernameInput.value.trim();
@@ -841,7 +867,13 @@ generateBtn.addEventListener("click", async (e) => {
             url: r.urlInput.value.trim()
         }))
     };
-    localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(data));
+    try {
+        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(data));
+    } catch (err) {
+        console.warn("LocalStorage quota exceeded, stripping images", err);
+        const tmp = { ...data, profilePic: "", cardImage: "" };
+        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(tmp));
+    }
 
     loaderScreen.classList.remove("hidden");
     loaderScreen.classList.add("flex");
