@@ -4,7 +4,23 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Linktree Clone – Sprint 4 (With Welcome Back)</title>
+    <title>Linktree Clone – Sprint 5</title>
+
+    <!-- Enable class-based dark mode for Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        mintLight: '#B1EACB',
+                        mintMid: '#CCF0D7',
+                        mintDark: '#E0FBFC',
+                    }
+                }
+            }
+        }
+    </script>
 
     <!-- TailwindCSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -85,15 +101,15 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="h-full bg-gradient-to-b from-[#b1eacb] via-[#ccf0d7] to-[#e0fbfc] relative overflow-hidden">
+<body class="h-full bg-gradient-to-b from-mintLight via-mintMid to-mintDark dark:bg-gray-800 relative overflow-hidden">
 
     <!--
     ───────────
-    1) Welcome Screen
+    1) Welcome Screen (unchanged)
     ───────────
   -->
     <div id="welcome-screen" class="absolute inset-0 flex items-center justify-center bg-transparent overflow-hidden">
-        <h1 id="welcome-text" class="text-3xl sm:text-4xl font-semibold text-black opacity-0">
+        <h1 id="welcome-text" class="text-3xl sm:text-4xl font-semibold text-black dark:text-white opacity-0">
             <!-- Text is set by JavaScript -->
             Welcome! Thanks for purchasing ✨
         </h1>
@@ -105,59 +121,67 @@
     ───────────
   -->
     <div id="form-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
-        <div class="w-full max-w-md bg-gray-900 rounded-2xl p-6 shadow-lg mx-auto">
-            <h2 class="text-2xl font-bold text-white mb-4 text-center">Set Up Your Linktree</h2>
+        <div class="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-lg mx-auto">
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false"
+                class="absolute top-4 right-4 text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-full p-2">
+                <i id="theme-icon" class="fa fa-moon text-xl"></i>
+            </button>
+
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Set Up Your Linktree</h2>
 
             <!-- Profile Picture URL -->
             <div class="mb-4">
-                <label for="profile-pic" class="block text-gray-300 mb-1">Profile Picture URL <span
+                <label for="profile-pic" class="block text-gray-600 dark:text-gray-300 mb-1">Profile Picture URL <span
                         class="text-red-500">*</span></label>
                 <input id="profile-pic" type="url" placeholder="https://example.com/avatar.jpg" required
-                    class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 border" />
+                    aria-describedby="error-profile-pic"
+                    class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 border border-transparent focus:border-emerald-500" />
                 <p id="error-profile-pic" class="mt-1 text-sm text-red-500 hidden">Please enter a valid URL
                     (http/https).</p>
             </div>
 
             <!-- Username -->
             <div class="mb-4">
-                <label for="username" class="block text-gray-300 mb-1">Username <span
+                <label for="username" class="block text-gray-600 dark:text-gray-300 mb-1">Username <span
                         class="text-red-500">*</span></label>
-                <input id="username" type="text" placeholder="@yourhandle" required
-                    class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 border" />
+                <input id="username" type="text" placeholder="@yourhandle" required aria-describedby="error-username"
+                    class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 border border-transparent focus:border-emerald-500" />
                 <p id="error-username" class="mt-1 text-sm text-red-500 hidden">Username must start with “@” and be 3–30
                     chars.</p>
             </div>
 
             <!-- Tagline -->
             <div class="mb-4">
-                <label for="tagline" class="block text-gray-300 mb-1">Tagline (optional)</label>
+                <label for="tagline" class="block text-gray-600 dark:text-gray-300 mb-1">Tagline (optional)</label>
                 <input id="tagline" type="text" placeholder="Discover my work & more ✨" maxlength="100"
-                    class="w-full px-4 py-2 rounded-lg bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                <p id="tagline-count" class="mt-1 text-sm text-gray-400">0/100</p>
+                    class="w-full px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 border border-transparent focus:border-emerald-500" />
+                <p id="tagline-count" class="mt-1 text-sm text-gray-500 dark:text-gray-400">0/100</p>
             </div>
 
             <!-- Link Rows Container -->
             <div id="links-wrapper" class="mb-4 space-y-4">
-                <label class="block text-gray-300 mb-1">Your Links (min 1, max 10)</label>
+                <label class="block text-gray-600 dark:text-gray-300 mb-1">Your Links (min 1, max 10)</label>
                 <!-- Dynamic link rows injected here by JS -->
             </div>
 
             <!-- Add New Link Button -->
             <button id="add-link-btn" type="button"
-                class="w-full mb-4 bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 transition">
+                class="w-full mb-4 bg-emerald-500 text-white py-2 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 + Add New Link
             </button>
             <p id="error-links" class="mt-1 text-sm text-red-500 hidden">At least one valid link is required.</p>
 
             <!-- Generate Button -->
             <button id="generate-btn"
-                class="w-full mt-4 bg-gray-600 text-gray-300 py-3 rounded-lg font-medium cursor-not-allowed" disabled>
+                class="w-full mt-4 bg-gray-400 text-gray-200 py-3 rounded-lg font-medium cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                disabled>
                 Generate My Linktree
             </button>
 
             <!-- Bypass (Testing) Button -->
             <button id="bypass-btn" type="button"
-                class="w-full mt-4 bg-yellow-500 text-black py-3 rounded-lg font-medium hover:bg-yellow-600 transition">
+                class="w-full mt-4 bg-yellow-500 text-black py-3 rounded-lg font-medium hover:bg-yellow-600 transition focus:outline-none focus:ring-2 focus:ring-yellow-400">
                 Bypass (Testing)
             </button>
         </div>
@@ -183,19 +207,27 @@
 
     <!--
     ───────────
-    4) Linktree Output Screen (with “Back to Edit”)
+    4) Linktree Output Screen
     ───────────
   -->
     <div id="linktree-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
-        <div class="w-full max-w-md bg-gray-900 rounded-2xl p-6 shadow-lg mx-auto">
-            <h2 class="text-2xl font-bold text-white mb-4 text-center">Your Linktree Output</h2>
-            <p id="display-username" class="text-gray-300 text-center mb-4">@username_goes_here</p>
+        <div class="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-lg mx-auto">
+            <!-- Theme Toggle -->
+            <button id="theme-toggle-output" aria-label="Toggle dark mode" aria-pressed="false"
+                class="absolute top-4 right-4 text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-full p-2">
+                <i id="theme-icon-output" class="fa fa-moon text-xl"></i>
+            </button>
+
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Your Linktree Output</h2>
+            <!-- Announce readiness for screen readers -->
+            <div aria-live="assertive" class="sr-only">Your Linktree is ready</div>
+            <p id="display-username" class="text-gray-700 dark:text-gray-300 text-center mb-4">@username_goes_here</p>
             <div id="links-container" class="space-y-3 mb-6">
                 <!-- Buttons injected here -->
             </div>
             <!-- Back to Edit Button -->
             <button id="back-btn"
-                class="w-full bg-gray-600 text-gray-300 py-2 rounded-lg font-medium hover:bg-gray-700 transition">
+                class="w-full bg-gray-400 dark:bg-gray-700 text-gray-200 dark:text-gray-300 py-2 rounded-lg font-medium hover:bg-gray-500 dark:hover:bg-gray-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-500">
                 ← Back to Edit
             </button>
         </div>
