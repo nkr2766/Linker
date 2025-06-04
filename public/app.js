@@ -517,6 +517,7 @@ function showBuilderForm(prefillData = null) {
         }
         cardImageInput.value = "";
 
+
         (prefillData.links || []).forEach((link) => addLinkRow(link));
     } else {
         formUsernameInput.value = "";
@@ -527,7 +528,7 @@ function showBuilderForm(prefillData = null) {
         cardColorInput.value = "#ffffff";
         cardTextColorInput.value = "#111827";
         cardImageInput.value = "";
-        addLinkRow();
+
     }
     updateGenerateButtonState();
 }
@@ -745,6 +746,7 @@ cardImageClearBtn.addEventListener("click", () => {
     cardImageDataURL = "";
     cardImageInput.value = "";
 });
+
 
 // Username validation on blur
 formUsernameInput.addEventListener("blur", () => {
