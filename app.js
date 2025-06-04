@@ -1,5 +1,5 @@
 // Sprint 6 + Step 7 (Analytics) + Step 8 (Profile Pic & Tagline)
-// Remember: index.html now has the deep‐mint gradient & dark‐grey cards.
+// Now uses the deep-mint gradient + dark-grey card from index.html.
 
 (function () {
     // LocalStorage Keys
@@ -69,7 +69,7 @@
         let linkRows = [];
 
         //
-        // 4) “Reset” Button: clear all stored data & reload
+        // 4) “Reset” Button: clear localStorage & reload
         //
         resetBtn.addEventListener('click', () => {
             localStorage.removeItem(HAS_VISITED_KEY);
@@ -78,7 +78,7 @@
         });
 
         //
-        // 5) On load → decide whether it’s first-time or returning
+        // 5) On load → decide first-time vs. returning
         //
         const hasVisited = localStorage.getItem(HAS_VISITED_KEY);
         const savedData = localStorage.getItem(STORAGE_KEY);
@@ -93,7 +93,7 @@
         localStorage.setItem(HAS_VISITED_KEY, 'true');
 
         //
-        // 6) Show “Welcome” with fade animation, then either Form or Output
+        // 6) Show “Welcome” (fade-in/out), then either form or output
         //
         function showWelcome(isReturning, hasSavedData) {
             welcomeScreen.classList.remove('hidden');
@@ -124,7 +124,7 @@
             formScreen.classList.remove('hidden');
             formScreen.classList.add('flex');
 
-            // Clear existing link rows
+            // Clear any existing link rows
             linksWrapper.innerHTML = '';
             linkRows = [];
 
@@ -145,7 +145,7 @@
         }
 
         //
-        // 8) Add a Link Row (optionally with prefill)
+        // 8) Add a Link Row (with optional prefill)
         //
         function addLinkRow(prefill = null) {
             const rowDiv = document.createElement('div');
@@ -208,7 +208,7 @@
                 }
             }
 
-            // Debounced URL validation
+            // Debounce URL validation
             let debounceTimer;
             urlInput.addEventListener('input', () => {
                 clearTimeout(debounceTimer);
@@ -317,7 +317,7 @@
         }
 
         //
-        // 10) “Generate” → Loader → Output (save + analytics)
+        // 10) “Generate” → Loader → Output (save data + analytics)
         //
         generateBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -380,14 +380,15 @@
         // 12) Render Output & “Back to Edit” (with Profile Pic & Tagline)
         //
         function renderOutput(data) {
-            // Profile picture (use fallback placeholder if empty/invalid)
+            // Profile picture: if valid URL, show it; otherwise hide element
             if (data.profilePic && isValidURL(data.profilePic)) {
                 outputProfilePic.src = data.profilePic;
+                outputProfilePic.classList.remove('hidden');
             } else {
-                outputProfilePic.src = 'https://via.placeholder.com/150/CCCCCC/555555?text=Avatar';
+                outputProfilePic.classList.add('hidden');
             }
 
-            // Tagline (hide if blank)
+            // Tagline: if nonempty, show it; otherwise hide
             if (data.tagline && data.tagline.trim().length > 0) {
                 outputTagline.textContent = data.tagline;
                 outputTagline.classList.remove('hidden');
@@ -395,7 +396,7 @@
                 outputTagline.classList.add('hidden');
             }
 
-            // Username (always shown)
+            // Username
             displayUsername.textContent = data.username || '@yourhandle';
 
             // Links
@@ -415,7 +416,7 @@
             linktreeScreen.classList.add('flex');
         }
 
-        // If returning + we have saved data, skip to output directly
+        // If returning + saved data exists, skip to output immediately
         function skipToOutput(data) {
             loaderScreen.classList.remove('hidden');
             loaderScreen.classList.add('flex');
@@ -426,7 +427,7 @@
             }, 300);
         }
 
-        // “Back to Edit” re‐populates the form
+        // “Back to Edit” re-populates the form with saved data
         backBtn.addEventListener('click', () => {
             const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
             showForm(saved);

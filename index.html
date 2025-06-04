@@ -4,27 +4,32 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Linktree Clone – Dark Card + Deeper Mint</title>
+    <title>Linktree Clone – Deep Mint + Dark Card</title>
 
-    <!-- 1) Tailwind Config must come BEFORE the CDN script -->
+    <!--
+    1) Correct Tailwind configuration:
+       We must assign window.tailwind = { config: { … } } *before* loading the CDN.
+  -->
     <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        // A deeper mint gradient for a stronger green feel
-                        mintDeepTop: '#9ED9B9',  /* darker than #B1EACB */
-                        mintDeepMiddle: '#B1EACB',
-                        mintDeepBot: '#9ED9B9'
+        window.tailwind = {
+            config: {
+                theme: {
+                    extend: {
+                        colors: {
+                            /* A deeper mint gradient */
+                            mintDeepTop: '#A0D9B5',  /* slightly darker than #B1EACB */
+                            mintDeepMiddle: '#B1EACB',
+                            mintDeepBot: '#A0D9B5'
+                        }
                     }
                 }
             }
-        }
+        };
     </script>
     <!-- 2) Load Tailwind from CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- 3) Font Awesome (no integrity/crossorigin to avoid blocking) -->
+    <!-- 3) Load Font Awesome (no integrity/crossorigin to avoid blocking) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <!-- 4) Fade animations (unchanged) -->
@@ -94,7 +99,7 @@
         }
     </style>
 
-    <!-- 5) Optional: style.css for any overrides -->
+    <!-- 5) Any additional overrides can go in style.css -->
     <link rel="stylesheet" href="style.css" />
 </head>
 
@@ -116,14 +121,13 @@
   -->
     <div id="welcome-screen" class="absolute inset-0 flex items-center justify-center bg-transparent overflow-hidden">
         <h1 id="welcome-text" class="text-3xl sm:text-4xl font-semibold text-black opacity-0">
-            <!-- Set dynamically via JS -->
             Welcome! Thanks for purchasing ✨
         </h1>
     </div>
 
     <!--
     ────────────────────────────────────────────────
-    2) Setup Form Screen (Dark‐Grey Card)
+    2) Setup Form Screen (Dark-Grey Card)
     ────────────────────────────────────────────────
   -->
     <div id="form-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
@@ -162,7 +166,7 @@
             <!-- Link Rows Container -->
             <div id="links-wrapper" class="mb-4 space-y-4">
                 <label class="block text-gray-300 mb-1">Your Links (min 1, max 10)</label>
-                <!-- JavaScript will inject link‐row blocks here -->
+                <!-- JS will inject link‐row blocks here -->
             </div>
 
             <!-- Add New Link Button -->
@@ -189,7 +193,7 @@
 
     <!--
     ────────────────────────────────────────────────
-    3) Loader Screen (Skeleton on Dark‐Grey)
+    3) Loader Screen (Skeleton on Dark-Grey)
     ────────────────────────────────────────────────
   -->
     <div id="loader-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
@@ -207,16 +211,16 @@
 
     <!--
     ────────────────────────────────────────────────
-    4) Linktree Output Screen (Dark‐Grey + Profile Pic + Tagline)
+    4) Linktree Output Screen (Dark-Grey + Profile Pic & Tagline)
     ────────────────────────────────────────────────
   -->
     <div id="linktree-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="relative w-full max-w-lg md:max-w-md bg-gray-800 rounded-2xl p-6 shadow-lg mx-auto">
             <!-- Profile Picture (circular) -->
             <img id="output-profile-pic" src="" alt="Profile Picture"
-                class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-gray-700" />
+                class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-2 border-gray-700 hidden" />
             <!-- Tagline (in italic, light gray) -->
-            <p id="output-tagline" class="text-gray-300 text-center mb-2 italic"></p>
+            <p id="output-tagline" class="text-gray-300 text-center mb-2 italic hidden"></p>
             <!-- Username (white) -->
             <h2 id="display-username" class="text-2xl font-bold text-white mb-4 text-center">
                 @username_goes_here
@@ -224,7 +228,7 @@
 
             <!-- Links Container -->
             <div id="links-container" class="space-y-3 mb-6">
-                <!-- JavaScript will inject buttons here -->
+                <!-- JS will inject buttons here -->
             </div>
 
             <!-- Back to Edit Button -->
@@ -235,7 +239,7 @@
         </div>
     </div>
 
-    <!-- 6) Link to our JavaScript (Step 7 & Step 8 already inlined there) -->
+    <!-- 6) Our JavaScript (includes analytics + profile pic/tagline logic) -->
     <script src="app.js"></script>
 </body>
 
