@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Linktree Clone – Sprint 6 + Analytics</title>
+    <title>Linktree Clone – Step 8 Added + Stronger Green</title>
 
     <!-- TailwindCSS CDN (light mode only) -->
     <script>
@@ -12,6 +12,7 @@
             theme: {
                 extend: {
                     colors: {
+                        // Keep original mint palette for reference if used elsewhere
                         mintLight: '#B1EACB',
                         mintMid: '#CCF0D7',
                         mintDark: '#E0FBFC'
@@ -94,15 +95,15 @@
         }
     </style>
 
+    <!-- You can keep style.css empty or add overrides if needed -->
     <link rel="stylesheet" href="style.css" />
 </head>
 
-<body class="h-full bg-gradient-to-b from-mintLight via-mintMid to-mintDark relative overflow-hidden">
-
+<body class="h-full bg-gradient-to-b from-[#ccf0d7] via-[#b1eacb] to-[#ccf0d7] relative overflow-hidden">
     <!--
-    ──────────────────────
-    Floating “Reset” Button
-    ──────────────────────
+    ────────────────────────────────────────────────────
+    Floating “Reset” Button (top-left)
+    ────────────────────────────────────────────────────
   -->
     <button id="reset-btn" aria-label="Clear local storage and reset"
         class="fixed top-4 left-4 z-50 bg-white text-gray-700 p-2 rounded-full shadow-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-rose-500">
@@ -110,21 +111,21 @@
     </button>
 
     <!--
-    ──────────────────────
+    ────────────────────────────────────────────────────
     1) Welcome Screen
-    ──────────────────────
+    ────────────────────────────────────────────────────
   -->
     <div id="welcome-screen" class="absolute inset-0 flex items-center justify-center bg-transparent overflow-hidden">
         <h1 id="welcome-text" class="text-3xl sm:text-4xl font-semibold text-black opacity-0">
-            <!-- Set by JS -->
+            <!-- Set dynamically via JS -->
             Welcome! Thanks for purchasing ✨
         </h1>
     </div>
 
     <!--
-    ──────────────────────
+    ────────────────────────────────────────────────────
     2) Setup Form Screen
-    ──────────────────────
+    ────────────────────────────────────────────────────
   -->
     <div id="form-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="relative w-full max-w-lg md:max-w-md bg-white rounded-2xl p-6 shadow-lg mx-auto">
@@ -162,7 +163,7 @@
             <!-- Link Rows Container -->
             <div id="links-wrapper" class="mb-4 space-y-4">
                 <label class="block text-gray-600 mb-1">Your Links (min 1, max 10)</label>
-                <!-- JS injects row blocks here -->
+                <!-- JavaScript will inject link‐row blocks here -->
             </div>
 
             <!-- Add New Link Button -->
@@ -188,9 +189,9 @@
     </div>
 
     <!--
-    ──────────────────────
+    ────────────────────────────────────────────────────
     3) Loader Screen
-    ──────────────────────
+    ────────────────────────────────────────────────────
   -->
     <div id="loader-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="w-full max-w-lg md:max-w-md bg-gray-800 rounded-2xl p-6 shadow-lg mx-auto space-y-4">
@@ -206,18 +207,22 @@
     </div>
 
     <!--
-    ──────────────────────
-    4) Linktree Output Screen
-    ──────────────────────
+    ────────────────────────────────────────────────────
+    4) Linktree Output Screen (with Profile Picture & Tagline)
+    ────────────────────────────────────────────────────
   -->
     <div id="linktree-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="relative w-full max-w-lg md:max-w-md bg-white rounded-2xl p-6 shadow-lg mx-auto">
-            <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center">Your Linktree Output</h2>
-            <!-- Announce readiness for screen readers -->
-            <div aria-live="assertive" class="sr-only">Your Linktree is ready</div>
-            <p id="display-username" class="text-gray-700 text-center mb-4">@username_goes_here</p>
+            <!-- Profile Picture -->
+            <img id="output-profile-pic" src="" alt="Profile Picture"
+                class="w-24 h-24 rounded-full mx-auto mb-4 object-cover" />
+            <!-- Tagline -->
+            <p id="output-tagline" class="text-gray-600 text-center mb-2 italic"></p>
+            <!-- Username -->
+            <h2 class="text-2xl font-bold text-gray-900 mb-4 text-center" id="display-username">@username_goes_here</h2>
+
             <div id="links-container" class="space-y-3 mb-6">
-                <!-- Buttons JS injects here -->
+                <!-- JavaScript will inject buttons here -->
             </div>
             <!-- Back to Edit Button -->
             <button id="back-btn"

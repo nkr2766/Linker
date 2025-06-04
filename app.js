@@ -1,10 +1,10 @@
-// Sprint 6 + Step 7 Analytics Hooks
+// Sprint 6 + Step 7 Analytics + Step 8 (Profile Pic & Tagline in Output)
 (function () {
     // LocalStorage Keys
     const STORAGE_KEY = 'linktreeData';
     const HAS_VISITED_KEY = 'hasVisited';
 
-    // Simple analytics stub (logs to console; debounced per event)
+    // Simple analytics stub (debounced event logging)
     function logEvent(eventName) {
         if (!window._analyticsDebounce) window._analyticsDebounce = {};
         if (window._analyticsDebounce[eventName]) return;
@@ -12,13 +12,13 @@
         console.log(`[Analytics] Event: ${eventName}`);
         window._analyticsDebounce[eventName] = true;
 
-        // Reset debounce after 500ms
+        // Reset debounce after 500 ms
         setTimeout(() => {
             window._analyticsDebounce[eventName] = false;
         }, 500);
     }
 
-    // Validates URL format
+    // URL validator
     function isValidURL(url) {
         try {
             const u = new URL(url);
@@ -27,7 +27,7 @@
             return false;
         }
     }
-    // Validates username starting with '@', 3–30 chars
+    // Username validator (starts with @, 3–30 chars)
     function isValidUsername(u) {
         return /^@[A-Za-z0-9_]{2,29}$/.test(u);
     }
@@ -55,7 +55,9 @@
         const errorUsername = document.getElementById('error-username');
         const errorLinks = document.getElementById('error-links');
 
-        // Loader/output
+        // Loader & output references
+        const outputProfilePic = document.getElementById('output-profile-pic');
+        const outputTagline = document.getElementById('output-tagline');
         const displayUsername = document.getElementById('display-username');
         const linksContainer = document.getElementById('links-container');
 
@@ -63,7 +65,7 @@
         let linkRows = [];
 
         //
-        // 1) “Reset” Button: clear stored data & reload
+        // 1) “Reset” Button: clear localStorage & reload
         //
         resetBtn.addEventListener('click', () => {
             localStorage.removeItem(HAS_VISITED_KEY);
@@ -72,7 +74,7 @@
         });
 
         //
-        // 2) On page load: decide “Welcome” vs. “Welcome back”
+        // 2) On load → decide first‐time vs. returning
         //
         const hasVisited = localStorage.getItem(HAS_VISITED_KEY);
         const savedData = localStorage.getItem(STORAGE_KEY);
@@ -87,7 +89,7 @@
         localStorage.setItem(HAS_VISITED_KEY, 'true');
 
         //
-        // 3) Show “Welcome” with fade in/out, then either form or output
+        // 3) Show “Welcome” with fade animation, then form or output
         //
         function showWelcome(isReturning, hasSavedData) {
             welcomeScreen.classList.remove('hidden');
@@ -118,7 +120,7 @@
             formScreen.classList.remove('hidden');
             formScreen.classList.add('flex');
 
-            // Clear any existing link rows
+            // Clear existing link rows
             linksWrapper.innerHTML = '';
             linkRows = [];
 
@@ -139,7 +141,7 @@
         }
 
         //
-        // 5) Add a Link Row (optionally with prefill)
+        // 5) Add a Link Row (with optional prefill)
         //
         function addLinkRow(prefill = null) {
             const rowDiv = document.createElement('div');
@@ -241,7 +243,7 @@
         });
 
         //
-        // 6) Input Validations (debounced where appropriate)
+        // 6) Input Validations (debounced)
         //
         function debounce(fn, delay) {
             let timer;
@@ -311,7 +313,7 @@
         }
 
         //
-        // 7) “Generate” → Loader → Output (save data & analytics)
+        // 7) “Generate” → Loader → Output (save data + analytics)
         //
         generateBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -371,10 +373,28 @@
         });
 
         //
-        // 9) Render Output & “Back to Edit”
+        // 9) Render Output & “Back to Edit” (with Profile Pic & Tagline)
         //
         function renderOutput(data) {
+            // Profile picture (fallback to placeholder if empty)
+            if (data.profilePic && isValidURL(data.profilePic)) {
+                outputProfilePic.src = data.profilePic;
+            } else {
+                outputProfilePic.src = 'https://via.placeholder.com/150?text=Avatar';
+            }
+
+            // Tagline (hide if blank)
+            if (data.tagline && data.tagline.trim().length > 0) {
+                outputTagline.textContent = data.tagline;
+                outputTagline.classList.remove('hidden');
+            } else {
+                outputTagline.classList.add('hidden');
+            }
+
+            // Username
             displayUsername.textContent = data.username || '@yourhandle';
+
+            // Links
             linksContainer.innerHTML = '';
             data.links.forEach(link => {
                 if (link.label && isValidURL(link.url)) {
@@ -386,10 +406,12 @@
                     linksContainer.appendChild(btn);
                 }
             });
+
             linktreeScreen.classList.remove('hidden');
             linktreeScreen.classList.add('flex');
         }
 
+        // If returning + we have saved data, skip straight to output
         function skipToOutput(data) {
             loaderScreen.classList.remove('hidden');
             loaderScreen.classList.add('flex');
@@ -400,6 +422,7 @@
             }, 300);
         }
 
+        // “Back to Edit” re‐populates the form
         backBtn.addEventListener('click', () => {
             const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
             showForm(saved);
