@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Linktree Clone – Sprint 5</title>
+    <title>Linktree Clone – Sprint 5 Enhanced</title>
 
     <!-- Enable class-based dark mode for Tailwind -->
     <script>
@@ -105,7 +105,24 @@
 
     <!--
     ───────────
-    1) Welcome Screen (unchanged)
+    Floating Buttons (Theme Toggle & Reset)
+    ───────────
+  -->
+    <!-- Clear & Reset Button (top-left) -->
+    <button id="reset-btn" aria-label="Clear local storage and reset"
+        class="fixed top-4 left-4 z-50 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 p-2 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-rose-500">
+        <i class="fa fa-rotate"></i>
+    </button>
+
+    <!-- Theme Toggle (top-right) -->
+    <button id="float-theme-toggle" aria-label="Toggle dark mode" aria-pressed="false"
+        class="fixed top-4 right-4 z-50 bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-300 p-2 rounded-full shadow-lg hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+        <i id="float-theme-icon" class="fa fa-moon text-xl"></i>
+    </button>
+
+    <!--
+    ───────────
+    1) Welcome Screen
     ───────────
   -->
     <div id="welcome-screen" class="absolute inset-0 flex items-center justify-center bg-transparent overflow-hidden">
@@ -122,12 +139,6 @@
   -->
     <div id="form-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-lg mx-auto">
-            <!-- Theme Toggle -->
-            <button id="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false"
-                class="absolute top-4 right-4 text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-full p-2">
-                <i id="theme-icon" class="fa fa-moon text-xl"></i>
-            </button>
-
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Set Up Your Linktree</h2>
 
             <!-- Profile Picture URL -->
@@ -212,12 +223,6 @@
   -->
     <div id="linktree-screen" class="hidden absolute inset-0 flex items-center justify-center px-4 overflow-auto">
         <div class="relative w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl p-6 shadow-lg mx-auto">
-            <!-- Theme Toggle -->
-            <button id="theme-toggle-output" aria-label="Toggle dark mode" aria-pressed="false"
-                class="absolute top-4 right-4 text-gray-600 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-full p-2">
-                <i id="theme-icon-output" class="fa fa-moon text-xl"></i>
-            </button>
-
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 text-center">Your Linktree Output</h2>
             <!-- Announce readiness for screen readers -->
             <div aria-live="assertive" class="sr-only">Your Linktree is ready</div>

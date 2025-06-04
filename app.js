@@ -1,4 +1,4 @@
-// Sprint 5: Theme Toggle & a11y enhancements
+// Sprint 5 Enhanced: Floating Theme Toggle + Clear & Reset + a11y
 (function () {
     // Screen references
     const welcomeScreen = document.getElementById('welcome-screen');
@@ -9,10 +9,9 @@
     const generateBtn = document.getElementById('generate-btn');
     const bypassBtn = document.getElementById('bypass-btn');
     const backBtn = document.getElementById('back-btn');
-    const themeToggle = document.getElementById('theme-toggle');
-    const themeToggleOutput = document.getElementById('theme-toggle-output');
-    const themeIcon = document.getElementById('theme-icon');
-    const themeIconOutput = document.getElementById('theme-icon-output');
+    const floatThemeToggle = document.getElementById('float-theme-toggle');
+    const floatThemeIcon = document.getElementById('float-theme-icon');
+    const resetBtn = document.getElementById('reset-btn');
 
     // Form field references
     const profilePicInput = document.getElementById('profile-pic');
@@ -50,7 +49,7 @@
     const HAS_VISITED_KEY = 'hasVisited';
     const THEME_STORAGE_KEY = 'theme'; // 'light' or 'dark'
 
-    // 1) On load, apply theme and show Welcome
+    // 1) On load: initialize theme, show welcome logic
     window.addEventListener('DOMContentLoaded', () => {
         initTheme();
 
@@ -67,16 +66,16 @@
         localStorage.setItem(HAS_VISITED_KEY, 'true');
     });
 
-    // 2) Theme Initialization
+    // 2) Initialize Theme
     function initTheme() {
         const stored = localStorage.getItem(THEME_STORAGE_KEY);
         const html = document.documentElement;
         if (stored === 'dark') {
             html.classList.add('dark');
-            updateThemeIcons('dark');
+            updateThemeIcon('dark');
         } else {
             html.classList.remove('dark');
-            updateThemeIcons('light');
+            updateThemeIcon('light');
         }
     }
 
@@ -86,34 +85,37 @@
         if (html.classList.contains('dark')) {
             html.classList.remove('dark');
             localStorage.setItem(THEME_STORAGE_KEY, 'light');
-            updateThemeIcons('light');
+            updateThemeIcon('light');
         } else {
             html.classList.add('dark');
             localStorage.setItem(THEME_STORAGE_KEY, 'dark');
-            updateThemeIcons('dark');
+            updateThemeIcon('dark');
         }
     }
 
-    // 4) Update the sun/moon icons and aria-pressed
-    function updateThemeIcons(current) {
+    // 4) Update the floating theme icon (sun ↔ moon) and aria-pressed
+    function updateThemeIcon(current) {
         if (current === 'dark') {
-            themeIcon.className = 'fa fa-sun text-xl';
-            themeToggle.setAttribute('aria-pressed', 'true');
-            themeIconOutput.className = 'fa fa-sun text-xl';
-            themeToggleOutput.setAttribute('aria-pressed', 'true');
+            floatThemeIcon.className = 'fa fa-sun text-xl';
+            floatThemeToggle.setAttribute('aria-pressed', 'true');
         } else {
-            themeIcon.className = 'fa fa-moon text-xl';
-            themeToggle.setAttribute('aria-pressed', 'false');
-            themeIconOutput.className = 'fa fa-moon text-xl';
-            themeToggleOutput.setAttribute('aria-pressed', 'false');
+            floatThemeIcon.className = 'fa fa-moon text-xl';
+            floatThemeToggle.setAttribute('aria-pressed', 'false');
         }
     }
 
-    // Attach theme toggle events
-    themeToggle.addEventListener('click', toggleTheme);
-    themeToggleOutput.addEventListener('click', toggleTheme);
+    // Attach floating theme toggle event
+    floatThemeToggle.addEventListener('click', toggleTheme);
 
-    // 5) Show Welcome: fade in (0.5s), hold (1.5s), then fade up & out (3s)
+    // 5) Reset Button: clear localStorage and reload page
+    resetBtn.addEventListener('click', () => {
+        localStorage.removeItem(HAS_VISITED_KEY);
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(THEME_STORAGE_KEY);
+        location.reload();
+    });
+
+    // 6) Show Welcome: fade in (0.5s), hold (1.5s), then fade up & out (3s)
     function showWelcome(isReturning, hasSavedData) {
         welcomeScreen.classList.remove('hidden');
         welcomeScreen.classList.add('flex');
@@ -133,7 +135,7 @@
         }, 2000);
     }
 
-    // 6) Show Form Screen (optionally with prefill data)
+    // 7) Show Form Screen (optionally prefill data)
     function showForm(prefillData = null) {
         welcomeScreen.classList.add('hidden');
         linktreeScreen.classList.add('hidden');
@@ -162,7 +164,7 @@
         updateGenerateButtonState();
     }
 
-    // 7) Add a New Link Row (optionally prefill a link object)
+    // 8) Add a New Link Row (optionally prefill a link object)
     function addLinkRow(prefill = null) {
         const rowDiv = document.createElement('div');
         rowDiv.className = 'space-y-1 bg-gray-100 dark:bg-gray-800 p-4 rounded-lg';
@@ -252,7 +254,7 @@
         updateGenerateButtonState();
     });
 
-    // 8) Input Validations
+    // 9) Input Validations
     profilePicInput.addEventListener('input', () => {
         const url = profilePicInput.value.trim();
         if (isValidURL(url)) {
@@ -290,7 +292,7 @@
         taglineCount.textContent = `${len}/100`;
     });
 
-    // 9) Enable/Disable Generate Button
+    // 10) Enable/Disable Generate Button
     function updateGenerateButtonState() {
         const picValid = isValidURL(profilePicInput.value.trim());
         const unameValid = isValidUsername(usernameInput.value.trim());
@@ -310,7 +312,7 @@
         }
     }
 
-    // 10) Show Linktree Output with Skeleton Loader (and save to localStorage)
+    // 11) Show Linktree Output with Skeleton Loader (and save to localStorage)
     generateBtn.addEventListener('click', (e) => {
         e.preventDefault();
         formScreen.classList.add('hidden');
@@ -340,7 +342,7 @@
         }, 300);
     });
 
-    // 11) Bypass (Testing) Button Logic
+    // 12) Bypass (Testing) Button Logic
     bypassBtn.addEventListener('click', () => {
         formScreen.classList.add('hidden');
         const placeholderData = {
@@ -363,7 +365,7 @@
         }, 300);
     });
 
-    // 12) Render Output Screen with “Back to Edit”
+    // 13) Render Output Screen with “Back to Edit”
     function renderOutput(data) {
         displayUsername.textContent = data.username || '@yourhandle';
         linksContainer.innerHTML = '';
@@ -381,7 +383,7 @@
         linktreeScreen.classList.add('flex');
     }
 
-    // 13) Skip to loader → output (used on returning visits)
+    // 14) Skip to loader → output (used on returning visits)
     function skipToOutput(data) {
         loaderScreen.classList.remove('hidden');
         loaderScreen.classList.add('flex');
@@ -392,10 +394,11 @@
         }, 300);
     }
 
-    // 14) Back to Edit Button Logic
+    // 15) Back to Edit Button Logic
     backBtn.addEventListener('click', () => {
         const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
         showForm(saved);
     });
+
 })();
   
