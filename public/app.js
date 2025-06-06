@@ -1,5 +1,4 @@
-
-// v7
+// v8
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -215,7 +214,9 @@ window.addEventListener("load", () => {
     setTimeout(() => {
         console.log("Starting fade");
         startupScreen.classList.add("reveal");
-        startupText.classList.add("reveal");
+        if (startupText) {
+            startupText.classList.add("reveal");
+        }
 
         // After the 0.5s fade, remove the overlay and initialize the app
         setTimeout(async () => {
