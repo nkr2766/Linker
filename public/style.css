@@ -92,3 +92,10 @@
         font-size: 1.1rem;
     }
 }
+
+/* Builder card scrolling on small screens */
+#form-screen .card-wrapper {
+    max-height: 80vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}

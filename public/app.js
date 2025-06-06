@@ -1,4 +1,4 @@
-// v11
+// v12
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -212,31 +212,33 @@ function escapeHTML(str) {
 // ───────────────────────────────────────────────────────────────────────────────
 window.addEventListener("load", () => {
     console.log("Welcome screen loaded");
-    // Wait 1s showing the welcome overlay, then reveal the page
+
     setTimeout(() => {
         console.log("Starting fade");
         startupScreen.classList.add("reveal");
-        if (startupText) {
-            startupText.classList.add("reveal");
-        }
-        // After the 6s fade, remove the overlay and initialize the app
-        setTimeout(async () => {
-            console.log("Fade complete, removing screen");
-            startupScreen.remove();
+        if (startupText) startupText.classList.add("reveal");
+    }, 1500);
 
-            if (getApps().length) {
-                try {
-                    console.log("Signing out");
-                    await signOut(auth);
-                } catch (e) {
-                    console.warn("Sign-out on load failed (maybe not signed in):", e);
-                }
+    const onEnd = async (e) => {
+        if (e.propertyName !== "clip-path") return;
+        startupScreen.removeEventListener("transitionend", onEnd);
+        console.log("Fade complete, removing screen");
+        startupScreen.remove();
+
+        if (getApps().length) {
+            try {
+                console.log("Signing out");
+                await signOut(auth);
+            } catch (err) {
+                console.warn("Sign-out on load failed (maybe not signed in):", err);
             }
+        }
 
-            console.log("Initializing app");
-            initApp();
-        }, 6000);
-    }, 1000);
+        console.log("Initializing app");
+        initApp();
+    };
+
+    startupScreen.addEventListener("transitionend", onEnd);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
