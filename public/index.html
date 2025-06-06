@@ -1,4 +1,4 @@
-<!-- v9 -->
+<!-- v10 -->
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 
@@ -33,7 +33,7 @@
             z-index: 50;
             overflow: hidden;
             clip-path: inset(0 0 0 0);
-            transition: clip-path 0.5s ease;
+            transition: clip-path 2s ease;
         }
 
         /* When we add “reveal", uncover from the top down */
@@ -46,7 +46,7 @@
             color: white;
             font-size: 2rem;
             transform: scale(1);
-            transition: transform 0.5s ease, color 0.5s ease;
+            transition: transform 2s ease, color 2s ease;
         }
 
         /* Scale up and switch to black during reveal */
@@ -333,7 +333,7 @@
     <!-- L) APP.JS (All the logic—auth, Firestore, UI flow, etc.)                      -->
     <!--────────────────────────────────────────────────────────────────────────────────-->
     <script type="module" src="app.js"></script>
-    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500">v9</div>
+    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500">v10</div>
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-// v8
+// v10
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -207,7 +207,7 @@ function escapeHTML(str) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// G) ON PAGE LOAD: Animate the “Welcome to Linker” fade (500ms delay → 1.5s fade)
+// G) ON PAGE LOAD: Animate the “Welcome to Linker” fade (500ms delay → 2s fade)
 //                 Then FORCE sign-out any existing user, then call initApp()
 // ───────────────────────────────────────────────────────────────────────────────
 window.addEventListener("load", () => {
@@ -219,8 +219,7 @@ window.addEventListener("load", () => {
         if (startupText) {
             startupText.classList.add("reveal");
         }
-
-        // After the 0.5s fade, remove the overlay and initialize the app
+        // After the 2s fade, remove the overlay and initialize the app
         setTimeout(async () => {
             console.log("Fade complete, removing screen");
             startupScreen.remove();
@@ -236,7 +235,7 @@ window.addEventListener("load", () => {
 
             console.log("Initializing app");
             initApp();
-        }, 500);
+        }, 2000);
     }, 1500);
 });
 
