@@ -564,6 +564,7 @@ function showBuilderForm(prefillData = null) {
         "fa-reddit",
     ].forEach((ic) => {
     });
+}
 
 // ───────────────────────────────────────────────────────────────────────────────
 // P) ADD A LINK ROW (optionally prefill). Builds the HTML elements + event listeners
@@ -1078,4 +1079,4 @@ resetBtn.addEventListener("click", async () => {
         console.error("Error signing out:", err);
     }
     location.reload();
-});}
+});
