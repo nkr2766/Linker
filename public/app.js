@@ -33,13 +33,13 @@ const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
 const DESKTOP_WELCOME_BLACK_DURATION_MS        = 1000;   // Black background static time (desktop)
 const DESKTOP_TEXT_APPEAR_DELAY_MS             = 0;      // Delay before text appears (desktop)
 const DESKTOP_TEXT_INITIAL_FONT_SIZE_PX        = 32;     // Starting font size of text (desktop)
-const DESKTOP_TEXT_FINAL_FONT_SIZE_PX          = 48;     // Final font size of text (desktop)
-const DESKTOP_TEXT_INITIAL_COLOR               = "#FFFFFF"; // Starting color of text (desktop)
-const DESKTOP_TEXT_FINAL_COLOR                 = "#000000"; // Ending color of text (desktop)
+const DESKTOP_TEXT_FINAL_FONT_SIZE_PX          = 130;     // Final font size of text (desktop)
+const DESKTOP_TEXT_INITIAL_COLOR               = "rgb(157, 212, 151)"; // Starting color of text (desktop)
+const DESKTOP_TEXT_FINAL_COLOR                 = "rgb(109, 168, 102)"; // Ending color of text (desktop)
 const DESKTOP_TEXT_SCALE_DURATION_MS           = 6000;   // Duration of text scale/color transition (desktop)
 const DESKTOP_TEXT_SCALE_EASING                = "ease-in-out"; // Easing for text scale/color (desktop)
 
-const DESKTOP_BACKGROUND_FADE_DURATION_MS      = 6000;   // Duration for black overlay fade (desktop)
+const DESKTOP_BACKGROUND_FADE_DURATION_MS      = 10000;   // Duration for black overlay fade (desktop)
 const DESKTOP_BACKGROUND_FADE_EASING           = "ease-in-out"; // Easing for background fade (desktop)
 
 const DESKTOP_TEXT_FADE_DELAY_BEFORE_BG_MS     = 0;      // Offset (ms) when text starts relative to bg fade
@@ -49,16 +49,16 @@ const DESKTOP_STARTUP_SCREEN_SELECTOR          = "#startup-screen"; // CSS selec
 const DESKTOP_STARTUP_TEXT_SELECTOR            = "#startup-text";   // CSS selector for welcome text
 
 // ─────────── Mobile Values ───────────
-const MOBILE_WELCOME_BLACK_DURATION_MS         = 250;    // Black background static time (mobile)
+const MOBILE_WELCOME_BLACK_DURATION_MS         = 1000;    // Black background static time (mobile)
 const MOBILE_TEXT_APPEAR_DELAY_MS              = 0;      // Delay before text appears (mobile)
 const MOBILE_TEXT_INITIAL_FONT_SIZE_PX         = 24;     // Starting font size of text (mobile)
-const MOBILE_TEXT_FINAL_FONT_SIZE_PX           = 36;     // Final font size of text (mobile)
-const MOBILE_TEXT_INITIAL_COLOR                = "#FFFFFF"; // Starting color of text (mobile)
-const MOBILE_TEXT_FINAL_COLOR                  = "#000000"; // Ending color of text (mobile)
-const MOBILE_TEXT_SCALE_DURATION_MS            = 3000;   // Duration of text scale/color transition (mobile)
+const MOBILE_TEXT_FINAL_FONT_SIZE_PX           = 65;     // Final font size of text (mobile)
+const MOBILE_TEXT_INITIAL_COLOR                = "rgb(157, 212, 151)"; // Starting color of text (mobile)
+const MOBILE_TEXT_FINAL_COLOR                  = "rgb(157, 212, 151)"; // Ending color of text (mobile)
+const MOBILE_TEXT_SCALE_DURATION_MS            = 6000;   // Duration of text scale/color transition (mobile)
 const MOBILE_TEXT_SCALE_EASING                 = "ease-in-out"; // Easing for text scale/color (mobile)
 
-const MOBILE_BACKGROUND_FADE_DURATION_MS       = 3000;   // Duration for black overlay fade (mobile)
+const MOBILE_BACKGROUND_FADE_DURATION_MS       = 10000;   // Duration for black overlay fade (mobile)
 const MOBILE_BACKGROUND_FADE_EASING            = "ease-in-out"; // Easing for background fade (mobile)
 
 const MOBILE_TEXT_FADE_DELAY_BEFORE_BG_MS      = 0;      // Offset (ms) when text starts relative to bg fade
