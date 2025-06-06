@@ -58,7 +58,7 @@ const MOBILE_TEXT_FINAL_COLOR = "rgb(136, 223, 149)"; // Final text color on mob
 const MOBILE_TEXT_SCALE_DURATION_MS = 3000;    // How long the text scales and recolors (ms) on mobile
 const MOBILE_TEXT_SCALE_EASING = "ease-in-out"; // Easing curve for text scale/color on mobile
 
-const MOBILE_BACKGROUND_FADE_DURATION_MS = 8000;  // How long the black overlay fades out (ms) on mobile
+const MOBILE_BACKGROUND_FADE_DURATION_MS = 0;  // How long the black overlay fades out (ms) on mobile
 const MOBILE_BACKGROUND_FADE_EASING = "ease-in-out"; // Easing curve for background fade on mobile
 
 const MOBILE_TEXT_FADE_DELAY_BEFORE_BG_MS = 0;    // Offset when text starts relative to bg fade (ms) on mobile
@@ -72,7 +72,7 @@ const MOBILE_STARTUP_TEXT_SELECTOR = "#startup-text";   // CSS selector for the 
 // CONFIGURATION: Main UI pop-up adjustment (desktop vs. mobile)
 // ───────────────────────────────────────────────────────────────────────────────
 const DESKTOP_UI_DELAY_ADJUSTMENT_MS = -6500;   // Add/subtract ms after fade ends before showing UI (desktop)
-const MOBILE_UI_DELAY_ADJUSTMENT_MS  = -5635;   // Add/subtract ms after fade ends before showing UI (mobile)
+const MOBILE_UI_DELAY_ADJUSTMENT_MS  = -10000;   // Add/subtract ms after fade ends before showing UI (mobile)
 // Use desktop or mobile adjustment depending on viewport
 const UI_DELAY_ADJUSTMENT_MS = IS_MOBILE
   ? MOBILE_UI_DELAY_ADJUSTMENT_MS
