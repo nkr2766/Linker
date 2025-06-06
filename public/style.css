@@ -120,6 +120,14 @@
 }
 
 /* Allow page scrolling on mobile when form is taller than viewport */
+=======
+/* Builder card scrolling on small screens */
+#form-screen .card-wrapper {
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 @media (max-width: 768px) {
     html,
     body {
