@@ -784,7 +784,6 @@ cardImageClearBtn.addEventListener("click", () => {
     cardImageInput.value = "";
 });
 
-
 // Username validation on blur
 formUsernameInput.addEventListener("blur", () => {
     let val = formUsernameInput.value.trim();
