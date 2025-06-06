@@ -1,4 +1,4 @@
-// v19
+// v20
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -1140,6 +1140,7 @@ downloadBtn.addEventListener("click", () => {
     text-align: center;
     max-width: 360px;
     width: 90%;
+    box-sizing: border-box;
   }
   img.profile {
     width: 128px;
