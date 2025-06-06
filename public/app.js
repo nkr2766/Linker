@@ -1,4 +1,5 @@
-// v6
+
+// v7
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -20,6 +21,8 @@ import {
     serverTimestamp,
     connectFirestoreEmulator
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+console.log("\uD83D\uDD25 app.js has loaded!");
 
 // ───────────────────────────────────────────────────────────────────────────────
 // B) FIREBASE CONFIGURATION
@@ -208,10 +211,11 @@ function escapeHTML(str) {
 // ───────────────────────────────────────────────────────────────────────────────
 window.addEventListener("load", () => {
     console.log("Welcome screen loaded");
-    // Wait 1.5s showing the welcome overlay, then fade it out
+    // Wait 1.5s showing the welcome overlay, then reveal the page
     setTimeout(() => {
         console.log("Starting fade");
-        startupScreen.classList.add("fade-out");
+        startupScreen.classList.add("reveal");
+        startupText.classList.add("reveal");
 
         // After the 0.5s fade, remove the overlay and initialize the app
         setTimeout(async () => {
