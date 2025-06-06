@@ -92,3 +92,37 @@
         font-size: 1.1rem;
     }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Builder Form "Card" Styles (scrollable, white background, rounded corners)
+   ───────────────────────────────────────────────────────────────────────────── */
+
+#form-screen .card-wrapper {
+    background-color: #ffffff;
+    border-radius: 12px;
+    padding: 16px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+
+    margin: 12px auto;
+    width: 95%;
+}
+
+@media (min-width: 640px) {
+    #form-screen .card-wrapper {
+        max-width: 500px;
+        width: 100%;
+        margin: 16px auto;
+    }
+}
+
+/* Allow page scrolling on mobile when form is taller than viewport */
+@media (max-width: 768px) {
+    html,
+    body {
+        overflow: auto;
+    }
+}
