@@ -1,4 +1,4 @@
-// v15
+// v16
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -23,43 +23,119 @@ import {
 
 console.log("\uD83D\uDD25 app.js has loaded!");
 // ─────────────────────────────────────────────────────────────────────────────
-// CONFIGURATION: Loading-screen timing for desktop vs. mobile
-// DESKTOP_WELCOME_STATIC_DURATION_MS = how long (ms) to keep black screen on desktop
-// DESKTOP_WELCOME_FADE_DURATION_MS   = how long (ms) to animate fade+text on desktop
-// DESKTOP_TEXT_SCALE_FACTOR          = final scale multiplier for the text on desktop
-//
-// MOBILE_WELCOME_STATIC_DURATION_MS  = how long (ms) to keep black screen on mobile
-// MOBILE_WELCOME_FADE_DURATION_MS    = how long (ms) to animate fade+text on mobile
-// MOBILE_TEXT_SCALE_FACTOR           = final scale multiplier for the text on mobile
+// CONFIGURATION: Welcome Screen / Loading Screen Editor
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Desktop values
-const DESKTOP_WELCOME_STATIC_DURATION_MS = 1000; // desktop static period
-const DESKTOP_WELCOME_FADE_DURATION_MS = 6000;   // desktop fade duration
-const DESKTOP_TEXT_SCALE_FACTOR = 1.5;           // desktop text scale
+// 1) Device Detection (no need to change)
+const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
 
-// Mobile values
-const MOBILE_WELCOME_STATIC_DURATION_MS = 250;   // mobile static period
-const MOBILE_WELCOME_FADE_DURATION_MS = 3000;    // mobile fade duration
-const MOBILE_TEXT_SCALE_FACTOR = 1.2;            // mobile text scale
+// ─────────── Desktop Values ───────────
+const DESKTOP_WELCOME_BLACK_DURATION_MS        = 1000;   // Black background static time (desktop)
+const DESKTOP_TEXT_APPEAR_DELAY_MS             = 0;      // Delay before text appears (desktop)
+const DESKTOP_TEXT_INITIAL_FONT_SIZE_PX        = 32;     // Starting font size of text (desktop)
+const DESKTOP_TEXT_FINAL_FONT_SIZE_PX          = 48;     // Final font size of text (desktop)
+const DESKTOP_TEXT_INITIAL_COLOR               = "#FFFFFF"; // Starting color of text (desktop)
+const DESKTOP_TEXT_FINAL_COLOR                 = "#000000"; // Ending color of text (desktop)
+const DESKTOP_TEXT_SCALE_DURATION_MS           = 6000;   // Duration of text scale/color transition (desktop)
+const DESKTOP_TEXT_SCALE_EASING                = "ease-in-out"; // Easing for text scale/color (desktop)
 
-// Detect mobile using viewport width
-const isMobile = window.matchMedia("(max-width: 768px)").matches;
+const DESKTOP_BACKGROUND_FADE_DURATION_MS      = 6000;   // Duration for black overlay fade (desktop)
+const DESKTOP_BACKGROUND_FADE_EASING           = "ease-in-out"; // Easing for background fade (desktop)
 
-// Final values used elsewhere
-const WELCOME_STATIC_DURATION_MS = isMobile ? MOBILE_WELCOME_STATIC_DURATION_MS : DESKTOP_WELCOME_STATIC_DURATION_MS;
-const WELCOME_FADE_DURATION_MS = isMobile ? MOBILE_WELCOME_FADE_DURATION_MS : DESKTOP_WELCOME_FADE_DURATION_MS;
-const WELCOME_TEXT_SCALE_FACTOR = isMobile ? MOBILE_TEXT_SCALE_FACTOR : DESKTOP_TEXT_SCALE_FACTOR;
+const DESKTOP_TEXT_FADE_DELAY_BEFORE_BG_MS     = 0;      // Offset (ms) when text starts relative to bg fade
+const DESKTOP_TEXT_STAY_DURATION_MS            = 0;      // Time (ms) to hold text at final state (desktop)
+
+const DESKTOP_STARTUP_SCREEN_SELECTOR          = "#startup-screen"; // CSS selector for overlay div
+const DESKTOP_STARTUP_TEXT_SELECTOR            = "#startup-text";   // CSS selector for welcome text
+
+// ─────────── Mobile Values ───────────
+const MOBILE_WELCOME_BLACK_DURATION_MS         = 250;    // Black background static time (mobile)
+const MOBILE_TEXT_APPEAR_DELAY_MS              = 0;      // Delay before text appears (mobile)
+const MOBILE_TEXT_INITIAL_FONT_SIZE_PX         = 24;     // Starting font size of text (mobile)
+const MOBILE_TEXT_FINAL_FONT_SIZE_PX           = 36;     // Final font size of text (mobile)
+const MOBILE_TEXT_INITIAL_COLOR                = "#FFFFFF"; // Starting color of text (mobile)
+const MOBILE_TEXT_FINAL_COLOR                  = "#000000"; // Ending color of text (mobile)
+const MOBILE_TEXT_SCALE_DURATION_MS            = 3000;   // Duration of text scale/color transition (mobile)
+const MOBILE_TEXT_SCALE_EASING                 = "ease-in-out"; // Easing for text scale/color (mobile)
+
+const MOBILE_BACKGROUND_FADE_DURATION_MS       = 3000;   // Duration for black overlay fade (mobile)
+const MOBILE_BACKGROUND_FADE_EASING            = "ease-in-out"; // Easing for background fade (mobile)
+
+const MOBILE_TEXT_FADE_DELAY_BEFORE_BG_MS      = 0;      // Offset (ms) when text starts relative to bg fade
+const MOBILE_TEXT_STAY_DURATION_MS             = 0;      // Time (ms) to hold text at final state (mobile)
+
+const MOBILE_STARTUP_SCREEN_SELECTOR           = "#startup-screen"; // CSS selector for overlay div
+const MOBILE_STARTUP_TEXT_SELECTOR             = "#startup-text";   // CSS selector for welcome text
+
+// ─────────────────────────────────────────────────────────────────────────────
+// SELECTED CONFIG VARIABLES (DO NOT EDIT BELOW)
+// ─────────────────────────────────────────────────────────────────────────────
+const WELCOME_BLACK_DURATION_MS     = IS_MOBILE
+  ? MOBILE_WELCOME_BLACK_DURATION_MS
+  : DESKTOP_WELCOME_BLACK_DURATION_MS;
+
+const TEXT_APPEAR_DELAY_MS          = IS_MOBILE
+  ? MOBILE_TEXT_APPEAR_DELAY_MS
+  : DESKTOP_TEXT_APPEAR_DELAY_MS;
+
+const TEXT_INITIAL_FONT_SIZE_PX     = IS_MOBILE
+  ? MOBILE_TEXT_INITIAL_FONT_SIZE_PX
+  : DESKTOP_TEXT_INITIAL_FONT_SIZE_PX;
+
+const TEXT_FINAL_FONT_SIZE_PX       = IS_MOBILE
+  ? MOBILE_TEXT_FINAL_FONT_SIZE_PX
+  : DESKTOP_TEXT_FINAL_FONT_SIZE_PX;
+
+const TEXT_INITIAL_COLOR            = IS_MOBILE
+  ? MOBILE_TEXT_INITIAL_COLOR
+  : DESKTOP_TEXT_INITIAL_COLOR;
+
+const TEXT_FINAL_COLOR              = IS_MOBILE
+  ? MOBILE_TEXT_FINAL_COLOR
+  : DESKTOP_TEXT_FINAL_COLOR;
+
+const TEXT_SCALE_DURATION_MS        = IS_MOBILE
+  ? MOBILE_TEXT_SCALE_DURATION_MS
+  : DESKTOP_TEXT_SCALE_DURATION_MS;
+
+const TEXT_SCALE_EASING             = IS_MOBILE
+  ? MOBILE_TEXT_SCALE_EASING
+  : DESKTOP_TEXT_SCALE_EASING;
+
+const BACKGROUND_FADE_DURATION_MS   = IS_MOBILE
+  ? MOBILE_BACKGROUND_FADE_DURATION_MS
+  : DESKTOP_BACKGROUND_FADE_DURATION_MS;
+
+const BACKGROUND_FADE_EASING        = IS_MOBILE
+  ? MOBILE_BACKGROUND_FADE_EASING
+  : DESKTOP_BACKGROUND_FADE_EASING;
+
+const TEXT_FADE_DELAY_BEFORE_BG_MS  = IS_MOBILE
+  ? MOBILE_TEXT_FADE_DELAY_BEFORE_BG_MS
+  : DESKTOP_TEXT_FADE_DELAY_BEFORE_BG_MS;
+
+const TEXT_STAY_DURATION_MS         = IS_MOBILE
+  ? MOBILE_TEXT_STAY_DURATION_MS
+  : DESKTOP_TEXT_STAY_DURATION_MS;
+
+const STARTUP_SCREEN_SELECTOR       = IS_MOBILE
+  ? MOBILE_STARTUP_SCREEN_SELECTOR
+  : DESKTOP_STARTUP_SCREEN_SELECTOR;
+
+const STARTUP_TEXT_SELECTOR         = IS_MOBILE
+  ? MOBILE_STARTUP_TEXT_SELECTOR
+  : DESKTOP_STARTUP_TEXT_SELECTOR;
+
+// Optional: Skip animation entirely (debug only)
+const SKIP_WELCOME_ANIMATION = false;
 
 const SIGNUP_SUCCESS_DELAY_MS    = 1200;   // Pause after account creation before continuing
 const WELCOME_BANNER_DURATION_MS = 2500;   // How long the post-login banner stays visible
 const WELCOME_BANNER_FADE_MS     = 300;    // Fade duration for the banner
 const LOADER_SPINNER_DURATION_MS = 300;    // Length of the loading spinner
 
-
-const fadeDurationSeconds = `${WELCOME_FADE_DURATION_MS / 1000}s`;
+const fadeDurationSeconds = (BACKGROUND_FADE_DURATION_MS / 1000) + "s";
 document.documentElement.style.setProperty("--welcome-fade-duration", fadeDurationSeconds);
-document.documentElement.style.setProperty("--welcome-text-scale", WELCOME_TEXT_SCALE_FACTOR);
 
 // ───────────────────────────────────────────────────────────────────────────────
 // B) FIREBASE CONFIGURATION
@@ -115,7 +191,8 @@ let cardImageDataURL = "";
 // E) UI ELEMENT REFERENCES
 // ───────────────────────────────────────────────────────────────────────────────
 // (These IDs must match exactly what’s in index.html—don’t rename!)
-const startupScreen = document.getElementById("startup-screen");
+const startupScreen = document.querySelector(STARTUP_SCREEN_SELECTOR);
+const startupText = document.querySelector(STARTUP_TEXT_SELECTOR);
 const resetBtn = document.getElementById("reset-btn");
 
 const loginScreen = document.getElementById("login-screen");
@@ -250,28 +327,56 @@ function escapeHTML(str) {
 // ───────────────────────────────────────────────────────────────────────────────
 window.addEventListener("load", () => {
     console.log("Welcome screen loaded");
-    setTimeout(() => {
-        console.log("Starting fade");
-        startupScreen.classList.add("reveal");
-        if (startupText) startupText.classList.add("reveal");
 
+    if (SKIP_WELCOME_ANIMATION) {
+        startupScreen.remove();
+        signOut(auth).finally(() => initApp());
+        return;
+    }
+
+    // Apply initial text styles
+    if (startupText) {
+        startupText.style.fontSize = `${TEXT_INITIAL_FONT_SIZE_PX}px`;
+        startupText.style.color = TEXT_INITIAL_COLOR;
+        startupText.style.transform = "scale(1)";
+    }
+
+    // Wait for the black screen duration
+    setTimeout(() => {
+        console.log("Starting text animation");
+
+        // Optionally delay text appearance relative to background fade
+        setTimeout(() => {
+            if (startupText) {
+                startupText.style.fontSize = `${TEXT_FINAL_FONT_SIZE_PX}px`;
+                startupText.style.color = TEXT_FINAL_COLOR;
+                const scaleFactor = TEXT_FINAL_FONT_SIZE_PX / TEXT_INITIAL_FONT_SIZE_PX;
+                startupText.style.transform = `scale(${scaleFactor})`;
+            }
+        }, TEXT_APPEAR_DELAY_MS);
+
+        // Start background fade
+        startupScreen.classList.add("reveal");
+        console.log("Background fade-out started");
+
+        // Wait for fade duration before removing overlay
         setTimeout(async () => {
-            console.log("Fade complete, removing screen");
+            console.log("Fade complete, removing overlay");
             startupScreen.remove();
 
+            console.log("Signing out");
             if (getApps().length) {
                 try {
-                    console.log("Signing out");
                     await signOut(auth);
                 } catch (err) {
-                    console.warn("Sign-out on load failed (maybe not signed in):", err);
+                    console.warn(err);
                 }
             }
 
             console.log("Initializing app");
             initApp();
-        }, WELCOME_FADE_DURATION_MS);
-    }, WELCOME_STATIC_DURATION_MS);
+        }, BACKGROUND_FADE_DURATION_MS);
+    }, WELCOME_BLACK_DURATION_MS);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────

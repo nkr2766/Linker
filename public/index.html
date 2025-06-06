@@ -1,4 +1,4 @@
-<!-- v15 -->
+<!-- v16 -->
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 
@@ -18,8 +18,7 @@
     <style>
         /* ────────────────────────────────────────────────────── */
         :root {
-            --welcome-fade-duration: 6s; /* Keep in sync with WELCOME_FADE_DURATION_MS */
-            --welcome-text-scale: 1.5; /* Final scale for welcome text */
+            --welcome-fade-duration: 6s; /* Overwritten by JS */
         }
 
         /*  Startup / Fade Animations:                          */
@@ -56,7 +55,6 @@
 
         /* Scale up and switch to black during reveal */
         #startup-text.reveal {
-            transform: scale(var(--welcome-text-scale));
             color: black;
         }
     </style>
@@ -338,7 +336,7 @@
     <!-- L) APP.JS (All the logic—auth, Firestore, UI flow, etc.)                      -->
     <!--────────────────────────────────────────────────────────────────────────────────-->
     <script type="module" src="app.js"></script>
-    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500">v15</div>
+    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500">v16</div>
 </body>
 
 </html>
