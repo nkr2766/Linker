@@ -1,4 +1,4 @@
-// v13
+// v14
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -22,6 +22,20 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 console.log("\uD83D\uDD25 app.js has loaded!");
+// ─────────────────────────────────────────────────────────────────────────────
+// CONFIGURATION: Easy variables for loading-screen behavior
+// ─────────────────────────────────────────────────────────────────────────────
+const WELCOME_STATIC_DURATION_MS = 1500;   // How long the black "Welcome to Linker" stays static
+const WELCOME_FADE_DURATION_MS   = 6000;   // Duration of the fade-out and text animation
+const WELCOME_TEXT_SCALE_FACTOR  = 1.5;    // Final scale for "Welcome to Linker" text
+const SIGNUP_SUCCESS_DELAY_MS    = 1200;   // Pause after account creation before continuing
+const WELCOME_BANNER_DURATION_MS = 2500;   // How long the post-login banner stays visible
+const WELCOME_BANNER_FADE_MS     = 300;    // Fade duration for the banner
+const LOADER_SPINNER_DURATION_MS = 300;    // Length of the loading spinner
+
+
+document.documentElement.style.setProperty("--welcome-fade-duration", `${WELCOME_FADE_DURATION_MS}ms`);
+document.documentElement.style.setProperty("--welcome-text-scale", WELCOME_TEXT_SCALE_FACTOR);
 
 // ───────────────────────────────────────────────────────────────────────────────
 // B) FIREBASE CONFIGURATION
@@ -217,7 +231,7 @@ window.addEventListener("load", () => {
         console.log("Starting fade");
         startupScreen.classList.add("reveal");
         if (startupText) startupText.classList.add("reveal");
-    }, 1500);
+    }, WELCOME_STATIC_DURATION_MS);
 
     const onEnd = async (e) => {
         if (e.propertyName !== "clip-path") return;
@@ -443,7 +457,7 @@ signupSubmit.addEventListener("click", async () => {
         setTimeout(() => {
             hideAllScreens();
             startAppFlow(email);
-        }, 1200);
+        }, SIGNUP_SUCCESS_DELAY_MS);
     } catch (err) {
         console.error("Error creating user:", err);
         signupCodeError.textContent = "Signup failed—email may already be in use.";
@@ -475,9 +489,9 @@ async function startAppFlow(currentEmail) {
 
     // Fade banner in/out:
     welcomeText.classList.remove("opacity-0");    // show it
-    await delay(2500);                            // keep it visible 2.5s
+    await delay(WELCOME_BANNER_DURATION_MS);                            // keep it visible 2.5s
     welcomeText.classList.add("opacity-0");       // fade it out
-    await delay(300);                             // wait 0.3s for fade to complete
+    await delay(WELCOME_BANNER_FADE_MS);                             // wait 0.3s for fade to complete
     // Hide the welcome overlay before proceeding
     welcomeScreen.classList.add("hidden");
     welcomeScreen.classList.remove("flex");
@@ -493,7 +507,7 @@ async function startAppFlow(currentEmail) {
     if (savedData) {
         loaderScreen.classList.remove("hidden");
         loaderScreen.classList.add("flex");
-        await delay(300);                           // spinner for 0.3s
+        await delay(LOADER_SPINNER_DURATION_MS);                           // spinner for 0.3s
         loaderScreen.classList.add("hidden");
         loaderScreen.classList.remove("flex");
         renderOutput(savedData);
@@ -882,7 +896,7 @@ generateBtn.addEventListener("click", async (e) => {
 
     loaderScreen.classList.remove("hidden");
     loaderScreen.classList.add("flex");
-    await delay(300);
+    await delay(LOADER_SPINNER_DURATION_MS);
     loaderScreen.classList.add("hidden");
     loaderScreen.classList.remove("flex");
     renderOutput(data);
