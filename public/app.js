@@ -1,4 +1,4 @@
-// v20
+// v21
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -71,8 +71,8 @@ const MOBILE_STARTUP_TEXT_SELECTOR = "#startup-text";   // CSS selector for the 
 // ───────────────────────────────────────────────────────────────────────────────
 // CONFIGURATION: Main UI pop-up adjustment (desktop vs. mobile)
 // ───────────────────────────────────────────────────────────────────────────────
-const DESKTOP_UI_DELAY_ADJUSTMENT_MS = -6000;    // Add/subtract ms after fadeends before showing UI (desktop)
-const MOBILE_UI_DELAY_ADJUSTMENT_MS  = 0;    // Add/subtract ms after fadeends before showing UI (mobile)
+const DESKTOP_UI_DELAY_ADJUSTMENT_MS = -6500;   // Add/subtract ms after fade ends before showing UI (desktop)
+const MOBILE_UI_DELAY_ADJUSTMENT_MS  = -5635;   // Add/subtract ms after fade ends before showing UI (mobile)
 // Use desktop or mobile adjustment depending on viewport
 const UI_DELAY_ADJUSTMENT_MS = IS_MOBILE
   ? MOBILE_UI_DELAY_ADJUSTMENT_MS
@@ -344,34 +344,73 @@ window.addEventListener("load", () => {
         return;
     }
 
-    // Apply initial text styles and force layout so transition starts from these values
-    if (startupText) {
-        startupText.style.fontSize = `${TEXT_INITIAL_FONT_SIZE_PX}px`;
-        startupText.style.color = TEXT_INITIAL_COLOR;
-        void startupText.offsetWidth; // force reflow
+    if (!IS_MOBILE) {
+        if (startupText) {
+            startupText.style.fontSize = `${TEXT_INITIAL_FONT_SIZE_PX}px`;
+            startupText.style.color = TEXT_INITIAL_COLOR;
+            void startupText.offsetWidth;
+        }
+
+        setTimeout(() => {
+            console.log("Starting text animation");
+
+            setTimeout(() => {
+                if (startupText) {
+                    startupText.style.fontSize = `${TEXT_FINAL_FONT_SIZE_PX}px`;
+                    startupText.style.color = TEXT_FINAL_COLOR;
+                }
+            }, TEXT_APPEAR_DELAY_MS);
+
+            startupScreen.classList.add("reveal");
+            console.log("Background fade-out started");
+
+            setTimeout(async () => {
+                console.log("Fade complete, removing overlay");
+                startupScreen.remove();
+
+                console.log("Signing out");
+                if (getApps().length) {
+                    try {
+                        await signOut(auth);
+                    } catch (err) {
+                        console.warn(err);
+                    }
+                }
+
+                console.log("Initializing app");
+                initApp();
+            }, BACKGROUND_FADE_DURATION_MS + UI_DELAY_ADJUSTMENT_MS);
+        }, WELCOME_BLACK_DURATION_MS);
+
+        return;
     }
 
-    // Wait for the black screen duration
+    // ─────────── MOBILE FLOW ───────────
     setTimeout(() => {
         console.log("Starting text animation");
+        if (startupText) {
+            startupText.style.fontSize = `${MOBILE_TEXT_INITIAL_FONT_SIZE_PX}px`;
+            startupText.style.color = MOBILE_TEXT_INITIAL_COLOR;
+            startupText.style.transition =
+                `font-size ${MOBILE_TEXT_SCALE_DURATION_MS}ms ease-in-out, ` +
+                `color ${MOBILE_TEXT_SCALE_DURATION_MS}ms ease-in-out`;
+            void startupText.offsetWidth;
+            startupText.style.fontSize = `${MOBILE_TEXT_FINAL_FONT_SIZE_PX}px`;
+            startupText.style.color = MOBILE_TEXT_FINAL_COLOR;
+        }
 
-        // Optionally delay text appearance relative to background fade
-        setTimeout(() => {
-            if (startupText) {
-                startupText.style.fontSize = `${TEXT_FINAL_FONT_SIZE_PX}px`;
-                startupText.style.color = TEXT_FINAL_COLOR;
-            }
-        }, TEXT_APPEAR_DELAY_MS);
-
-        // Start background fade
-        startupScreen.classList.add("reveal");
-        console.log("Background fade-out started");
-
-        // Wait for fade duration before removing overlay
         setTimeout(async () => {
-            console.log("Fade complete, removing overlay");
-            startupScreen.remove();
+            const screen = document.querySelector(MOBILE_STARTUP_SCREEN_SELECTOR);
+            if (screen) {
+                screen.style.transition = "";
+                screen.style.backgroundColor = MOBILE_TEXT_FINAL_COLOR;
+                screen.remove();
+            }
 
+            const form = document.getElementById("form-screen");
+            if (form) form.style.backgroundColor = MOBILE_TEXT_FINAL_COLOR;
+
+            console.log("Fade complete, removing overlay");
             console.log("Signing out");
             if (getApps().length) {
                 try {
@@ -383,8 +422,8 @@ window.addEventListener("load", () => {
 
             console.log("Initializing app");
             initApp();
-        }, BACKGROUND_FADE_DURATION_MS + UI_DELAY_ADJUSTMENT_MS);
-    }, WELCOME_BLACK_DURATION_MS);
+        }, MOBILE_TEXT_SCALE_DURATION_MS + MOBILE_UI_DELAY_ADJUSTMENT_MS);
+    }, MOBILE_WELCOME_BLACK_DURATION_MS);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
