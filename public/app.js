@@ -555,6 +555,7 @@ function showBuilderForm(prefillData = null) {
         "fa-discord",
         "fa-reddit",
     ].forEach((ic) => {
+    });
 
 // ───────────────────────────────────────────────────────────────────────────────
 // P) ADD A LINK ROW (optionally prefill). Builds the HTML elements + event listeners
@@ -830,13 +831,6 @@ function updateGenerateButtonState() {
         generateBtn.classList.add("bg-emerald-500", "text-white", "hover:bg-emerald-600");
     } else {
         generateBtn.setAttribute("disabled", "true");
-    try {
-        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(data));
-    } catch (err) {
-        console.warn("LocalStorage quota exceeded, stripping images", err);
-        const tmp = { ...data, profilePic: "", cardImage: "" };
-        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(tmp));
-    }
         generateBtn.classList.add("bg-gray-600", "text-gray-300", "cursor-not-allowed");
     }
 }
@@ -1076,4 +1070,4 @@ resetBtn.addEventListener("click", async () => {
         console.error("Error signing out:", err);
     }
     location.reload();
-});
+});}
