@@ -92,3 +92,18 @@
         font-size: 1.1rem;
     }
 }
+
+/* Builder card scrolling on small screens */
+#form-screen .card-wrapper {
+    max-height: 90vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Ensure page scrolls on mobile when form is taller than viewport */
+@media (max-width: 768px) {
+    html,
+    body {
+        overflow: auto;
+    }
+}
