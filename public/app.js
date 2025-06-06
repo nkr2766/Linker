@@ -1,4 +1,4 @@
-// v9
+// v8
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -146,6 +146,8 @@ const outputTagline = document.getElementById("output-tagline");
 const linksContainer = document.getElementById("links-container");
 const backBtn = document.getElementById("back-btn");
 const downloadBtn = document.getElementById("download-btn");
+const startupText = document.getElementById("startup-text");
+
 
 // ───────────────────────────────────────────────────────────────────────────────
 // F) UTILITY HELPERS
