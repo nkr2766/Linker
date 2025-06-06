@@ -1,4 +1,4 @@
-// v16
+// v17
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -334,11 +334,12 @@ window.addEventListener("load", () => {
         return;
     }
 
-    // Apply initial text styles
+
+    // Apply initial text styles and force layout so transition starts from these values
     if (startupText) {
         startupText.style.fontSize = `${TEXT_INITIAL_FONT_SIZE_PX}px`;
         startupText.style.color = TEXT_INITIAL_COLOR;
-        startupText.style.transform = "scale(1)";
+        void startupText.offsetWidth; // force reflow
     }
 
     // Wait for the black screen duration
@@ -350,8 +351,6 @@ window.addEventListener("load", () => {
             if (startupText) {
                 startupText.style.fontSize = `${TEXT_FINAL_FONT_SIZE_PX}px`;
                 startupText.style.color = TEXT_FINAL_COLOR;
-                const scaleFactor = TEXT_FINAL_FONT_SIZE_PX / TEXT_INITIAL_FONT_SIZE_PX;
-                startupText.style.transform = `scale(${scaleFactor})`;
             }
         }, TEXT_APPEAR_DELAY_MS);
 
