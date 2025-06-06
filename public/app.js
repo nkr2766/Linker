@@ -1,4 +1,4 @@
-// v21
+// v22
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -690,10 +690,20 @@ async function startAppFlow(currentEmail) {
 // ───────────────────────────────────────────────────────────────────────────────
 // O) SHOW BUILDER FORM (prefill if saved)                                        //
 // ───────────────────────────────────────────────────────────────────────────────
+function updateFormGradient() {
+    const start = gradientStartInput.value || "#a7f3d0";
+    const end = gradientEndInput.value || "#6ee7b7";
+    formScreen.style.background = `linear-gradient(to bottom right, ${start}, ${end})`;
+}
+gradientStartInput.addEventListener("input", updateFormGradient);
+gradientEndInput.addEventListener("input", updateFormGradient);
+
 function showBuilderForm(prefillData = null) {
     hideAllScreens();
     formScreen.classList.remove("hidden");
     formScreen.classList.add("flex");
+
+    updateFormGradient();
 
     // Reset state
     linksWrapper.innerHTML = "";
