@@ -120,7 +120,7 @@
     padding: 24px 20px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
     max-height: 90vh;
-    width: 100%;
+    width: 95%;
     max-width: 500px;
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
@@ -168,7 +168,8 @@
 @media (max-width: 640px) {
     .card-wrapper {
         max-width: 100%;
-        margin: 0 auto;
+        width: 90%;
+        margin: 20px auto;
         padding: 20px 16px;
     }
 }
