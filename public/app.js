@@ -208,7 +208,8 @@ function escapeHTML(str) {
 // G) ON PAGE LOAD: Animate the “Welcome to Linker” fade (500ms delay → 1.5s fade)
 //                 Then FORCE sign-out any existing user, then call initApp()
 // ───────────────────────────────────────────────────────────────────────────────
-window.addEventListener("DOMContentLoaded", () => {
+
+window.addEventListener("load", () => {
     // Wait 1.5s showing the welcome overlay, then fade it out
     setTimeout(() => {
         startupScreen.classList.add("fade-out");
