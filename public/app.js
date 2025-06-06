@@ -1,4 +1,4 @@
-// v14
+// v15
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -23,18 +23,42 @@ import {
 
 console.log("\uD83D\uDD25 app.js has loaded!");
 // ─────────────────────────────────────────────────────────────────────────────
-// CONFIGURATION: Easy variables for loading-screen behavior
+// CONFIGURATION: Loading-screen timing for desktop vs. mobile
+// DESKTOP_WELCOME_STATIC_DURATION_MS = how long (ms) to keep black screen on desktop
+// DESKTOP_WELCOME_FADE_DURATION_MS   = how long (ms) to animate fade+text on desktop
+// DESKTOP_TEXT_SCALE_FACTOR          = final scale multiplier for the text on desktop
+//
+// MOBILE_WELCOME_STATIC_DURATION_MS  = how long (ms) to keep black screen on mobile
+// MOBILE_WELCOME_FADE_DURATION_MS    = how long (ms) to animate fade+text on mobile
+// MOBILE_TEXT_SCALE_FACTOR           = final scale multiplier for the text on mobile
 // ─────────────────────────────────────────────────────────────────────────────
-const WELCOME_STATIC_DURATION_MS = 1500;   // How long the black "Welcome to Linker" stays static
-const WELCOME_FADE_DURATION_MS   = 6000;   // Duration of the fade-out and text animation
-const WELCOME_TEXT_SCALE_FACTOR  = 1.5;    // Final scale for "Welcome to Linker" text
+
+// Desktop values
+const DESKTOP_WELCOME_STATIC_DURATION_MS = 1000; // desktop static period
+const DESKTOP_WELCOME_FADE_DURATION_MS = 6000;   // desktop fade duration
+const DESKTOP_TEXT_SCALE_FACTOR = 1.5;           // desktop text scale
+
+// Mobile values
+const MOBILE_WELCOME_STATIC_DURATION_MS = 250;   // mobile static period
+const MOBILE_WELCOME_FADE_DURATION_MS = 3000;    // mobile fade duration
+const MOBILE_TEXT_SCALE_FACTOR = 1.2;            // mobile text scale
+
+// Detect mobile using viewport width
+const isMobile = window.matchMedia("(max-width: 768px)").matches;
+
+// Final values used elsewhere
+const WELCOME_STATIC_DURATION_MS = isMobile ? MOBILE_WELCOME_STATIC_DURATION_MS : DESKTOP_WELCOME_STATIC_DURATION_MS;
+const WELCOME_FADE_DURATION_MS = isMobile ? MOBILE_WELCOME_FADE_DURATION_MS : DESKTOP_WELCOME_FADE_DURATION_MS;
+const WELCOME_TEXT_SCALE_FACTOR = isMobile ? MOBILE_TEXT_SCALE_FACTOR : DESKTOP_TEXT_SCALE_FACTOR;
+
 const SIGNUP_SUCCESS_DELAY_MS    = 1200;   // Pause after account creation before continuing
 const WELCOME_BANNER_DURATION_MS = 2500;   // How long the post-login banner stays visible
 const WELCOME_BANNER_FADE_MS     = 300;    // Fade duration for the banner
 const LOADER_SPINNER_DURATION_MS = 300;    // Length of the loading spinner
 
 
-document.documentElement.style.setProperty("--welcome-fade-duration", `${WELCOME_FADE_DURATION_MS}ms`);
+const fadeDurationSeconds = `${WELCOME_FADE_DURATION_MS / 1000}s`;
+document.documentElement.style.setProperty("--welcome-fade-duration", fadeDurationSeconds);
 document.documentElement.style.setProperty("--welcome-text-scale", WELCOME_TEXT_SCALE_FACTOR);
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -226,33 +250,28 @@ function escapeHTML(str) {
 // ───────────────────────────────────────────────────────────────────────────────
 window.addEventListener("load", () => {
     console.log("Welcome screen loaded");
-
     setTimeout(() => {
         console.log("Starting fade");
         startupScreen.classList.add("reveal");
         if (startupText) startupText.classList.add("reveal");
-    }, WELCOME_STATIC_DURATION_MS);
 
-    const onEnd = async (e) => {
-        if (e.propertyName !== "clip-path") return;
-        startupScreen.removeEventListener("transitionend", onEnd);
-        console.log("Fade complete, removing screen");
-        startupScreen.remove();
+        setTimeout(async () => {
+            console.log("Fade complete, removing screen");
+            startupScreen.remove();
 
-        if (getApps().length) {
-            try {
-                console.log("Signing out");
-                await signOut(auth);
-            } catch (err) {
-                console.warn("Sign-out on load failed (maybe not signed in):", err);
+            if (getApps().length) {
+                try {
+                    console.log("Signing out");
+                    await signOut(auth);
+                } catch (err) {
+                    console.warn("Sign-out on load failed (maybe not signed in):", err);
+                }
             }
-        }
 
-        console.log("Initializing app");
-        initApp();
-    };
-
-    startupScreen.addEventListener("transitionend", onEnd);
+            console.log("Initializing app");
+            initApp();
+        }, WELCOME_FADE_DURATION_MS);
+    }, WELCOME_STATIC_DURATION_MS);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
