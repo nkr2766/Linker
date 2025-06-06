@@ -1,7 +1,7 @@
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
 import {
     getAuth,
@@ -208,20 +208,28 @@ function escapeHTML(str) {
 // G) ON PAGE LOAD: Animate the “Welcome to Linker” fade (500ms delay → 1.5s fade)
 //                 Then FORCE sign-out any existing user, then call initApp()
 // ───────────────────────────────────────────────────────────────────────────────
-
 window.addEventListener("load", () => {
+    console.log("Welcome screen loaded");
     // Wait 1.5s showing the welcome overlay, then fade it out
     setTimeout(() => {
+        console.log("Starting fade");
         startupScreen.classList.add("fade-out");
 
         // After the 0.5s fade, remove the overlay and initialize the app
         setTimeout(async () => {
+            console.log("Fade complete, removing screen");
             startupScreen.remove();
-            try {
-                await signOut(auth);
-            } catch (e) {
-                console.warn("Sign-out on load failed (maybe not signed in):", e);
+
+            if (getApps().length) {
+                try {
+                    console.log("Signing out");
+                    await signOut(auth);
+                } catch (e) {
+                    console.warn("Sign-out on load failed (maybe not signed in):", e);
+                }
             }
+
+            console.log("Initializing app");
             initApp();
         }, 500);
     }, 1500);
