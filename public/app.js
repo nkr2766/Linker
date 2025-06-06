@@ -116,7 +116,6 @@ let cardImageDataURL = "";
 // ───────────────────────────────────────────────────────────────────────────────
 // (These IDs must match exactly what’s in index.html—don’t rename!)
 const startupScreen = document.getElementById("startup-screen");
-const startupText = document.getElementById("startup-text");
 const resetBtn = document.getElementById("reset-btn");
 
 const loginScreen = document.getElementById("login-screen");
@@ -185,6 +184,8 @@ const outputTagline = document.getElementById("output-tagline");
 const linksContainer = document.getElementById("links-container");
 const backBtn = document.getElementById("back-btn");
 const downloadBtn = document.getElementById("download-btn");
+const startupText = document.getElementById("startup-text");
+
 
 // ───────────────────────────────────────────────────────────────────────────────
 // F) UTILITY HELPERS
@@ -249,7 +250,6 @@ function escapeHTML(str) {
 // ───────────────────────────────────────────────────────────────────────────────
 window.addEventListener("load", () => {
     console.log("Welcome screen loaded");
-
     setTimeout(() => {
         console.log("Starting fade");
         startupScreen.classList.add("reveal");
@@ -583,8 +583,26 @@ function showBuilderForm(prefillData = null) {
         cardTextColorInput.value = "#111827";
         cardImageInput.value = "";
         addLinkRow();
+
     }
     updateGenerateButtonState();
+    [
+        "fa-globe",
+        "fa-instagram",
+        "fa-github",
+        "fa-link",
+        "fa-camera",
+        "fa-pinterest",
+        "fa-twitter",
+        "fa-facebook",
+        "fa-youtube",
+        "fa-linkedin",
+        "fa-tiktok",
+        "fa-snapchat",
+        "fa-discord",
+        "fa-reddit",
+    ].forEach((ic) => {
+    });
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -861,7 +879,6 @@ function updateGenerateButtonState() {
         generateBtn.classList.add("bg-emerald-500", "text-white", "hover:bg-emerald-600");
     } else {
         generateBtn.setAttribute("disabled", "true");
-        generateBtn.classList.remove("bg-emerald-500", "text-white", "hover:bg-emerald-600");
         generateBtn.classList.add("bg-gray-600", "text-gray-300", "cursor-not-allowed");
     }
 }
