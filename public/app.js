@@ -782,6 +782,7 @@ function addLinkRow(prefill = null) {
     labelInput.type = "text";
     labelInput.placeholder = "Label (e.g. Website)";
     labelInput.required = true;
+    labelInput.autocomplete = "off";
     labelInput.setAttribute("aria-describedby", `error-url-${rowIndex}`);
     labelInput.className =
         "w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition";
@@ -819,6 +820,7 @@ function addLinkRow(prefill = null) {
     urlInput.type = "url";
     urlInput.placeholder = "https://example.com";
     urlInput.required = true;
+    urlInput.autocomplete = "off";
     urlInput.setAttribute("aria-describedby", `error-url-${rowIndex}`);
     urlInput.className =
         "w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition";
