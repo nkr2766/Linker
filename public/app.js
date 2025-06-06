@@ -1,4 +1,4 @@
-// v17
+// v18
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -66,6 +66,17 @@ const MOBILE_TEXT_STAY_DURATION_MS             = 0;      // Time (ms) to hold te
 
 const MOBILE_STARTUP_SCREEN_SELECTOR           = "#startup-screen"; // CSS selector for overlay div
 const MOBILE_STARTUP_TEXT_SELECTOR             = "#startup-text";   // CSS selector for welcome text
+
+
+// ───────────────────────────────────────────────────────────────────────────────
+// CONFIGURATION: Main UI pop-up adjustment (desktop vs. mobile)
+// ───────────────────────────────────────────────────────────────────────────────
+const DESKTOP_UI_DELAY_ADJUSTMENT_MS = 0;    // Add/subtract ms after fadeends before showing UI (desktop)
+const MOBILE_UI_DELAY_ADJUSTMENT_MS  = 0;    // Add/subtract ms after fadeends before showing UI (mobile)
+// Use desktop or mobile adjustment depending on viewport
+const UI_DELAY_ADJUSTMENT_MS = IS_MOBILE
+  ? MOBILE_UI_DELAY_ADJUSTMENT_MS
+  : DESKTOP_UI_DELAY_ADJUSTMENT_MS;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SELECTED CONFIG VARIABLES (DO NOT EDIT BELOW)
@@ -345,7 +356,7 @@ window.addEventListener("load", () => {
     setTimeout(() => {
         console.log("Starting text animation");
 
-        // Optionally delay text appearance relative to background fade
+        }, BACKGROUND_FADE_DURATION_MS + UI_DELAY_ADJUSTMENT_MS);
         setTimeout(() => {
             if (startupText) {
                 startupText.style.fontSize = `${TEXT_FINAL_FONT_SIZE_PX}px`;
