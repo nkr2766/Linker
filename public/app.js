@@ -30,42 +30,42 @@ console.log("\uD83D\uDD25 app.js has loaded!");
 const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
 
 // ─────────── Desktop Values ───────────
-const DESKTOP_WELCOME_BLACK_DURATION_MS        = 1000;   // Black background static time (desktop)
-const DESKTOP_TEXT_APPEAR_DELAY_MS             = 0;      // Delay before text appears (desktop)
-const DESKTOP_TEXT_INITIAL_FONT_SIZE_PX        = 32;     // Starting font size of text (desktop)
-const DESKTOP_TEXT_FINAL_FONT_SIZE_PX          = 48;     // Final font size of text (desktop)
-const DESKTOP_TEXT_INITIAL_COLOR               = "#FFFFFF"; // Starting color of text (desktop)
-const DESKTOP_TEXT_FINAL_COLOR                 = "#000000"; // Ending color of text (desktop)
-const DESKTOP_TEXT_SCALE_DURATION_MS           = 6000;   // Duration of text scale/color transition (desktop)
-const DESKTOP_TEXT_SCALE_EASING                = "ease-in-out"; // Easing for text scale/color (desktop)
+const DESKTOP_WELCOME_BLACK_DURATION_MS = 1000;      // How long the black background stays (ms) on desktop
+const DESKTOP_TEXT_APPEAR_DELAY_MS = 0;         // Delay before the text animation begins (ms) on desktop
+const DESKTOP_TEXT_INITIAL_FONT_SIZE_PX = 50;        // Starting font size of "Welcome to Linker" (px) on desktop
+const DESKTOP_TEXT_FINAL_FONT_SIZE_PX = 138;       // Final font size of "Welcome to Linker" (px) on desktop
+const DESKTOP_TEXT_INITIAL_COLOR = "rgb(101, 189, 116)";   // Initial text color on desktop
+const DESKTOP_TEXT_FINAL_COLOR = "rgb(136, 223, 149)";   // Final text color on desktop
+const DESKTOP_TEXT_SCALE_DURATION_MS = 3000;      // How long the text scales and recolors (ms) on desktop
+const DESKTOP_TEXT_SCALE_EASING = "ease-in-out"; // Easing curve for text scale/color on desktop
 
-const DESKTOP_BACKGROUND_FADE_DURATION_MS      = 6000;   // Duration for black overlay fade (desktop)
-const DESKTOP_BACKGROUND_FADE_EASING           = "ease-in-out"; // Easing for background fade (desktop)
+const DESKTOP_BACKGROUND_FADE_DURATION_MS = 9000;    // How long the black overlay fades out (ms) on desktop
+const DESKTOP_BACKGROUND_FADE_EASING = "ease-in-out"; // Easing curve for background fade on desktop
 
-const DESKTOP_TEXT_FADE_DELAY_BEFORE_BG_MS     = 0;      // Offset (ms) when text starts relative to bg fade
-const DESKTOP_TEXT_STAY_DURATION_MS            = 0;      // Time (ms) to hold text at final state (desktop)
+const DESKTOP_TEXT_FADE_DELAY_BEFORE_BG_MS = 0;      // Offset when text starts relative to bg fade (ms) on desktop
+const DESKTOP_TEXT_STAY_DURATION_MS = 0;      // How long text stays at final size before removing the overlay (ms) on desktop
 
-const DESKTOP_STARTUP_SCREEN_SELECTOR          = "#startup-screen"; // CSS selector for overlay div
-const DESKTOP_STARTUP_TEXT_SELECTOR            = "#startup-text";   // CSS selector for welcome text
+const DESKTOP_STARTUP_SCREEN_SELECTOR = "#startup-screen"; // CSS selector for the overlay element (desktop)
+const DESKTOP_STARTUP_TEXT_SELECTOR = "#startup-text";   // CSS selector for the welcome text element (desktop)
 
 // ─────────── Mobile Values ───────────
-const MOBILE_WELCOME_BLACK_DURATION_MS         = 1000;   // Black background static time (mobile)
-const MOBILE_TEXT_APPEAR_DELAY_MS              = 0;      // Delay before text appears (mobile)
-const MOBILE_TEXT_INITIAL_FONT_SIZE_PX         = 33;     // Starting font size of text (mobile)
-const MOBILE_TEXT_FINAL_FONT_SIZE_PX           = 65;     // Final font size of text (mobile)
-const MOBILE_TEXT_INITIAL_COLOR                = "rgb(101, 189, 116)";   // Initial text color on mobile
-const MOBILE_TEXT_FINAL_COLOR                  = "rgb(136, 223, 149)";   // Final text color on mobile
-const MOBILE_TEXT_SCALE_DURATION_MS            = 3000;   // Duration of text scale/color transition (mobile)
-const MOBILE_TEXT_SCALE_EASING                 = "ease-in-out"; // Easing for text scale/color (mobile)
+const MOBILE_WELCOME_BLACK_DURATION_MS = 1000;    // How long the black background stays (ms) on mobile
+const MOBILE_TEXT_APPEAR_DELAY_MS = 0;       // Delay before the text animation begins (ms) on mobile
+const MOBILE_TEXT_INITIAL_FONT_SIZE_PX = 33;      // Starting font size of "Welcome to Linker" (px) on mobile
+const MOBILE_TEXT_FINAL_FONT_SIZE_PX = 65;      // Final font size of "Welcome to Linker" (px) on mobile
+const MOBILE_TEXT_INITIAL_COLOR = "rgb(101, 189, 116)"; // Initial text color on mobile
+const MOBILE_TEXT_FINAL_COLOR = "rgb(136, 223, 149)"; // Final text color on mobile
+const MOBILE_TEXT_SCALE_DURATION_MS = 3000;    // How long the text scales and recolors (ms) on mobile
+const MOBILE_TEXT_SCALE_EASING = "ease-in-out"; // Easing curve for text scale/color on mobile
 
-const MOBILE_BACKGROUND_FADE_DURATION_MS       = 3000;   // Duration for black overlay fade (mobile)
-const MOBILE_BACKGROUND_FADE_EASING            = "ease-in-out"; // Easing for background fade (mobile)
+const MOBILE_BACKGROUND_FADE_DURATION_MS = 0;  // How long the black overlay fades out (ms) on mobile
+const MOBILE_BACKGROUND_FADE_EASING = "ease-in-out"; // Easing curve for background fade on mobile
 
-const MOBILE_TEXT_FADE_DELAY_BEFORE_BG_MS      = 0;      // Offset (ms) when text starts relative to bg fade
-const MOBILE_TEXT_STAY_DURATION_MS             = 0;      // Time (ms) to hold text at final state (mobile)
+const MOBILE_TEXT_FADE_DELAY_BEFORE_BG_MS = 0;    // Offset when text starts relative to bg fade (ms) on mobile
+const MOBILE_TEXT_STAY_DURATION_MS = 0;    // How long text stays at final size before removing the overlay (ms) on mobile
 
-const MOBILE_STARTUP_SCREEN_SELECTOR           = "#startup-screen"; // CSS selector for overlay div
-const MOBILE_STARTUP_TEXT_SELECTOR             = "#startup-text";   // CSS selector for welcome text
+const MOBILE_STARTUP_SCREEN_SELECTOR = "#startup-screen"; // CSS selector for the overlay element (mobile)
+const MOBILE_STARTUP_TEXT_SELECTOR = "#startup-text";   // CSS selector for the welcome text element (mobile)
 
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -272,6 +272,7 @@ const outputTagline = document.getElementById("output-tagline");
 const linksContainer = document.getElementById("links-container");
 const backBtn = document.getElementById("back-btn");
 const downloadBtn = document.getElementById("download-btn");
+
 
 // ───────────────────────────────────────────────────────────────────────────────
 // F) UTILITY HELPERS
@@ -744,8 +745,26 @@ function showBuilderForm(prefillData = null) {
         cardTextColorInput.value = "#111827";
         cardImageInput.value = "";
         addLinkRow();
+
     }
     updateGenerateButtonState();
+    [
+        "fa-globe",
+        "fa-instagram",
+        "fa-github",
+        "fa-link",
+        "fa-camera",
+        "fa-pinterest",
+        "fa-twitter",
+        "fa-facebook",
+        "fa-youtube",
+        "fa-linkedin",
+        "fa-tiktok",
+        "fa-snapchat",
+        "fa-discord",
+        "fa-reddit",
+    ].forEach((ic) => {
+    });
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -763,6 +782,7 @@ function addLinkRow(prefill = null) {
     labelInput.type = "text";
     labelInput.placeholder = "Label (e.g. Website)";
     labelInput.required = true;
+    labelInput.autocomplete = "off";
     labelInput.setAttribute("aria-describedby", `error-url-${rowIndex}`);
     labelInput.className =
         "w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition";
@@ -800,6 +820,7 @@ function addLinkRow(prefill = null) {
     urlInput.type = "url";
     urlInput.placeholder = "https://example.com";
     urlInput.required = true;
+    urlInput.autocomplete = "off";
     urlInput.setAttribute("aria-describedby", `error-url-${rowIndex}`);
     urlInput.className =
         "w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 border border-transparent focus:border-emerald-400 transition";
@@ -1022,7 +1043,6 @@ function updateGenerateButtonState() {
         generateBtn.classList.add("bg-emerald-500", "text-white", "hover:bg-emerald-600");
     } else {
         generateBtn.setAttribute("disabled", "true");
-        generateBtn.classList.remove("bg-emerald-500", "text-white", "hover:bg-emerald-600");
         generateBtn.classList.add("bg-gray-600", "text-gray-300", "cursor-not-allowed");
     }
 }
