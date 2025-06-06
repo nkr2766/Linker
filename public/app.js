@@ -207,19 +207,19 @@ function escapeHTML(str) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// G) ON PAGE LOAD: Animate the “Welcome to Linker” fade (250ms delay → 3s fade)
+// G) ON PAGE LOAD: Animate the “Welcome to Linker” fade (1s delay → 6s fade)
 //                 Then FORCE sign-out any existing user, then call initApp()
 // ───────────────────────────────────────────────────────────────────────────────
 window.addEventListener("load", () => {
     console.log("Welcome screen loaded");
-    // Wait 0.25s showing the welcome overlay, then reveal the page
+    // Wait 1s showing the welcome overlay, then reveal the page
     setTimeout(() => {
         console.log("Starting fade");
         startupScreen.classList.add("reveal");
         if (startupText) {
             startupText.classList.add("reveal");
         }
-        // After the 3s fade, remove the overlay and initialize the app
+        // After the 6s fade, remove the overlay and initialize the app
         setTimeout(async () => {
             console.log("Fade complete, removing screen");
             startupScreen.remove();
@@ -235,8 +235,8 @@ window.addEventListener("load", () => {
 
             console.log("Initializing app");
             initApp();
-        }, 3000);
-    }, 250);
+        }, 6000);
+    }, 1000);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
