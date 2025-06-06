@@ -1,4 +1,4 @@
-// v18
+// v19
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -71,8 +71,8 @@ const MOBILE_STARTUP_TEXT_SELECTOR = "#startup-text";   // CSS selector for the 
 // ───────────────────────────────────────────────────────────────────────────────
 // CONFIGURATION: Main UI pop-up adjustment (desktop vs. mobile)
 // ───────────────────────────────────────────────────────────────────────────────
-const DESKTOP_UI_DELAY_ADJUSTMENT_MS = -6500;    // Add/subtract ms after fadeends before showing UI (desktop)
-const MOBILE_UI_DELAY_ADJUSTMENT_MS  = -5635;    // Add/subtract ms after fadeends before showing UI (mobile)
+const DESKTOP_UI_DELAY_ADJUSTMENT_MS = 0;    // Add/subtract ms after fadeends before showing UI (desktop)
+const MOBILE_UI_DELAY_ADJUSTMENT_MS  = 0;    // Add/subtract ms after fadeends before showing UI (mobile)
 // Use desktop or mobile adjustment depending on viewport
 const UI_DELAY_ADJUSTMENT_MS = IS_MOBILE
   ? MOBILE_UI_DELAY_ADJUSTMENT_MS
