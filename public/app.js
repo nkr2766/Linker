@@ -1,8 +1,8 @@
+// v6
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
 import {
     getAuth,
     signInWithEmailAndPassword,
@@ -37,7 +37,6 @@ const firebaseConfig = {
 
 // Initialize Firebase App / Analytics / Auth / Firestore
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
@@ -77,7 +76,6 @@ let cardImageDataURL = "";
 // ───────────────────────────────────────────────────────────────────────────────
 // (These IDs must match exactly what’s in index.html—don’t rename!)
 const startupScreen = document.getElementById("startup-screen");
-const startupText = document.getElementById("startup-text");
 const resetBtn = document.getElementById("reset-btn");
 
 const loginScreen = document.getElementById("login-screen");
@@ -151,7 +149,7 @@ const downloadBtn = document.getElementById("download-btn");
 // F) UTILITY HELPERS
 // ───────────────────────────────────────────────────────────────────────────────
 function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new window.Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function hideAllScreens() {
@@ -1054,19 +1052,6 @@ downloadBtn.addEventListener("click", () => {
     const filename = `${safeUsername}-linktree.html`;
     downloadBlob(filename, blob);
 });
-
-// ───────────────────────────────────────────────────────────────────────────────
-// V) “Skip to Output” (if user has saved Linktree in localStorage)               //
-// ───────────────────────────────────────────────────────────────────────────────
-function skipToOutput(data) {
-    loaderScreen.classList.remove("hidden");
-    loaderScreen.classList.add("flex");
-    setTimeout(() => {
-        loaderScreen.classList.add("hidden");
-        loaderScreen.classList.remove("flex");
-        renderOutput(data);
-    }, 300);
-}
 
 // ───────────────────────────────────────────────────────────────────────────────
 // W) RESET BUTTON: Clear localStorage + Sign Out + reload page                   //
