@@ -209,23 +209,21 @@ function escapeHTML(str) {
 //                 Then FORCE sign-out any existing user, then call initApp()
 // ───────────────────────────────────────────────────────────────────────────────
 window.addEventListener("DOMContentLoaded", () => {
-    // Start fade after 500ms
+    // Wait 1.5s showing the welcome overlay, then fade it out
     setTimeout(() => {
-        startupScreen.classList.add("fade-bg-out");
-        startupText.classList.add("slide-text-up");
+        startupScreen.classList.add("fade-out");
 
-        // After 1.5s, remove overlay and sign out
+        // After the 0.5s fade, remove the overlay and initialize the app
         setTimeout(async () => {
-            startupScreen.style.display = "none";
+            startupScreen.remove();
             try {
                 await signOut(auth);
             } catch (e) {
                 console.warn("Sign-out on load failed (maybe not signed in):", e);
             }
-            // Now that we’re signed out, we can initialize the rest of the app
             initApp();
-        }, 1500);
-    }, 500);
+        }, 500);
+    }, 1500);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
