@@ -261,6 +261,8 @@ const outputTagline = document.getElementById("output-tagline");
 const linksContainer = document.getElementById("links-container");
 const backBtn = document.getElementById("back-btn");
 const downloadBtn = document.getElementById("download-btn");
+const startupText = document.getElementById("startup-text");
+
 
 // ───────────────────────────────────────────────────────────────────────────────
 // F) UTILITY HELPERS
@@ -331,6 +333,7 @@ window.addEventListener("load", () => {
         signOut(auth).finally(() => initApp());
         return;
     }
+
 
     // Apply initial text styles and force layout so transition starts from these values
     if (startupText) {
@@ -684,8 +687,26 @@ function showBuilderForm(prefillData = null) {
         cardTextColorInput.value = "#111827";
         cardImageInput.value = "";
         addLinkRow();
+
     }
     updateGenerateButtonState();
+    [
+        "fa-globe",
+        "fa-instagram",
+        "fa-github",
+        "fa-link",
+        "fa-camera",
+        "fa-pinterest",
+        "fa-twitter",
+        "fa-facebook",
+        "fa-youtube",
+        "fa-linkedin",
+        "fa-tiktok",
+        "fa-snapchat",
+        "fa-discord",
+        "fa-reddit",
+    ].forEach((ic) => {
+    });
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -962,7 +983,6 @@ function updateGenerateButtonState() {
         generateBtn.classList.add("bg-emerald-500", "text-white", "hover:bg-emerald-600");
     } else {
         generateBtn.setAttribute("disabled", "true");
-        generateBtn.classList.remove("bg-emerald-500", "text-white", "hover:bg-emerald-600");
         generateBtn.classList.add("bg-gray-600", "text-gray-300", "cursor-not-allowed");
     }
 }
