@@ -1,8 +1,8 @@
+// v11
 // ───────────────────────────────────────────────────────────────────────────────
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-analytics.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
 import {
     getAuth,
     signInWithEmailAndPassword,
@@ -21,6 +21,8 @@ import {
     connectFirestoreEmulator
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
+console.log("\uD83D\uDD25 app.js has loaded!");
+
 // ───────────────────────────────────────────────────────────────────────────────
 // B) FIREBASE CONFIGURATION
 // Copy/paste this from your Firebase console → Project Settings (Web App)
@@ -29,7 +31,7 @@ const firebaseConfig = {
     apiKey: "AIzaSyDwfQcrwMCbbX6CA-_1UgelCNfVKCVTQ0A",
     authDomain: "linkerapp-9dd4d.firebaseapp.com",
     projectId: "linkerapp-9dd4d",
-    storageBucket: "linkerapp-9dd4d.firebasestorage.app",
+    storageBucket: "linkerapp-9dd4d.appspot.com",
     messagingSenderId: "1098052666181",
     appId: "1:1098052666181:web:526d045f1c8f44f59fb42c",
     measurementId: "G-LBV1P494PR"
@@ -37,7 +39,6 @@ const firebaseConfig = {
 
 // Initialize Firebase App / Analytics / Auth / Firestore
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
@@ -69,6 +70,8 @@ const STORAGE_KEY_LINKTREE = "linkerLinktreeData";
 let linkRows = [];
 // Will hold the base64‐DataURL for the uploaded profile pic
 let profilePicDataURL = "";
+// Optional background image for the card
+let cardImageDataURL = "";
 
 // ───────────────────────────────────────────────────────────────────────────────
 // E) UI ELEMENT REFERENCES
@@ -123,6 +126,12 @@ const formUsernameInput = document.getElementById("username");
 const errorUsername = document.getElementById("error-username");
 const formTaglineInput = document.getElementById("tagline");
 const formTaglineCount = document.getElementById("tagline-count");
+const gradientStartInput = document.getElementById("gradient-start");
+const gradientEndInput = document.getElementById("gradient-end");
+const cardColorInput = document.getElementById("card-color");
+const cardTextColorInput = document.getElementById("card-text-color");
+const cardImageInput = document.getElementById("card-image");
+const cardImageClearBtn = document.getElementById("remove-card-image");
 const linksWrapper = document.getElementById("links-wrapper");
 const addLinkBtn = document.getElementById("add-link-btn");
 const errorLinks = document.getElementById("error-links");
@@ -131,6 +140,7 @@ const generateBtn = document.getElementById("generate-btn");
 const loaderScreen = document.getElementById("loader-screen");
 
 const linktreeScreen = document.getElementById("linktree-screen");
+const outputCard = document.getElementById("output-card");
 const outputProfilePic = document.getElementById("output-profile-pic");
 const displayUsername = document.getElementById("display-username");
 const outputTagline = document.getElementById("output-tagline");
@@ -142,7 +152,7 @@ const downloadBtn = document.getElementById("download-btn");
 // F) UTILITY HELPERS
 // ───────────────────────────────────────────────────────────────────────────────
 function delay(ms) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new window.Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function hideAllScreens() {
@@ -186,28 +196,47 @@ function downloadBlob(filename, blob) {
     URL.revokeObjectURL(url);
 }
 
+function escapeHTML(str) {
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
 // ───────────────────────────────────────────────────────────────────────────────
-// G) ON PAGE LOAD: Animate the “Welcome to Linker” fade (500ms delay → 1.5s fade)
+// G) ON PAGE LOAD: Animate the “Welcome to Linker” fade (1s delay → 6s fade)
 //                 Then FORCE sign-out any existing user, then call initApp()
 // ───────────────────────────────────────────────────────────────────────────────
-window.addEventListener("DOMContentLoaded", () => {
-    // Start fade after 500ms
+window.addEventListener("load", () => {
+    console.log("Welcome screen loaded");
+    // Wait 1s showing the welcome overlay, then reveal the page
     setTimeout(() => {
-        startupScreen.classList.add("fade-bg-out");
-        startupText.classList.add("slide-text-up");
+        console.log("Starting fade");
+        startupScreen.classList.add("reveal");
+        if (startupText) {
+            startupText.classList.add("reveal");
+        }
 
-        // After 1.5s, remove overlay and sign out
+        // After the 6s fade, remove the overlay and initialize the app
         setTimeout(async () => {
-            startupScreen.style.display = "none";
-            try {
-                await signOut(auth);
-            } catch (e) {
-                console.warn("Sign-out on load failed (maybe not signed in):", e);
+            console.log("Fade complete, removing screen");
+            startupScreen.remove();
+
+            if (getApps().length) {
+                try {
+                    console.log("Signing out");
+                    await signOut(auth);
+                } catch (e) {
+                    console.warn("Sign-out on load failed (maybe not signed in):", e);
+                }
             }
-            // Now that we’re signed out, we can initialize the rest of the app
+
+            console.log("Initializing app");
             initApp();
-        }, 1500);
-    }, 500);
+        }, 6000);
+    }, 1000);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -447,9 +476,18 @@ async function startAppFlow(currentEmail) {
     await delay(2500);                            // keep it visible 2.5s
     welcomeText.classList.add("opacity-0");       // fade it out
     await delay(300);                             // wait 0.3s for fade to complete
+    // Hide the welcome overlay before proceeding
+    welcomeScreen.classList.add("hidden");
+    welcomeScreen.classList.remove("flex");
 
     // Now either show loader + output or show builder form
-    const savedData = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "null");
+    let savedData = null;
+    try {
+        savedData = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "null");
+    } catch (err) {
+        console.warn("Failed to parse saved Linktree data, clearing", err);
+        localStorage.removeItem(STORAGE_KEY_LINKTREE);
+    }
     if (savedData) {
         loaderScreen.classList.remove("hidden");
         loaderScreen.classList.add("flex");
@@ -474,6 +512,8 @@ function showBuilderForm(prefillData = null) {
     linksWrapper.innerHTML = "";
     linkRows = [];
     profilePicDataURL = "";
+    cardImageDataURL = "";
+    cardImageInput.value = "";
 
     // Hide errors
     errorProfilePic.classList.add("hidden");
@@ -488,12 +528,25 @@ function showBuilderForm(prefillData = null) {
         formUsernameInput.value = prefillData.username || "";
         formTaglineInput.value = prefillData.tagline || "";
         formTaglineCount.textContent = `${prefillData.tagline?.length || 0}/100`;
+        gradientStartInput.value = prefillData.gradientStart || "#a7f3d0";
+        gradientEndInput.value = prefillData.gradientEnd || "#6ee7b7";
+        cardColorInput.value = prefillData.cardColor || "#ffffff";
+        cardTextColorInput.value = prefillData.cardTextColor || "#111827";
+        if (prefillData.cardImage) {
+            cardImageDataURL = prefillData.cardImage;
+        }
+        cardImageInput.value = "";
 
         (prefillData.links || []).forEach((link) => addLinkRow(link));
     } else {
         formUsernameInput.value = "";
         formTaglineInput.value = "";
         formTaglineCount.textContent = "0/100";
+        gradientStartInput.value = "#a7f3d0";
+        gradientEndInput.value = "#6ee7b7";
+        cardColorInput.value = "#ffffff";
+        cardTextColorInput.value = "#111827";
+        cardImageInput.value = "";
         addLinkRow();
     }
     updateGenerateButtonState();
@@ -523,7 +576,22 @@ function addLinkRow(prefill = null) {
     iconSelect.id = `link-icon-${rowIndex}`;
     iconSelect.className =
         "w-full px-3 py-2 rounded-md bg-gray-700 text-gray-100 focus:outline-none focus:ring-2 focus:ring-emerald-400";
-    ["fa-globe", "fa-instagram", "fa-github", "fa-link", "fa-camera", "fa-pinterest"].forEach((ic) => {
+    [
+        "fa-globe",
+        "fa-instagram",
+        "fa-github",
+        "fa-link",
+        "fa-camera",
+        "fa-pinterest",
+        "fa-twitter",
+        "fa-facebook",
+        "fa-youtube",
+        "fa-linkedin",
+        "fa-tiktok",
+        "fa-snapchat",
+        "fa-discord",
+        "fa-reddit",
+    ].forEach((ic) => {
         const opt = document.createElement("option");
         opt.value = ic;
         opt.textContent = ic.replace("fa-", "").charAt(0).toUpperCase() + ic.replace("fa-", "").slice(1);
@@ -550,7 +618,7 @@ function addLinkRow(prefill = null) {
     // 5) Delete button
     const deleteBtn = document.createElement("button");
     deleteBtn.type = "button";
-    deleteBtn.innerHTML = '<i class="fa fa-trash text-red-500"></i>';
+    deleteBtn.innerHTML = '<i class="fa fa-trash text-red-500" aria-hidden="true"></i>';
     deleteBtn.setAttribute("aria-label", "Remove this link");
     deleteBtn.className = "mt-2 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-full";
     deleteBtn.addEventListener("click", () => {
@@ -566,7 +634,7 @@ function addLinkRow(prefill = null) {
     // 6) Move Up button
     const moveUpBtn = document.createElement("button");
     moveUpBtn.type = "button";
-    moveUpBtn.innerHTML = '<i class="fa fa-arrow-up"></i>';
+    moveUpBtn.innerHTML = '<i class="fa fa-arrow-up" aria-hidden="true"></i>';
     moveUpBtn.setAttribute("aria-label", "Move this link up");
     moveUpBtn.className =
         "ml-2 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
@@ -581,7 +649,7 @@ function addLinkRow(prefill = null) {
     // 7) Move Down button
     const moveDownBtn = document.createElement("button");
     moveDownBtn.type = "button";
-    moveDownBtn.innerHTML = '<i class="fa fa-arrow-down"></i>';
+    moveDownBtn.innerHTML = '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
     moveDownBtn.setAttribute("aria-label", "Move this link down");
     moveDownBtn.className =
         "ml-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
@@ -694,6 +762,25 @@ profilePicFileInput.addEventListener("change", () => {
     updateGenerateButtonState();
 });
 
+// Card background image upload (optional)
+cardImageInput.addEventListener("change", () => {
+    const file = cardImageInput.files[0];
+    if (file && file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            cardImageDataURL = e.target.result;
+        };
+        reader.readAsDataURL(file);
+    } else {
+        cardImageDataURL = "";
+    }
+});
+
+cardImageClearBtn.addEventListener("click", () => {
+    cardImageDataURL = "";
+    cardImageInput.value = "";
+});
+
 // Username validation on blur
 formUsernameInput.addEventListener("blur", () => {
     let val = formUsernameInput.value.trim();
@@ -755,13 +842,24 @@ generateBtn.addEventListener("click", async (e) => {
         profilePic: profilePicDataURL,
         username: formUsernameInput.value.trim(),
         tagline: formTaglineInput.value.trim(),
+        gradientStart: gradientStartInput.value,
+        gradientEnd: gradientEndInput.value,
+        cardColor: cardColorInput.value,
+        cardTextColor: cardTextColorInput.value,
+        cardImage: cardImageDataURL,
         links: linkRows.map((r) => ({
             label: r.labelInput.value.trim(),
             icon: r.iconSelect.value,
             url: r.urlInput.value.trim()
         }))
     };
-    localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(data));
+    try {
+        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(data));
+    } catch (err) {
+        console.warn("LocalStorage quota exceeded, stripping images", err);
+        const tmp = { ...data, profilePic: "", cardImage: "" };
+        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(tmp));
+    }
 
     loaderScreen.classList.remove("hidden");
     loaderScreen.classList.add("flex");
@@ -775,6 +873,14 @@ generateBtn.addEventListener("click", async (e) => {
 // T) RENDER OUTPUT (in-app Linktree with Download + Back-to-Edit)                 //
 // ───────────────────────────────────────────────────────────────────────────────
 function renderOutput(data) {
+    document.body.style.background = `linear-gradient(to bottom right, ${data.gradientStart || "#a7f3d0"}, ${data.gradientEnd || "#6ee7b7"})`;
+    outputCard.style.backgroundColor = data.cardColor || "#ffffff";
+    if (data.cardImage) {
+        outputCard.style.backgroundImage = `url(${data.cardImage})`;
+        outputCard.style.backgroundSize = "cover";
+    } else {
+        outputCard.style.backgroundImage = "none";
+    }
     if (data.profilePic) {
         outputProfilePic.src = data.profilePic;
         outputProfilePic.classList.remove("hidden");
@@ -789,6 +895,10 @@ function renderOutput(data) {
         outputTagline.classList.add("hidden");
     }
 
+    const textColor = data.cardTextColor || "#111827";
+    displayUsername.style.color = textColor;
+    outputTagline.style.color = textColor;
+
     displayUsername.textContent = data.username || "@yourhandle";
 
     linksContainer.innerHTML = "";
@@ -799,7 +909,13 @@ function renderOutput(data) {
             btn.target = "_blank";
             btn.className =
                 "flex items-center justify-center bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-400";
-            btn.innerHTML = `<i class="fa ${link.icon} mr-2"></i><span>${link.label}</span>`;
+            const icon = document.createElement("i");
+            icon.className = `fa ${link.icon} mr-2`;
+            icon.setAttribute("aria-hidden", "true");
+            const span = document.createElement("span");
+            span.textContent = link.label;
+            btn.appendChild(icon);
+            btn.appendChild(span);
             linksContainer.appendChild(btn);
         }
     });
@@ -823,10 +939,13 @@ downloadBtn.addEventListener("click", () => {
     if (!data || !data.links || data.links.length === 0) return;
 
     const safeUsername = data.username.replace("@", "") || "linker";
-    const safeTagline = data.tagline || "";
+    const safeTagline = escapeHTML(data.tagline || "");
     const safePic = data.profilePic || "";
-    const bgColorStart = "#a7f3d0"; // Tailwind green-200
-    const bgColorEnd = "#6ee7b7"; // Tailwind green-300
+    const bgColorStart = data.gradientStart || "#a7f3d0";
+    const bgColorEnd = data.gradientEnd || "#6ee7b7";
+    const cardColor = data.cardColor || "#ffffff";
+    const textColor = data.cardTextColor || "#111827";
+    const cardImage = data.cardImage || "";
 
     // Build minimal HTML
     const outputHtml = `<!DOCTYPE html>
@@ -834,7 +953,7 @@ downloadBtn.addEventListener("click", () => {
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${data.username}’s Linktree</title>
+<title>${escapeHTML(data.username)}’s Linktree</title>
 <style>
   body {
     margin: 0;
@@ -848,7 +967,8 @@ downloadBtn.addEventListener("click", () => {
     min-height: 100vh;
   }
   .card {
-    background-color: #ffffff;
+    background-color: ${cardColor};
+    ${cardImage ? `background-image: url('${cardImage}'); background-size: cover;` : ""}
     border-radius: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 32px;
@@ -866,16 +986,17 @@ downloadBtn.addEventListener("click", () => {
   h1 {
     margin: 0 0 8px 0;
     font-size: 1.5rem;
-    color: #111827;
+    color: ${textColor};
   }
   p.tag {
     margin: 0 0 16px 0;
     font-size: 1rem;
-    color: #4b5563;
+    color: ${textColor};
   }
   .link-btn {
     display: block;
     width: 100%;
+    box-sizing: border-box;
     margin: 8px 0;
     padding: 12px 16px;
     background-color: #10b981; /* emerald-500 */
@@ -904,12 +1025,12 @@ downloadBtn.addEventListener("click", () => {
 <body>
   <div class="card">
     ${safePic ? `<img src="${safePic}" alt="Profile picture" class="profile" />` : ""}
-    <h1>${data.username}</h1>
+    <h1>${escapeHTML(data.username)}</h1>
     ${safeTagline ? `<p class="tag">${safeTagline}</p>` : ""}
     ${data.links
             .map(
                 (link) =>
-                    `<a href="${link.url}" target="_blank" class="link-btn"><i class="fa ${link.icon}"></i>${link.label}</a>`
+                    `<a href="${escapeHTML(link.url)}" target="_blank" class="link-btn"><i class="fa ${link.icon}" aria-hidden="true"></i>${escapeHTML(link.label)}</a>`
             )
             .join("\n    ")}
   </div>
@@ -920,19 +1041,6 @@ downloadBtn.addEventListener("click", () => {
     const filename = `${safeUsername}-linktree.html`;
     downloadBlob(filename, blob);
 });
-
-// ───────────────────────────────────────────────────────────────────────────────
-// V) “Skip to Output” (if user has saved Linktree in localStorage)               //
-// ───────────────────────────────────────────────────────────────────────────────
-function skipToOutput(data) {
-    loaderScreen.classList.remove("hidden");
-    loaderScreen.classList.add("flex");
-    setTimeout(() => {
-        loaderScreen.classList.add("hidden");
-        loaderScreen.classList.remove("flex");
-        renderOutput(data);
-    }, 300);
-}
 
 // ───────────────────────────────────────────────────────────────────────────────
 // W) RESET BUTTON: Clear localStorage + Sign Out + reload page                   //
