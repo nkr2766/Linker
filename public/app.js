@@ -261,7 +261,6 @@ const outputTagline = document.getElementById("output-tagline");
 const linksContainer = document.getElementById("links-container");
 const backBtn = document.getElementById("back-btn");
 const downloadBtn = document.getElementById("download-btn");
-const startupText = document.getElementById("startup-text");
 
 
 // ───────────────────────────────────────────────────────────────────────────────
