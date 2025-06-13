@@ -18,9 +18,14 @@ body {
 }
 
 #startup-screen {
-  position: fixed; inset: 0; background: var(--bg-start);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 100;
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: all;
 }
 #startup-logo {
   animation: logoGrow 1200ms ease-out forwards;
@@ -34,7 +39,8 @@ body {
   animation: fadeOut 500ms ease-in-out 1200ms forwards;
 }
 @keyframes fadeOut {
-  to { opacity: 0; visibility: hidden; }
+  0% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
 }
 /* ──────────────────────────────────────────────────────────────────────────── */
 /* B) UTILITY: hide vs. flex (JS toggles these)                                */

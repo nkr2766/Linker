@@ -131,74 +131,74 @@ let cardImageDataURL = "";
 // E) UI ELEMENT REFERENCES
 // ───────────────────────────────────────────────────────────────────────────────
 // (These IDs must match exactly what’s in index.html—don’t rename!)
-const resetBtn = document.getElementById("reset-btn");
+let resetBtn;
 
-const loginScreen = document.getElementById("login-screen");
-const btnAdminLogin = document.getElementById("btn-admin-login");
-const btnUserLogin = document.getElementById("btn-user-login");
-const btnUseAccessCode = document.getElementById("btn-use-access-code");
+let loginScreen;
+let btnAdminLogin;
+let btnUserLogin;
+let btnUseAccessCode;
 
-const adminLoginScreen = document.getElementById("admin-login-screen");
-const adminEmailInput = document.getElementById("admin-email");
-const adminPasswordInput = document.getElementById("admin-password");
-const adminError = document.getElementById("admin-error");
-const adminLoginSubmit = document.getElementById("admin-login-submit");
-const adminLoginBack = document.getElementById("admin-login-back");
+let adminLoginScreen;
+let adminEmailInput;
+let adminPasswordInput;
+let adminError;
+let adminLoginSubmit;
+let adminLoginBack;
 
-const adminPanel = document.getElementById("admin-panel");
-const newAccessCodeInput = document.getElementById("new-access-code");
-const createCodeBtn = document.getElementById("create-code-btn");
-const adminCodeSuccess = document.getElementById("admin-code-success");
-const adminBuildFormBtn = document.getElementById("admin-build-form");
-const adminLogoutBtn = document.getElementById("admin-logout");
+let adminPanel;
+let newAccessCodeInput;
+let createCodeBtn;
+let adminCodeSuccess;
+let adminBuildFormBtn;
+let adminLogoutBtn;
 
-const userLoginScreen = document.getElementById("user-login-screen");
-const userEmailInput = document.getElementById("user-email");
-const userPasswordInput = document.getElementById("user-password");
-const userError = document.getElementById("user-error");
-const userLoginSubmit = document.getElementById("user-login-submit");
-const userLoginBack = document.getElementById("user-login-back");
+let userLoginScreen;
+let userEmailInput;
+let userPasswordInput;
+let userError;
+let userLoginSubmit;
+let userLoginBack;
 
-const userSignupScreen = document.getElementById("user-signup-screen");
-const signupCodeInput = document.getElementById("signup-code");
-const signupEmailInput = document.getElementById("signup-email");
-const signupPasswordInput = document.getElementById("signup-password");
-const signupCodeError = document.getElementById("signup-code-error");
-const signupSuccess = document.getElementById("signup-success");
-const signupSubmit = document.getElementById("signup-submit");
-const signupBackBtn = document.getElementById("signup-back");
+let userSignupScreen;
+let signupCodeInput;
+let signupEmailInput;
+let signupPasswordInput;
+let signupCodeError;
+let signupSuccess;
+let signupSubmit;
+let signupBackBtn;
 
-const welcomeScreen = document.getElementById("welcome-screen");
-const welcomeText = document.getElementById("welcome-text");
+let welcomeScreen;
+let welcomeText;
 
-const formScreen = document.getElementById("form-screen");
-const profilePicFileInput = document.getElementById("profile-pic-file");
-const errorProfilePic = document.getElementById("error-profile-pic");
-const formUsernameInput = document.getElementById("username");
-const errorUsername = document.getElementById("error-username");
-const formTaglineInput = document.getElementById("tagline");
-const formTaglineCount = document.getElementById("tagline-count");
-const gradientStartInput = document.getElementById("gradient-start");
-const gradientEndInput = document.getElementById("gradient-end");
-const cardColorInput = document.getElementById("card-color");
-const cardTextColorInput = document.getElementById("card-text-color");
-const cardImageInput = document.getElementById("card-image");
-const cardImageClearBtn = document.getElementById("remove-card-image");
-const linksWrapper = document.getElementById("links-wrapper");
-const addLinkBtn = document.getElementById("add-link-btn");
-const errorLinks = document.getElementById("error-links");
-const generateBtn = document.getElementById("generate-btn");
+let formScreen;
+let profilePicFileInput;
+let errorProfilePic;
+let formUsernameInput;
+let errorUsername;
+let formTaglineInput;
+let formTaglineCount;
+let gradientStartInput;
+let gradientEndInput;
+let cardColorInput;
+let cardTextColorInput;
+let cardImageInput;
+let cardImageClearBtn;
+let linksWrapper;
+let addLinkBtn;
+let errorLinks;
+let generateBtn;
 
-const loaderScreen = document.getElementById("loader-screen");
+let loaderScreen;
 
-const linktreeScreen = document.getElementById("linktree-screen");
-const outputCard = document.getElementById("output-card");
-const outputProfilePic = document.getElementById("output-profile-pic");
-const displayUsername = document.getElementById("display-username");
-const outputTagline = document.getElementById("output-tagline");
-const linksContainer = document.getElementById("links-container");
-const backBtn = document.getElementById("back-btn");
-const downloadBtn = document.getElementById("download-btn");
+let linktreeScreen;
+let outputCard;
+let outputProfilePic;
+let displayUsername;
+let outputTagline;
+let linksContainer;
+let backBtn;
+let downloadBtn;
 
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -264,6 +264,67 @@ function escapeHTML(str) {
 document.addEventListener('DOMContentLoaded', () => {
   console.debug('[App] DOM fully loaded');
 
+  // grab element references now that DOM is ready
+  resetBtn = document.getElementById('reset-btn');
+  loginScreen = document.getElementById('login-screen');
+  btnAdminLogin = document.getElementById('btn-admin-login');
+  btnUserLogin = document.getElementById('btn-user-login');
+  btnUseAccessCode = document.getElementById('btn-use-access-code');
+  adminLoginScreen = document.getElementById('admin-login-screen');
+  adminEmailInput = document.getElementById('admin-email');
+  adminPasswordInput = document.getElementById('admin-password');
+  adminError = document.getElementById('admin-error');
+  adminLoginSubmit = document.getElementById('admin-login-submit');
+  adminLoginBack = document.getElementById('admin-login-back');
+  adminPanel = document.getElementById('admin-panel');
+  newAccessCodeInput = document.getElementById('new-access-code');
+  createCodeBtn = document.getElementById('create-code-btn');
+  adminCodeSuccess = document.getElementById('admin-code-success');
+  adminBuildFormBtn = document.getElementById('admin-build-form');
+  adminLogoutBtn = document.getElementById('admin-logout');
+  userLoginScreen = document.getElementById('user-login-screen');
+  userEmailInput = document.getElementById('user-email');
+  userPasswordInput = document.getElementById('user-password');
+  userError = document.getElementById('user-error');
+  userLoginSubmit = document.getElementById('user-login-submit');
+  userLoginBack = document.getElementById('user-login-back');
+  userSignupScreen = document.getElementById('user-signup-screen');
+  signupCodeInput = document.getElementById('signup-code');
+  signupEmailInput = document.getElementById('signup-email');
+  signupPasswordInput = document.getElementById('signup-password');
+  signupCodeError = document.getElementById('signup-code-error');
+  signupSuccess = document.getElementById('signup-success');
+  signupSubmit = document.getElementById('signup-submit');
+  signupBackBtn = document.getElementById('signup-back');
+  welcomeScreen = document.getElementById('welcome-screen');
+  welcomeText = document.getElementById('welcome-text');
+  formScreen = document.getElementById('form-screen');
+  profilePicFileInput = document.getElementById('profile-pic-file');
+  errorProfilePic = document.getElementById('error-profile-pic');
+  formUsernameInput = document.getElementById('username');
+  errorUsername = document.getElementById('error-username');
+  formTaglineInput = document.getElementById('tagline');
+  formTaglineCount = document.getElementById('tagline-count');
+  gradientStartInput = document.getElementById('gradient-start');
+  gradientEndInput = document.getElementById('gradient-end');
+  cardColorInput = document.getElementById('card-color');
+  cardTextColorInput = document.getElementById('card-text-color');
+  cardImageInput = document.getElementById('card-image');
+  cardImageClearBtn = document.getElementById('remove-card-image');
+  linksWrapper = document.getElementById('links-wrapper');
+  addLinkBtn = document.getElementById('add-link-btn');
+  errorLinks = document.getElementById('error-links');
+  generateBtn = document.getElementById('generate-btn');
+  loaderScreen = document.getElementById('loader-screen');
+  linktreeScreen = document.getElementById('linktree-screen');
+  outputCard = document.getElementById('output-card');
+  outputProfilePic = document.getElementById('output-profile-pic');
+  displayUsername = document.getElementById('display-username');
+  outputTagline = document.getElementById('output-tagline');
+  linksContainer = document.getElementById('links-container');
+  backBtn = document.getElementById('back-btn');
+  downloadBtn = document.getElementById('download-btn');
+
   // 1) Apply version
   const versionEl = document.getElementById('version');
   if (versionEl) versionEl.textContent = CONFIG.version;
@@ -324,6 +385,328 @@ document.addEventListener('DOMContentLoaded', () => {
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js');
   }
+
+  // landing screen buttons
+  if (btnAdminLogin) {
+    btnAdminLogin.addEventListener('click', () => {
+      hideAllScreens();
+      adminLoginScreen.classList.remove('hidden');
+      adminLoginScreen.classList.add('flex');
+      adminError.classList.add('hidden');
+      adminEmailInput.value = '';
+      adminPasswordInput.value = '';
+    });
+  } else {
+    console.error('missing #btn-admin-login');
+  }
+
+  if (btnUserLogin) {
+    btnUserLogin.addEventListener('click', () => {
+      hideAllScreens();
+      userLoginScreen.classList.remove('hidden');
+      userLoginScreen.classList.add('flex');
+      userError.classList.add('hidden');
+      userEmailInput.value = '';
+      userPasswordInput.value = '';
+    });
+  }
+
+  if (btnUseAccessCode) {
+    btnUseAccessCode.addEventListener('click', () => {
+      hideAllScreens();
+      userSignupScreen.classList.remove('hidden');
+      userSignupScreen.classList.add('flex');
+      signupCodeError.classList.add('hidden');
+      signupEmailInput.value = '';
+      signupPasswordInput.value = '';
+      signupCodeInput.value = '';
+      signupSuccess.classList.add('hidden');
+    });
+  }
+
+  if (adminLoginSubmit) {
+    adminLoginSubmit.addEventListener('click', async () => {
+      const email = adminEmailInput.value.trim().toLowerCase();
+      const pass = adminPasswordInput.value.trim();
+      if (email === ADMIN_EMAIL.toLowerCase() && pass === ADMIN_PASSWORD) {
+        try {
+          await signInWithEmailAndPassword(auth, email, pass);
+          hideAllScreens();
+          showAdminPanel();
+        } catch (err) {
+          console.error('Admin signIn error:', err);
+          adminError.textContent = 'Authentication error—check console.';
+          adminError.classList.remove('hidden');
+        }
+      } else {
+        adminError.textContent = 'Incorrect admin credentials.';
+        adminError.classList.remove('hidden');
+      }
+    });
+  }
+
+  if (adminLoginBack) {
+    adminLoginBack.addEventListener('click', () => {
+      hideAllScreens();
+      loginScreen.classList.remove('hidden');
+      loginScreen.classList.add('flex');
+    });
+  }
+
+  if (createCodeBtn) {
+    createCodeBtn.addEventListener('click', async () => {
+      const code = newAccessCodeInput.value.trim();
+      if (!code) return;
+      const docRef = doc(db, 'codes', code);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        adminCodeSuccess.textContent = `Code “${code}” already exists.`;
+        adminCodeSuccess.classList.remove('hidden');
+      } else {
+        await setDoc(docRef, { createdAt: serverTimestamp() });
+        adminCodeSuccess.textContent = `Code “${code}” created!`;
+        adminCodeSuccess.classList.remove('hidden');
+      }
+      newAccessCodeInput.value = '';
+    });
+  }
+
+  if (adminBuildFormBtn) {
+    adminBuildFormBtn.addEventListener('click', () => {
+      hideAllScreens();
+      startAppFlow(ADMIN_EMAIL);
+    });
+  }
+
+  if (adminLogoutBtn) {
+    adminLogoutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        hideAllScreens();
+        loginScreen.classList.remove('hidden');
+        loginScreen.classList.add('flex');
+        resetBtn.classList.add('hidden');
+      } catch (err) {
+        console.error('Error signing out admin:', err);
+      }
+    });
+  }
+
+  if (userLoginSubmit) {
+    userLoginSubmit.addEventListener('click', async () => {
+      const email = userEmailInput.value.trim().toLowerCase();
+      const pass = userPasswordInput.value.trim();
+      if (!email || !pass) {
+        userError.textContent = 'Email & password are required.';
+        userError.classList.remove('hidden');
+        return;
+      }
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        hideAllScreens();
+        startAppFlow(email);
+      } catch (err) {
+        console.error('User login error:', err);
+        userError.textContent = 'Invalid email or password.';
+        userError.classList.remove('hidden');
+      }
+    });
+  }
+
+  if (userLoginBack) {
+    userLoginBack.addEventListener('click', () => {
+      hideAllScreens();
+      loginScreen.classList.remove('hidden');
+      loginScreen.classList.add('flex');
+    });
+  }
+
+  if (signupSubmit) {
+    signupSubmit.addEventListener('click', async () => {
+      const code = signupCodeInput.value.trim();
+      const email = signupEmailInput.value.trim().toLowerCase();
+      const pass = signupPasswordInput.value.trim();
+      if (!code || !email || !pass) {
+        signupCodeError.textContent = 'All fields are required.';
+        signupCodeError.classList.remove('hidden');
+        return;
+      }
+      const docRef = doc(db, 'codes', code);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        signupCodeError.textContent = 'Invalid or expired access code.';
+        signupCodeError.classList.remove('hidden');
+        return;
+      }
+      try {
+        await createUserWithEmailAndPassword(auth, email, pass);
+        await deleteDoc(docRef);
+        signupCodeError.classList.add('hidden');
+        signupSuccess.classList.remove('hidden');
+        setTimeout(() => {
+          hideAllScreens();
+          startAppFlow(email);
+        }, SIGNUP_SUCCESS_DELAY_MS);
+      } catch (err) {
+        console.error('Error creating user:', err);
+        signupCodeError.textContent = 'Signup failed—email may already be in use.';
+        signupCodeError.classList.remove('hidden');
+      }
+    });
+  }
+
+  if (signupBackBtn) {
+    signupBackBtn.addEventListener('click', () => {
+      hideAllScreens();
+      loginScreen.classList.remove('hidden');
+      loginScreen.classList.add('flex');
+    });
+  }
+
+  if (gradientStartInput) gradientStartInput.addEventListener('input', updateFormGradient);
+  if (gradientEndInput) gradientEndInput.addEventListener('input', updateFormGradient);
+
+  if (addLinkBtn) {
+    addLinkBtn.addEventListener('click', () => {
+      if (linkRows.length < 10) addLinkRow();
+      if (linkRows.length >= 10) {
+        addLinkBtn.setAttribute('disabled', 'true');
+        addLinkBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      updateGenerateButtonState();
+    });
+  }
+
+  if (profilePicFileInput) {
+    profilePicFileInput.addEventListener('change', () => {
+      const file = profilePicFileInput.files[0];
+      if (file && file.type.startsWith('image/')) {
+        errorProfilePic.classList.add('hidden');
+        const reader = new FileReader();
+        reader.onload = e => { profilePicDataURL = e.target.result; };
+        reader.readAsDataURL(file);
+      } else {
+        errorProfilePic.classList.remove('hidden');
+        profilePicDataURL = '';
+      }
+      updateGenerateButtonState();
+    });
+  }
+
+  if (cardImageInput) {
+    cardImageInput.addEventListener('change', () => {
+      const file = cardImageInput.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = e => { cardImageDataURL = e.target.result; };
+        reader.readAsDataURL(file);
+      } else {
+        cardImageDataURL = '';
+      }
+    });
+  }
+
+  if (cardImageClearBtn) {
+    cardImageClearBtn.addEventListener('click', () => {
+      cardImageDataURL = '';
+      cardImageInput.value = '';
+    });
+  }
+
+  if (formUsernameInput) {
+    formUsernameInput.addEventListener('blur', () => {
+      let val = formUsernameInput.value.trim();
+      if (!val.startsWith('@') && val.length > 0) {
+        val = '@' + val;
+        formUsernameInput.value = val;
+      }
+      if (isValidHandle(val)) {
+        formUsernameInput.classList.remove('border-red-500');
+        formUsernameInput.classList.add('border-green-500');
+        errorUsername.classList.add('hidden');
+      } else {
+        formUsernameInput.classList.remove('border-green-500');
+        formUsernameInput.classList.add('border-red-500');
+        errorUsername.classList.remove('hidden');
+      }
+      updateGenerateButtonState();
+    });
+  }
+
+  if (formTaglineInput) {
+    formTaglineInput.addEventListener('input', () => {
+      formTaglineCount.textContent = `${formTaglineInput.value.length}/100`;
+    });
+  }
+
+  if (generateBtn) {
+    generateBtn.addEventListener('click', async e => {
+      e.preventDefault();
+      hideAllScreens();
+      const data = {
+        profilePic: profilePicDataURL,
+        username: formUsernameInput.value.trim(),
+        tagline: formTaglineInput.value.trim(),
+        gradientStart: gradientStartInput.value,
+        gradientEnd: gradientEndInput.value,
+        cardColor: cardColorInput.value,
+        cardTextColor: cardTextColorInput.value,
+        cardImage: cardImageDataURL,
+        links: linkRows.map(r => ({ label: r.labelInput.value.trim(), icon: r.iconSelect.value, url: r.urlInput.value.trim() }))
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(data));
+      } catch (err) {
+        console.warn('LocalStorage quota exceeded, stripping images', err);
+        const tmp = { ...data, profilePic: '', cardImage: '' };
+        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(tmp));
+      }
+      loaderScreen.classList.remove('hidden');
+      loaderScreen.classList.add('flex');
+      await delay(CONFIG.loaderSpinnerDuration);
+      loaderScreen.classList.add('hidden');
+      loaderScreen.classList.remove('flex');
+      renderOutput(data);
+    });
+  }
+
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || '{}');
+      showBuilderForm(saved);
+    });
+  }
+
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || '{}');
+      if (!data || !data.links || data.links.length === 0) return;
+      const safeUsername = data.username.replace('@','') || 'linker';
+      const safeTagline = escapeHTML(data.tagline || '');
+      const safePic = data.profilePic || '';
+      const bgColorStart = data.gradientStart || '#a7f3d0';
+      const bgColorEnd = data.gradientEnd || '#6ee7b7';
+      const cardColor = data.cardColor || '#ffffff';
+      const textColor = data.cardTextColor || '#111827';
+      const cardImage = data.cardImage || '';
+      const outputHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>${escapeHTML(data.username)}’s Linktree</title><style>body{margin:0;padding:0;font-family:Inter,sans-serif;background:linear-gradient(to bottom right,${bgColorStart},${bgColorEnd});display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;} .card{background-color:${cardColor};${cardImage ? `background-image:url('${cardImage}');background-size:cover;` : ''}border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:32px;text-align:center;max-width:360px;width:90%;box-sizing:border-box;} img.profile{width:128px;height:128px;border-radius:50%;object-fit:cover;margin-bottom:16px;} h1{margin:0 0 8px;font-size:1.5rem;color:${textColor};} p.tag{margin:0 0 16px;font-size:1rem;color:${textColor};} .link-btn{display:block;width:100%;box-sizing:border-box;margin:8px 0;padding:12px 16px;background-color:#10b981;color:white;border-radius:8px;text-decoration:none;font-weight:500;font-size:1rem;transition:background-color .2s ease-in-out;} .link-btn:hover{background-color:#059669;} .link-btn i{margin-right:8px;}</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-papZHh3cY3VpsQa0bpo0uZtBi8gm38UH3rzZBZagh1SWlDwptG25pbLBO0e4XgbV4QYxRo/mOZxjwRF+dc+0Fg==" crossorigin="anonymous" referrerpolicy="no-referrer"/></head><body><div class="card">${safePic ? `<img src="${safePic}" alt="Profile picture" class="profile" />` : ''}<h1>${escapeHTML(data.username)}</h1>${safeTagline ? `<p class="tag">${safeTagline}</p>` : ''}${data.links.map(link=>`<a href="${escapeHTML(link.url)}" target="_blank" class="link-btn"><i class="fa ${link.icon}" aria-hidden="true"></i>${escapeHTML(link.label)}</a>`).join('\n    ')}</div></body></html>`;
+      const blob = new Blob([outputHtml], { type: 'text/html' });
+      const filename = `${safeUsername}-linktree.html`;
+      downloadBlob(filename, blob);
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', async () => {
+      localStorage.removeItem(STORAGE_KEY_LINKTREE);
+      try {
+        await signOut(auth);
+      } catch (err) {
+        console.error('Error signing out:', err);
+      }
+      location.reload();
+    });
+  }
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -356,7 +739,6 @@ function initApp() {
 // ───────────────────────────────────────────────────────────────────────────────
 // I) BUTTON HANDLERS ON LANDING SCREEN                                           //
 // ───────────────────────────────────────────────────────────────────────────────
-btnAdminLogin.addEventListener("click", () => {
     hideAllScreens();
     adminLoginScreen.classList.remove("hidden");
     adminLoginScreen.classList.add("flex");
@@ -365,7 +747,6 @@ btnAdminLogin.addEventListener("click", () => {
     adminPasswordInput.value = "";
 });
 
-btnUserLogin.addEventListener("click", () => {
     hideAllScreens();
     userLoginScreen.classList.remove("hidden");
     userLoginScreen.classList.add("flex");
@@ -374,7 +755,6 @@ btnUserLogin.addEventListener("click", () => {
     userPasswordInput.value = "";
 });
 
-btnUseAccessCode.addEventListener("click", () => {
     hideAllScreens();
     userSignupScreen.classList.remove("hidden");
     userSignupScreen.classList.add("flex");
@@ -388,7 +768,6 @@ btnUseAccessCode.addEventListener("click", () => {
 // ───────────────────────────────────────────────────────────────────────────────
 // J) ADMIN LOGIN LOGIC                                                           //
 // ───────────────────────────────────────────────────────────────────────────────
-adminLoginSubmit.addEventListener("click", async () => {
     const email = adminEmailInput.value.trim().toLowerCase();
     const pass = adminPasswordInput.value.trim();
 
@@ -408,7 +787,6 @@ adminLoginSubmit.addEventListener("click", async () => {
     }
 });
 
-adminLoginBack.addEventListener("click", () => {
     hideAllScreens();
     loginScreen.classList.remove("hidden");
     loginScreen.classList.add("flex");
@@ -426,7 +804,6 @@ async function showAdminPanel() {
 }
 
 // Generate a new access code (Firestore “codes” collection)
-createCodeBtn.addEventListener("click", async () => {
     const code = newAccessCodeInput.value.trim();
     if (!code) return;
 
@@ -444,13 +821,11 @@ createCodeBtn.addEventListener("click", async () => {
 });
 
 // Build Form (skip directly to the Linktree builder)
-adminBuildFormBtn.addEventListener("click", () => {
     hideAllScreens();
     startAppFlow(ADMIN_EMAIL);
 });
 
 // Admin “Logout”
-adminLogoutBtn.addEventListener("click", async () => {
     try {
         await signOut(auth);
         hideAllScreens();
@@ -465,7 +840,6 @@ adminLogoutBtn.addEventListener("click", async () => {
 // ───────────────────────────────────────────────────────────────────────────────
 // L) USER LOGIN LOGIC                                                            //
 // ───────────────────────────────────────────────────────────────────────────────
-userLoginSubmit.addEventListener("click", async () => {
     const email = userEmailInput.value.trim().toLowerCase();
     const pass = userPasswordInput.value.trim();
 
@@ -486,7 +860,6 @@ userLoginSubmit.addEventListener("click", async () => {
     }
 });
 
-userLoginBack.addEventListener("click", () => {
     hideAllScreens();
     loginScreen.classList.remove("hidden");
     loginScreen.classList.add("flex");
@@ -495,7 +868,6 @@ userLoginBack.addEventListener("click", () => {
 // ───────────────────────────────────────────────────────────────────────────────
 // M) USER SIGNUP LOGIC (Access Code → Create Auth User → Delete Code)            //
 // ───────────────────────────────────────────────────────────────────────────────
-signupSubmit.addEventListener("click", async () => {
     const code = signupCodeInput.value.trim();
     const email = signupEmailInput.value.trim().toLowerCase();
     const pass = signupPasswordInput.value.trim();
@@ -536,7 +908,6 @@ signupSubmit.addEventListener("click", async () => {
     }
 });
 
-signupBackBtn.addEventListener("click", () => {
     hideAllScreens();
     loginScreen.classList.remove("hidden");
     loginScreen.classList.add("flex");
@@ -596,8 +967,6 @@ function updateFormGradient() {
     const end = gradientEndInput.value || "#6ee7b7";
     formScreen.style.background = `linear-gradient(to bottom right, ${start}, ${end})`;
 }
-gradientStartInput.addEventListener("input", updateFormGradient);
-gradientEndInput.addEventListener("input", updateFormGradient);
 
 function showBuilderForm(prefillData = null) {
     hideAllScreens();
@@ -849,7 +1218,6 @@ function addLinkRow(prefill = null) {
 // ───────────────────────────────────────────────────────────────────────────────
 // Q) “+ Add New Link” Button                                                     //
 // ───────────────────────────────────────────────────────────────────────────────
-addLinkBtn.addEventListener("click", () => {
     if (linkRows.length < 10) {
         addLinkRow();
     }
@@ -864,7 +1232,6 @@ addLinkBtn.addEventListener("click", () => {
 // R) VALIDATE INPUTS & ENABLE “Generate”                                          //
 // ───────────────────────────────────────────────────────────────────────────────
 // Profile picture upload
-profilePicFileInput.addEventListener("change", () => {
     const file = profilePicFileInput.files[0];
     if (file && file.type.startsWith("image/")) {
         errorProfilePic.classList.add("hidden");
@@ -881,7 +1248,6 @@ profilePicFileInput.addEventListener("change", () => {
 });
 
 // Card background image upload (optional)
-cardImageInput.addEventListener("change", () => {
     const file = cardImageInput.files[0];
     if (file && file.type.startsWith("image/")) {
         const reader = new FileReader();
@@ -894,13 +1260,11 @@ cardImageInput.addEventListener("change", () => {
     }
 });
 
-cardImageClearBtn.addEventListener("click", () => {
     cardImageDataURL = "";
     cardImageInput.value = "";
 });
 
 // Username validation on blur
-formUsernameInput.addEventListener("blur", () => {
     let val = formUsernameInput.value.trim();
     if (!val.startsWith("@") && val.length > 0) {
         val = "@" + val;
@@ -919,7 +1283,6 @@ formUsernameInput.addEventListener("blur", () => {
 });
 
 // Tagline counter
-formTaglineInput.addEventListener("input", () => {
     formTaglineCount.textContent = `${formTaglineInput.value.length}/100`;
 });
 
@@ -951,7 +1314,6 @@ function updateGenerateButtonState() {
 // ───────────────────────────────────────────────────────────────────────────────
 // S) “Generate My Linktree” → SHOW LOADER → RENDER OUTPUT                          //
 // ───────────────────────────────────────────────────────────────────────────────
-generateBtn.addEventListener("click", async (e) => {
     e.preventDefault();
     hideAllScreens();
 
@@ -1046,7 +1408,6 @@ function renderOutput(data) {
 }
 
 // “Back to Edit”
-backBtn.addEventListener("click", () => {
     const saved = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "{}");
     showBuilderForm(saved);
 });
@@ -1054,7 +1415,6 @@ backBtn.addEventListener("click", () => {
 // ───────────────────────────────────────────────────────────────────────────────
 // U) DOWNLOAD: Standalone HTML (just the Linktree, no extra buttons)             //
 // ───────────────────────────────────────────────────────────────────────────────
-downloadBtn.addEventListener("click", () => {
     const data = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "{}");
     if (!data || !data.links || data.links.length === 0) return;
 
@@ -1166,7 +1526,6 @@ downloadBtn.addEventListener("click", () => {
 // ───────────────────────────────────────────────────────────────────────────────
 // W) RESET BUTTON: Clear localStorage + Sign Out + reload page                   //
 // ───────────────────────────────────────────────────────────────────────────────
-resetBtn.addEventListener("click", async () => {
     localStorage.removeItem(STORAGE_KEY_LINKTREE);
     try {
         await signOut(auth);
