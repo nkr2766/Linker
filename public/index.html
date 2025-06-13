@@ -8,6 +8,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Linker – Build Your Linktree</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>body { font-family: 'Inter', sans-serif; }</style>
+
+    <meta name="theme-color" content="#10b981">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="description" content="Build your own premium Linktree-style page instantly.">
+    <meta property="og:title" content="Linker – Your Custom Linktree">
+    <meta property="og:description" content="Create a beautiful link page in seconds.">
+    <meta property="og:image" content="/social-share.png">
+
     <!-- Tailwind CSS (CDN for quick dev; in production you’d extract this via PostCSS) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!--
@@ -72,13 +82,20 @@
     <!-- A) STARTUP OVERLAY (black → fade to transparent + slide‐up text)             -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="startup-screen">
-        <div id="startup-text">Welcome to Linker</div>
+        <h1 id="startup-text"
+            class="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-emerald-400 to-green-500 bg-clip-text text-transparent">
+            Welcome to Linker
+        </h1>
     </div>
 
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- C) LOGIN SCREEN (Landing Page with three big buttons)                        -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="login-screen" class="hidden flex-col items-center justify-center min-h-screen text-center space-y-6 px-4">
+        <header class="flex justify-between items-center p-4">
+            <img src="/logo.svg" alt="Linker" class="h-8 w-auto">
+            <button id="theme-toggle" class="p-2 focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">🌓</button>
+        </header>
         <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
             <h1 class="text-2xl font-semibold text-gray-900 mb-6">Welcome to Linker</h1>
             <button id="btn-admin-login"
@@ -101,6 +118,10 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="admin-login-screen"
         class="hidden flex-col items-center justify-center min-h-screen text-center space-y-4 px-4">
+        <header class="flex justify-between items-center p-4">
+            <img src="/logo.svg" alt="Linker" class="h-8 w-auto">
+            <button id="theme-toggle" class="p-2 focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">🌓</button>
+        </header>
         <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
             <h2 class="text-2xl font-semibold text-gray-900 mb-4">Admin Login</h2>
             <p id="admin-error" class="text-red-500 text-sm hidden mb-2" role="alert"></p>
@@ -122,6 +143,10 @@
     <!-- E) ADMIN PANEL (Create Codes / Build Form / Logout)                           -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="admin-panel" class="hidden flex-col items-center justify-center min-h-screen space-y-6 px-4">
+        <header class="flex justify-between items-center p-4">
+            <img src="/logo.svg" alt="Linker" class="h-8 w-auto">
+            <button id="theme-toggle" class="p-2 focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">🌓</button>
+        </header>
         <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6">
             <h2 class="text-2xl font-semibold text-gray-900">Admin Panel</h2>
 
@@ -155,6 +180,10 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="user-login-screen"
         class="hidden flex-col items-center justify-center min-h-screen text-center space-y-4 px-4">
+        <header class="flex justify-between items-center p-4">
+            <img src="/logo.svg" alt="Linker" class="h-8 w-auto">
+            <button id="theme-toggle" class="p-2 focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">🌓</button>
+        </header>
         <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
             <h2 class="text-2xl font-semibold text-gray-900 mb-4">User Login</h2>
             <p id="user-error" class="text-red-500 text-sm hidden mb-2" role="alert"></p>
@@ -177,6 +206,10 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="user-signup-screen"
         class="hidden flex-col items-center justify-center min-h-screen text-center space-y-4 px-4">
+        <header class="flex justify-between items-center p-4">
+            <img src="/logo.svg" alt="Linker" class="h-8 w-auto">
+            <button id="theme-toggle" class="p-2 focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">🌓</button>
+        </header>
         <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-4">
             <h2 class="text-2xl font-semibold text-gray-900">Sign Up with Access Code</h2>
             <p id="signup-code-error" class="text-red-500 text-sm hidden" role="alert"></p>
@@ -210,11 +243,16 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- I) BUILDER FORM SCREEN (Upload Picture / Handle / Tagline / Links)            -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="form-screen"
+<div id="form-screen"
         class="hidden flex items-center justify-center min-h-screen pt-6 px-4 bg-gradient-to-br from-green-200 to-green-300 overflow-y-auto">
+        <header class="flex justify-between items-center p-4">
+            <img src="/logo.svg" alt="Linker" class="h-8 w-auto">
+            <button id="theme-toggle" class="p-2 focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">🌓</button>
+        </header>
         <div
-            class="card-wrapper w-full max-w-md bg-white rounded-2xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto">
+            class="card-wrapper w-full max-w-md bg-white rounded-2xl shadow-lg p-6 space-y-6 max-h-[90vh] overflow-y-auto animate-fadeInUp">
             <button id="reset-btn" type="button" class="hidden btn-reset self-start mb-4">Reset</button>
+            <div id="skeleton-wrapper" class="space-y-6 animate-pulse">
             <h2 class="text-2xl font-semibold text-gray-900">Build Your Linktree</h2>
             <p class="text-gray-800">
                 Upload a profile picture, add your handle, tagline, and links below.
@@ -284,6 +322,10 @@
                 At least one valid link is required.
             </p>
 
+            </div>
+
+            <hr class="my-6 border-t border-gray-200" />
+
             <!-- Generate Button -->
             <button id="generate-btn" class="w-full py-3 bg-gray-600 text-gray-300 rounded-lg cursor-not-allowed"
                 disabled>
@@ -296,6 +338,10 @@
     <!-- J) LOADER SCREEN (Spinning Icon)                                             -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="loader-screen" class="hidden flex-col items-center justify-center min-h-screen bg-gray-900 bg-opacity-50">
+        <header class="flex justify-between items-center p-4">
+            <img src="/logo.svg" alt="Linker" class="h-8 w-auto">
+            <button id="theme-toggle" class="p-2 focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">🌓</button>
+        </header>
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-green-400"></div>
     </div>
 
@@ -303,7 +349,11 @@
     <!-- K) LINKTREE OUTPUT SCREEN (Profile + Links + Back / Download)                -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="linktree-screen" class="hidden flex-col items-center justify-center min-h-screen px-4">
-        <div id="output-card" class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6">
+        <header class="flex justify-between items-center p-4">
+            <img src="/logo.svg" alt="Linker" class="h-8 w-auto">
+            <button id="theme-toggle" class="p-2 focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">🌓</button>
+        </header>
+        <div id="output-card" class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6 animate-fadeInUp">
             <div class="flex flex-col items-center space-y-4">
                 <img id="output-profile-pic" src="" alt="Profile Picture"
                     class="w-24 h-24 rounded-full object-cover hidden" />

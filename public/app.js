@@ -272,6 +272,7 @@ const outputTagline = document.getElementById("output-tagline");
 const linksContainer = document.getElementById("links-container");
 const backBtn = document.getElementById("back-btn");
 const downloadBtn = document.getElementById("download-btn");
+const toggle = document.getElementById("theme-toggle");
 
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -653,10 +654,9 @@ async function startAppFlow(currentEmail) {
     welcomeScreen.classList.remove("hidden");
     welcomeScreen.classList.add("flex");
 
-    const isAdmin = currentEmail.toLowerCase() === ADMIN_EMAIL.toLowerCase();
-    welcomeText.textContent = isAdmin
-        ? `Thank you for logging in, Admin. Let’s build your Linktree next!`
-        : `Thank you for logging in, ${currentEmail}! Let’s build your Linktree!`;
+    const h = new Date().getHours();
+    const greet = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
+    welcomeText.textContent = `${greet}, ${currentEmail}! Ready to Link?`;
 
     // Fade banner in/out:
     welcomeText.classList.remove("opacity-0");    // show it
@@ -1136,6 +1136,8 @@ function renderOutput(data) {
         }
     });
 
+    outputCard.classList.add("animate-fadeInUp");
+
     hideAllScreens();
     linktreeScreen.classList.remove("hidden");
     linktreeScreen.classList.add("flex");
@@ -1271,3 +1273,26 @@ resetBtn.addEventListener("click", async () => {
     }
     location.reload();
 });
+
+if (toggle) {
+    toggle.addEventListener("click", () => {
+        const t = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+        document.documentElement.setAttribute("data-theme", t);
+        localStorage.setItem("theme", t);
+    });
+}
+document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "light");
+
+window.addEventListener("keydown", (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+        e.preventDefault();
+        generateBtn.click();
+    }
+    if (e.key === "Escape") {
+        document.querySelectorAll('[role="alert"]').forEach((el) => el.classList.add("hidden"));
+    }
+});
+
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("/service-worker.js");
+}

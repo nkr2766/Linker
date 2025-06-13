@@ -1,5 +1,28 @@
 /* style.css */
 
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+:root[data-theme="light"] {
+  --bg: #ffffff;
+  --fg: #111827;
+  --accent: #10b981;
+}
+:root[data-theme="dark"] {
+  --bg: #1f2937;
+  --fg: #f9fafb;
+  --accent: #059669;
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+}
+
 /* ──────────────────────────────────────────────────────────────────────────── */
 /* A) STARTUP FADE KEYFRAMES (1.5 s total)                                      */
 /* ──────────────────────────────────────────────────────────────────────────── */
@@ -175,3 +198,19 @@
         overflow: auto;
     }
 }
+
+.card-wrapper,
+.output-card {
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: all 0.3s ease-in-out;
+}
+
+.link-btn {
+    transform: translateZ(0);
+    transition: transform 0.2s ease-in-out;
+}
+.link-btn:hover {
+    transform: scale(1.05);
+}
+
