@@ -1,5 +1,58 @@
-// v22
-// ───────────────────────────────────────────────────────────────────────────────
+// ─────────────── COMMAND CENTER CONFIG ───────────────
+// SPLASH SCREEN SETTINGS:
+//  - splashLogoScale: final scale factor of the splash logo (1.0 = 100% of its natural size).
+//  - splashLogoMaxWidth: CSS max-width applied to logo (helps constrain on large screens).
+//  - splashGrowDuration: how long (in ms) the logo “grow” animation runs.
+//  - splashFadeDuration: how long (in ms) the splash overlay fades out after grow.
+const CONFIG = {
+  // Splash
+  splashLogoScale:        0.85,          // e.g. use 0.85 for 85% scale
+  splashLogoMaxWidth:     '180px',       // constrain logo width
+  splashGrowDuration:     1200,          // ms for logo scaling
+  splashFadeDuration:     500,           // ms for overlay fade-out
+
+  // HEADER LOGO (static, top-left):
+  //  - headerLogoHeight: CSS height for the header logo image.
+  //  - headerLogoWidth: optional CSS width.
+  headerLogoHeight:       '2.5rem',
+  headerLogoWidth:        'auto',
+
+  // THEMING & GRADIENTS:
+  //  - bgGradientLight: [startColor, endColor] for page background in light mode.
+  //  - bgGradientDark:  [startColor, endColor] for dark mode.
+  //  - cardGradientLight: opposing gradient for cards in light mode.
+  //  - cardGradientDark:  opposing gradient for cards in dark mode.
+  bgGradientLight:        ['#f5f7fa', '#c3cfe2'],
+  bgGradientDark:         ['#2c3e50', '#4ca1af'],
+  cardGradientLight:      ['#c3cfe2', '#f5f7fa'],
+  cardGradientDark:       ['#4ca1af', '#2c3e50'],
+
+  // BUTTON STYLES:
+  //  - buttonNeutralBg: base background color for all buttons.
+  //  - buttonNeutralFg: base text color (if empty, will inherit `--fg`).
+  //  - buttonHoverAccent: color used in gradient-wave on hover.
+  buttonNeutralBg:        'rgba(255,255,255,0.85)',
+  buttonNeutralFg:        '',             // leave blank to inherit --fg
+  buttonHoverAccent:      'var(--accent)',
+
+  // ANIMATIONS & TIMING:
+  //  - welcomeBannerDuration: ms to show “Thank you for logging in” banner.
+  //  - welcomeBannerFade:     ms for that banner to fade out.
+  //  - loaderSpinnerDuration: ms to show the loader spinner.
+  welcomeBannerDuration:  2500,
+  welcomeBannerFade:      300,
+  loaderSpinnerDuration:  300,
+
+  // THEME TOGGLE ICON:
+  //  - toggleIconSize: CSS font-size for the 🌗 button.
+  toggleIconSize:         '1.5rem',
+
+  // APP VERSION:
+  //  - version: text displayed in the bottom-right corner.
+  version:                'v24'
+};
+// ────────────────────────────────────────────────────────
+
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
@@ -22,131 +75,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 console.log("\uD83D\uDD25 app.js has loaded!");
-// ─────────────────────────────────────────────────────────────────────────────
-// CONFIGURATION: Welcome Screen / Loading Screen Editor
-// ─────────────────────────────────────────────────────────────────────────────
-
-// 1) Device Detection (no need to change)
-const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
-
-// ─────────── Desktop Values ───────────
-const DESKTOP_WELCOME_BLACK_DURATION_MS = 1000;      // How long the black background stays (ms) on desktop
-const DESKTOP_TEXT_APPEAR_DELAY_MS = 0;         // Delay before the text animation begins (ms) on desktop
-const DESKTOP_TEXT_INITIAL_FONT_SIZE_PX = 50;        // Starting font size of "Welcome to Linker" (px) on desktop
-const DESKTOP_TEXT_FINAL_FONT_SIZE_PX = 138;       // Final font size of "Welcome to Linker" (px) on desktop
-const DESKTOP_TEXT_INITIAL_COLOR = "rgb(101, 189, 116)";   // Initial text color on desktop
-const DESKTOP_TEXT_FINAL_COLOR = "rgb(136, 223, 149)";   // Final text color on desktop
-const DESKTOP_TEXT_SCALE_DURATION_MS = 3000;      // How long the text scales and recolors (ms) on desktop
-const DESKTOP_TEXT_SCALE_EASING = "ease-in-out"; // Easing curve for text scale/color on desktop
-
-const DESKTOP_BACKGROUND_FADE_DURATION_MS = 9000;    // How long the black overlay fades out (ms) on desktop
-const DESKTOP_BACKGROUND_FADE_EASING = "ease-in-out"; // Easing curve for background fade on desktop
-
-const DESKTOP_TEXT_FADE_DELAY_BEFORE_BG_MS = 0;      // Offset when text starts relative to bg fade (ms) on desktop
-const DESKTOP_TEXT_STAY_DURATION_MS = 0;      // How long text stays at final size before removing the overlay (ms) on desktop
-
-const DESKTOP_STARTUP_SCREEN_SELECTOR = "#startup-screen"; // CSS selector for the overlay element (desktop)
-const DESKTOP_STARTUP_TEXT_SELECTOR = "#startup-text";   // CSS selector for the welcome text element (desktop)
-
-// ─────────── Mobile Values ───────────
-const MOBILE_WELCOME_BLACK_DURATION_MS = 1000;    // How long the black background stays (ms) on mobile
-const MOBILE_TEXT_APPEAR_DELAY_MS = 0;       // Delay before the text animation begins (ms) on mobile
-const MOBILE_TEXT_INITIAL_FONT_SIZE_PX = 33;      // Starting font size of "Welcome to Linker" (px) on mobile
-const MOBILE_TEXT_FINAL_FONT_SIZE_PX = 65;      // Final font size of "Welcome to Linker" (px) on mobile
-const MOBILE_TEXT_INITIAL_COLOR = "rgb(101, 189, 116)"; // Initial text color on mobile
-const MOBILE_TEXT_FINAL_COLOR = "rgb(136, 223, 149)"; // Final text color on mobile
-const MOBILE_TEXT_SCALE_DURATION_MS = 3000;    // How long the text scales and recolors (ms) on mobile
-const MOBILE_TEXT_SCALE_EASING = "ease-in-out"; // Easing curve for text scale/color on mobile
-
-const MOBILE_BACKGROUND_FADE_DURATION_MS = 0;  // How long the black overlay fades out (ms) on mobile
-const MOBILE_BACKGROUND_FADE_EASING = "ease-in-out"; // Easing curve for background fade on mobile
-
-const MOBILE_TEXT_FADE_DELAY_BEFORE_BG_MS = 0;    // Offset when text starts relative to bg fade (ms) on mobile
-const MOBILE_TEXT_STAY_DURATION_MS = 0;    // How long text stays at final size before removing the overlay (ms) on mobile
-
-const MOBILE_STARTUP_SCREEN_SELECTOR = "#startup-screen"; // CSS selector for the overlay element (mobile)
-const MOBILE_STARTUP_TEXT_SELECTOR = "#startup-text";   // CSS selector for the welcome text element (mobile)
-
-
-// ───────────────────────────────────────────────────────────────────────────────
-// CONFIGURATION: Main UI pop-up adjustment (desktop vs. mobile)
-// ───────────────────────────────────────────────────────────────────────────────
-const DESKTOP_UI_DELAY_ADJUSTMENT_MS = -6500;   // Add/subtract ms after fade ends before showing UI (desktop)
-const MOBILE_UI_DELAY_ADJUSTMENT_MS  = -10000;   // Add/subtract ms after fade ends before showing UI (mobile)
-// Use desktop or mobile adjustment depending on viewport
-const UI_DELAY_ADJUSTMENT_MS = IS_MOBILE
-  ? MOBILE_UI_DELAY_ADJUSTMENT_MS
-  : DESKTOP_UI_DELAY_ADJUSTMENT_MS;
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SELECTED CONFIG VARIABLES (DO NOT EDIT BELOW)
-// ─────────────────────────────────────────────────────────────────────────────
-const WELCOME_BLACK_DURATION_MS     = IS_MOBILE
-  ? MOBILE_WELCOME_BLACK_DURATION_MS
-  : DESKTOP_WELCOME_BLACK_DURATION_MS;
-
-const TEXT_APPEAR_DELAY_MS          = IS_MOBILE
-  ? MOBILE_TEXT_APPEAR_DELAY_MS
-  : DESKTOP_TEXT_APPEAR_DELAY_MS;
-
-const TEXT_INITIAL_FONT_SIZE_PX     = IS_MOBILE
-  ? MOBILE_TEXT_INITIAL_FONT_SIZE_PX
-  : DESKTOP_TEXT_INITIAL_FONT_SIZE_PX;
-
-const TEXT_FINAL_FONT_SIZE_PX       = IS_MOBILE
-  ? MOBILE_TEXT_FINAL_FONT_SIZE_PX
-  : DESKTOP_TEXT_FINAL_FONT_SIZE_PX;
-
-const TEXT_INITIAL_COLOR            = IS_MOBILE
-  ? MOBILE_TEXT_INITIAL_COLOR
-  : DESKTOP_TEXT_INITIAL_COLOR;
-
-const TEXT_FINAL_COLOR              = IS_MOBILE
-  ? MOBILE_TEXT_FINAL_COLOR
-  : DESKTOP_TEXT_FINAL_COLOR;
-
-const TEXT_SCALE_DURATION_MS        = IS_MOBILE
-  ? MOBILE_TEXT_SCALE_DURATION_MS
-  : DESKTOP_TEXT_SCALE_DURATION_MS;
-
-const TEXT_SCALE_EASING             = IS_MOBILE
-  ? MOBILE_TEXT_SCALE_EASING
-  : DESKTOP_TEXT_SCALE_EASING;
-
-const BACKGROUND_FADE_DURATION_MS   = IS_MOBILE
-  ? MOBILE_BACKGROUND_FADE_DURATION_MS
-  : DESKTOP_BACKGROUND_FADE_DURATION_MS;
-
-const BACKGROUND_FADE_EASING        = IS_MOBILE
-  ? MOBILE_BACKGROUND_FADE_EASING
-  : DESKTOP_BACKGROUND_FADE_EASING;
-
-const TEXT_FADE_DELAY_BEFORE_BG_MS  = IS_MOBILE
-  ? MOBILE_TEXT_FADE_DELAY_BEFORE_BG_MS
-  : DESKTOP_TEXT_FADE_DELAY_BEFORE_BG_MS;
-
-const TEXT_STAY_DURATION_MS         = IS_MOBILE
-  ? MOBILE_TEXT_STAY_DURATION_MS
-  : DESKTOP_TEXT_STAY_DURATION_MS;
-
-const STARTUP_SCREEN_SELECTOR       = IS_MOBILE
-  ? MOBILE_STARTUP_SCREEN_SELECTOR
-  : DESKTOP_STARTUP_SCREEN_SELECTOR;
-
-const STARTUP_TEXT_SELECTOR         = IS_MOBILE
-  ? MOBILE_STARTUP_TEXT_SELECTOR
-  : DESKTOP_STARTUP_TEXT_SELECTOR;
-
-// Optional: Skip animation entirely (debug only)
-const SKIP_WELCOME_ANIMATION = false;
-
-const SIGNUP_SUCCESS_DELAY_MS    = 1200;   // Pause after account creation before continuing
-const WELCOME_BANNER_DURATION_MS = 2500;   // How long the post-login banner stays visible
-const WELCOME_BANNER_FADE_MS     = 300;    // Fade duration for the banner
-const LOADER_SPINNER_DURATION_MS = 300;    // Length of the loading spinner
-
-const fadeDurationSeconds = (BACKGROUND_FADE_DURATION_MS / 1000) + "s";
-document.documentElement.style.setProperty("--welcome-fade-duration", fadeDurationSeconds);
 
 // ───────────────────────────────────────────────────────────────────────────────
 // B) FIREBASE CONFIGURATION
@@ -190,6 +118,7 @@ const ADMIN_PASSWORD = "?616811Nt";
 
 // localStorage key for saving the Linktree data:
 const STORAGE_KEY_LINKTREE = "linkerLinktreeData";
+const SIGNUP_SUCCESS_DELAY_MS = 1200; // Pause after account creation before continuing
 
 // Keep track of link rows (for “Add Link”, “Delete”, reordering, etc.)
 let linkRows = [];
@@ -202,8 +131,7 @@ let cardImageDataURL = "";
 // E) UI ELEMENT REFERENCES
 // ───────────────────────────────────────────────────────────────────────────────
 // (These IDs must match exactly what’s in index.html—don’t rename!)
-const startupScreen = document.querySelector(STARTUP_SCREEN_SELECTOR);
-const startupText = document.querySelector(STARTUP_TEXT_SELECTOR);
+const startupScreen = document.getElementById("startup-screen");
 const resetBtn = document.getElementById("reset-btn");
 
 const loginScreen = document.getElementById("login-screen");
@@ -334,19 +262,25 @@ function escapeHTML(str) {
 // ───────────────────────────────────────────────────────────────────────────────
 //                 Then FORCE sign-out any existing user, then call initApp()
 window.addEventListener('load', () => {
-  console.debug('[Splash] load fired');
+  console.debug('[Splash] load');
+  hideAllScreens();
+  document.body.appendChild(startupScreen);
+
   const screen = document.getElementById('startup-screen');
   const logo   = document.getElementById('startup-logo');
   if (screen && logo) {
-    console.debug('[Splash] animating logo');
+    // apply size
+    logo.style.maxWidth = CONFIG.splashLogoMaxWidth;
+    logo.style.transform = `scale(${CONFIG.splashLogoScale})`;
+    console.debug('[Splash] animate grow & fade');
     screen.classList.add('reveal');
     setTimeout(() => {
-      console.debug('[Splash] removing splash, showing landing');
+      console.debug('[Splash] done, initApp');
       screen.remove();
       initApp();
-    }, 1700);
+    }, CONFIG.splashGrowDuration + CONFIG.splashFadeDuration);
   } else {
-    console.warn('[Splash] missing elements, skipping to initApp');
+    console.warn('[Splash] missing elements, initApp now');
     initApp();
   }
 });
@@ -584,9 +518,9 @@ async function startAppFlow(currentEmail) {
 
     // Fade banner in/out:
     welcomeText.classList.remove("opacity-0");    // show it
-    await delay(WELCOME_BANNER_DURATION_MS);                            // keep it visible 2.5s
+    await delay(CONFIG.welcomeBannerDuration);                            // keep it visible 2.5s
     welcomeText.classList.add("opacity-0");       // fade it out
-    await delay(WELCOME_BANNER_FADE_MS);                             // wait 0.3s for fade to complete
+    await delay(CONFIG.welcomeBannerFade);                             // wait 0.3s for fade to complete
     // Hide the welcome overlay before proceeding
     welcomeScreen.classList.add("hidden");
     welcomeScreen.classList.remove("flex");
@@ -602,7 +536,7 @@ async function startAppFlow(currentEmail) {
     if (savedData) {
         loaderScreen.classList.remove("hidden");
         loaderScreen.classList.add("flex");
-        await delay(LOADER_SPINNER_DURATION_MS);                           // spinner for 0.3s
+        await delay(CONFIG.loaderSpinnerDuration);                           // spinner for 0.3s
         loaderScreen.classList.add("hidden");
         loaderScreen.classList.remove("flex");
         renderOutput(savedData);
@@ -1005,7 +939,7 @@ generateBtn.addEventListener("click", async (e) => {
 
     loaderScreen.classList.remove("hidden");
     loaderScreen.classList.add("flex");
-    await delay(LOADER_SPINNER_DURATION_MS);
+    await delay(CONFIG.loaderSpinnerDuration);
     loaderScreen.classList.add("hidden");
     loaderScreen.classList.remove("flex");
     renderOutput(data);
@@ -1205,17 +1139,20 @@ document.addEventListener('DOMContentLoaded', () => {
   console.debug('[Theme] DOMContentLoaded');
   const toggle = document.getElementById('theme-toggle');
   if (!toggle) {
-    console.error('[Theme] theme-toggle not found');
+    console.error('[Theme] toggle not found');
     return;
   }
+  // set icon size
+  toggle.style.fontSize = CONFIG.toggleIconSize;
+
   const saved = localStorage.getItem('theme') || 'light';
-  console.debug('[Theme] init theme=', saved);
+  console.debug('[Theme] init →', saved);
   document.documentElement.setAttribute('data-theme', saved);
 
   toggle.addEventListener('click', () => {
     const cur = document.documentElement.getAttribute('data-theme');
     const next = cur === 'dark' ? 'light' : 'dark';
-    console.debug('[Theme] toggle from', cur, 'to', next);
+    console.debug('[Theme] toggle →', next);
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
   });
@@ -1239,3 +1176,6 @@ document.addEventListener('DOMContentLoaded', () => {
     navigator.serviceWorker.register('/service-worker.js');
   }
 });
+
+const versionEl = document.getElementById('version');
+if (versionEl) versionEl.textContent = CONFIG.version;
