@@ -272,7 +272,6 @@ const outputTagline = document.getElementById("output-tagline");
 const linksContainer = document.getElementById("links-container");
 const backBtn = document.getElementById("back-btn");
 const downloadBtn = document.getElementById("download-btn");
-const toggle = document.getElementById("theme-toggle");
 
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -683,7 +682,9 @@ async function startAppFlow(currentEmail) {
         loaderScreen.classList.remove("flex");
         renderOutput(savedData);
     } else {
-        showBuilderForm(savedData);
+        hideAllScreens();
+        formScreen.classList.remove('hidden');
+        formScreen.classList.add('flex');
     }
 }
 
@@ -1275,25 +1276,35 @@ resetBtn.addEventListener("click", async () => {
     location.reload();
 });
 
-if (toggle) {
-    toggle.addEventListener("click", () => {
-        const t = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-        document.documentElement.setAttribute("data-theme", t);
-        localStorage.setItem("theme", t);
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('theme-toggle');
+  if (toggle) {
+    const saved = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
     });
-}
-document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "light");
+  }
 
-window.addEventListener("keydown", (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-        e.preventDefault();
-        generateBtn.click();
+  onAuthStateChanged(auth, user => {
+    if (user && user.email !== ADMIN_EMAIL) {
+      hideAllScreens();
+      formScreen.classList.remove('hidden');
+      formScreen.classList.add('flex');
     }
-    if (e.key === "Escape") {
-        document.querySelectorAll('[role="alert"]').forEach((el) => el.classList.add("hidden"));
+  });
+
+  window.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      generateBtn.click();
     }
+  });
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
+  }
 });
-
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/service-worker.js");
-}

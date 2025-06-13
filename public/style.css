@@ -1,28 +1,27 @@
 /* style.css */
-
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.animate-fadeInUp {
-  animation: fadeInUp 0.6s ease-out both;
-}
-
+/* ← THEME PALETTE VARIABLES → */
 :root[data-theme="light"] {
-  --bg: #f0f0f0;
-  --fg: #1f1f1f;
-  --accent: #00d2ff;
-  --accent-dark: #0099cc;
+  --bg: #e0f8f7;            /* mint-light */
+  --fg: #1a1f2b;            /* charcoal */
+  --accent: #00d2ff;        /* neon-blue */
+  --accent-dark: #0099cc;   /* ocean-dark */
+  --border: rgba(26,31,43,0.1);
+  --shadow: rgba(26,31,43,0.15);
 }
 :root[data-theme="dark"] {
-  --bg: #1f1f1f;
-  --fg: #e5e7eb;
+  --bg: #1a1f2b;
+  --fg: #e0f8f7;
   --accent: #00d2ff;
   --accent-dark: #0099cc;
+  --border: rgba(224,248,247,0.2);
+  --shadow: rgba(0,0,0,0.3);
 }
 body {
+  margin: 0;
   background: var(--bg);
   color: var(--fg);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
 }
 
 /* ──────────────────────────────────────────────────────────────────────────── */
@@ -73,26 +72,11 @@ body {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────── */
-/* C) SCROLLBAR STYLING (builder & admin)                                      */
+/* C) SCROLLBAR STYLING                                                        */
 /* ──────────────────────────────────────────────────────────────────────────── */
-#form-screen::-webkit-scrollbar,
-#linktree-screen::-webkit-scrollbar,
-#admin-panel::-webkit-scrollbar {
-    width: 8px;
-}
-
-#form-screen::-webkit-scrollbar-thumb,
-#linktree-screen::-webkit-scrollbar-thumb,
-#admin-panel::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
-}
-
-#form-screen::-webkit-scrollbar-thumb:hover,
-#linktree-screen::-webkit-scrollbar-thumb:hover,
-#admin-panel::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(0, 0, 0, 0.4);
-}
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent-dark); }
 
 /* ──────────────────────────────────────────────────────────────────────────── */
 /* D) FOCUS STYLES                                                             */
@@ -165,26 +149,43 @@ body {
     box-sizing: border-box;
 }
 
-/* 4) Example button styling inside card */
-.card-wrapper .btn-reset,
-.card-wrapper .btn-remove,
-.card-wrapper #generate-btn,
-.card-wrapper #add-link-btn {
-    padding: 10px 16px;
-    border: none;
-    border-radius: 8px;
-    background-color: #ef4444;
-    color: #ffffff;
-    cursor: pointer;
-    font-size: 1rem;
-    margin-bottom: 12px;
+/* Buttons & Links */
+button,
+.btn-reset, .btn-remove, #generate-btn, #add-link-btn, .link-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+button:hover,
+.btn-reset:hover, .btn-remove:hover, #generate-btn:hover, #add-link-btn:hover, .link-btn:hover {
+  background: var(--accent-dark);
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px var(--shadow);
+}
+button:focus,
+.btn-reset:focus, .btn-remove:focus, #generate-btn:focus, #add-link-btn:focus, .link-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0,210,255,0.5);
 }
 
-.card-wrapper .btn-reset:hover,
-.card-wrapper .btn-remove:hover,
-.card-wrapper #generate-btn:hover,
-.card-wrapper #add-link-btn:hover {
-    background-color: #dc2626;
+input, textarea, select {
+  background: #fff;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,210,255,0.35);
+  outline: none;
 }
 
 /* 5) Ensure bottom spacing on last element */
@@ -202,26 +203,42 @@ body {
 }
 
 .card-wrapper,
-.output-card {
-    border: 1px solid rgba(0,0,0,0.1);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-    transition: all 0.3s ease-in-out;
-    background: var(--bg);
-    color: var(--fg);
+#output-card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border-radius: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.card-wrapper:hover,
+#output-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
 }
 
-.link-btn {
-  background-color: var(--accent);
-  color: #ffffff;
-  transition: background-color 0.2s ease, transform 0.2s ease;
-  transform: translateZ(0);
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
-.link-btn:hover {
-  background-color: var(--accent-dark);
-  transform: scale(1.05);
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out both;
 }
-.link-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(0,210,255,0.5);
+
+h1 { font-size: clamp(1.5rem, 5vw, 3rem); }
+h2 { font-size: clamp(1.25rem, 4vw, 2rem); }
+
+body::before {
+  content: '';
+  position: fixed; top:0; left:0; right:0; bottom:0;
+  background: linear-gradient(135deg, #00d2ff 0%, #e0f8f7 100%);
+  opacity: 0.2; z-index: -1;
+  animation: moveGradient 20s infinite alternate ease-in-out;
 }
+@keyframes moveGradient {
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+
+
 
