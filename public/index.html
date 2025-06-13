@@ -1,4 +1,4 @@
-<!-- v22 (Updated: Builder Card Wrapped & Scrollable on Mobile) -->
+<!-- v24 (Command Center Config) -->
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 
@@ -19,6 +19,7 @@
 
     <!-- Tailwind CSS (CDN for quick dev; in production you’d extract this via PostCSS) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/style.css" />
     <!--
       WARNING: “cdn.tailwindcss.com” is for development only.
       In production, install Tailwind via npm/PostCSS or Tailwind CLI.
@@ -30,70 +31,24 @@
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <style>
-        /* ────────────────────────────────────────────────────── */
-        :root {
-            --welcome-fade-duration: 6s;
-            /* Overwritten by JS */
-        }
-
-        /*  Startup / Fade Animations:                          */
-        /* ────────────────────────────────────────────────────── */
-        /* Fullscreen black overlay: */
-        #startup-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background-color: black;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 50;
-            overflow: hidden;
-            clip-path: inset(0 0 0 0);
-            transition: clip-path var(--welcome-fade-duration) ease;
-        }
-
-        /* When we add “reveal", uncover from the top down */
-        #startup-screen.reveal {
-            clip-path: inset(100% 0 0 0);
-        }
-
-        /* The “Welcome to Linker” text: */
-        #startup-text {
-            color: white;
-            font-size: 2rem;
-            transition: font-size var(--welcome-fade-duration) ease, color var(--welcome-fade-duration) ease;
-        }
-
-        /* Scale up and switch to black during reveal */
-        #startup-text.reveal {
-            color: black;
-        }
-    </style>
 </head>
 
 <body>
-  <header class="fixed top-0 inset-x-0 z-50 flex justify-between items-center p-6 bg-transparent">
+  <header class="fixed top-0 inset-x-0 z-40 flex justify-between items-center p-6">
     <img src="/images/73294b6e-8bc4-428f-ad24-a303947fb853.png"
-         alt="Linker Logo" class="h-10 w-auto">
-    <button id="theme-toggle" aria-label="Toggle theme"
-            class="text-2xl p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent">
-      🌓
-    </button>
+         alt="Linker Logo" style="height: 2.5rem; width: auto;" />
+    <button id="theme-toggle" aria-label="Toggle theme">🌗</button>
   </header>
 
 
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- A) STARTUP OVERLAY (black → fade to transparent + slide‐up text)             -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="startup-screen" class="fixed inset-0 flex items-center justify-center bg-black">
-  <h1 id="startup-text" class="text-4xl font-extrabold tracking-tight bg-gradient-to-r from-accent to-accent-dark bg-clip-text text-transparent">
-    Welcome to Linker
-  </h1>
-</div>
+    <div id="startup-screen">
+      <img id="startup-logo"
+           src="/images/73294b6e-8bc4-428f-ad24-a303947fb853.png"
+           alt="Linker Logo" />
+    </div>
 
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- C) LOGIN SCREEN (Landing Page with three big buttons)                        -->
@@ -142,7 +97,6 @@
     <!-- E) ADMIN PANEL (Create Codes / Build Form / Logout)                           -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="admin-panel" class="hidden flex-col items-center justify-center min-h-screen space-y-6 px-4">
-        <header class="flex justify-between items-center p-4">
         <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6">
             <h2 class="text-2xl font-semibold text-gray-900">Admin Panel</h2>
 
@@ -342,7 +296,7 @@
     <!-- L) APP.JS (All the logic—auth, Firestore, UI flow, etc.)                      -->
     <!--────────────────────────────────────────────────────────────────────────────────-->
     <script type="module" src="app.js"></script>
-    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500">v22</div>
+    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500"></div>
 </body>
 
 </html>
