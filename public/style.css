@@ -2,24 +2,19 @@
   --bg-start: #f5f7fa;
   --bg-end:   #c3cfe2;
   --fg:       #1a1f2b;
-  --btn-bg:   #ffffff;
-  --btn-fg:   #1a1f2b;
-  --btn-border: rgba(26,31,43,0.1);
+  --accent:   #00d2ff;
 }
 :root[data-theme="dark"] {
   --bg-start: #2c3e50;
   --bg-end:   #4ca1af;
   --fg:       #e0f8f7;
-  --btn-bg:   #34495e;
-  --btn-fg:   #e0f8f7;
-  --btn-border: rgba(224,248,247,0.2);
+  --accent:   #00d2ff;
 }
 body {
   margin: 0;
   background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
   color: var(--fg);
   font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
 }
 
 #startup-screen {
@@ -57,7 +52,7 @@ body {
 /* ──────────────────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent-dark); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* ──────────────────────────────────────────────────────────────────────────── */
 /* D) FOCUS STYLES                                                             */
@@ -132,30 +127,21 @@ body {
 
 /* Buttons & Links */
 button, .btn-reset, .btn-remove, #generate-btn, #add-link-btn {
-  background: var(--btn-bg);
-  color: var(--btn-fg);
-  border: 1px solid var(--btn-border);
+  background-color: #fff;
+  color: var(--fg);
+  border: 1px solid rgba(0,0,0,0.1);
   border-radius: 0.75rem;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
-  transition: transform 0.3s ease, background-position 0.5s ease;
-  background-image: linear-gradient(
-    to right,
-    var(--btn-bg) 50%,
-    var(--btn-fg) 50%
-  );
+  background-image: linear-gradient(90deg, #fff 50%, var(--accent) 50%);
   background-size: 200% 100%;
   background-position: 0% 0%;
+  transition: background-position 0.5s ease, transform 0.3s ease;
 }
 button:hover, .btn-reset:hover, .btn-remove:hover, #generate-btn:hover, #add-link-btn:hover {
   transform: scale(1.05);
   background-position: 100% 0%;
-  color: var(--btn-bg);
-  background-image: linear-gradient(
-    to right,
-    var(--btn-fg) 50%,
-    var(--btn-bg) 50%
-  );
+  color: #fff;
 }
 button:focus, .btn-reset:focus, .btn-remove:focus, #generate-btn:focus, #add-link-btn:focus {
   outline: none;

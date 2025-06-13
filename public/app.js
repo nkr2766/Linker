@@ -334,16 +334,24 @@ function escapeHTML(str) {
 // ───────────────────────────────────────────────────────────────────────────────
 //                 Then FORCE sign-out any existing user, then call initApp()
 window.addEventListener('load', () => {
+  console.debug('[Splash] load event fired');
   const screen = document.getElementById('startup-screen');
-  const logo = document.getElementById('startup-logo');
+  const logo   = document.getElementById('startup-logo');
   if (screen && logo) {
+    console.debug('[Splash] found screen & logo, starting animation');
+    logo.style.opacity = '';
+    logo.style.transform = '';
     screen.classList.add('reveal');
     setTimeout(() => {
+      console.debug('[Splash] animation complete, removing splash');
       screen.remove();
-    }, 1700); // 1.2s grow + 0.5s fade
+      console.debug('[Splash] removed splash, initializing app');
+      initApp();
+    }, 1700);
+  } else {
+    console.warn('[Splash] missing elements, skipping splash');
+    initApp();
   }
-  // Then initialize app…
-  initApp();
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -1197,17 +1205,23 @@ resetBtn.addEventListener("click", async () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+  console.debug('[Theme] DOMContentLoaded');
   const toggle = document.getElementById('theme-toggle');
-  if (toggle) {
-    const saved = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', saved);
-    toggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    });
+  if (!toggle) {
+    console.error('[Theme] toggle button not found');
+    return;
   }
+  const saved = localStorage.getItem('theme') || 'light';
+  console.debug('[Theme] initializing to', saved);
+  document.documentElement.setAttribute('data-theme', saved);
+
+  toggle.addEventListener('click', () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const next = cur === 'dark' ? 'light' : 'dark';
+    console.debug('[Theme] toggling from', cur, 'to', next);
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
 
   onAuthStateChanged(auth, user => {
     if (user && user.email !== ADMIN_EMAIL) {
