@@ -32,6 +32,7 @@ body {
 }
 #startup-screen.reveal {
   animation: fadeOut 500ms ease-in-out 1200ms forwards;
+}
 @keyframes fadeOut {
   to { opacity: 0; visibility: hidden; }
 }

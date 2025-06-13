@@ -1,10 +1,10 @@
-<!-- v24 (Command Center Config) -->
+<!-- v25 (Command Center Config) -->
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 
 <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="/images/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Linker – Build Your Linktree</title>
 
@@ -36,7 +36,8 @@
 <body>
   <header class="fixed top-0 inset-x-0 z-40 flex justify-between items-center p-6">
     <img src="/images/73294b6e-8bc4-428f-ad24-a303947fb853.png"
-         alt="Linker Logo" style="height: 2.5rem; width: auto;" />
+         alt="Linker Logo"
+         id="header-logo" />
     <button id="theme-toggle" aria-label="Toggle theme">🌗</button>
   </header>
 
@@ -295,8 +296,8 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- L) APP.JS (All the logic—auth, Firestore, UI flow, etc.)                      -->
     <!--────────────────────────────────────────────────────────────────────────────────-->
+    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500">v25</div>
     <script type="module" src="app.js"></script>
-    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500"></div>
 </body>
 
 </html>

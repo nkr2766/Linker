@@ -49,7 +49,7 @@ const CONFIG = {
 
   // APP VERSION:
   //  - version: text displayed in the bottom-right corner.
-  version:                'v24'
+  version:                'v25'
 };
 // ────────────────────────────────────────────────────────
 
@@ -131,7 +131,6 @@ let cardImageDataURL = "";
 // E) UI ELEMENT REFERENCES
 // ───────────────────────────────────────────────────────────────────────────────
 // (These IDs must match exactly what’s in index.html—don’t rename!)
-const startupScreen = document.getElementById("startup-screen");
 const resetBtn = document.getElementById("reset-btn");
 
 const loginScreen = document.getElementById("login-screen");
@@ -261,27 +260,69 @@ function escapeHTML(str) {
 
 // ───────────────────────────────────────────────────────────────────────────────
 //                 Then FORCE sign-out any existing user, then call initApp()
-window.addEventListener('load', () => {
-  console.debug('[Splash] load');
-  hideAllScreens();
-  document.body.appendChild(startupScreen);
 
+document.addEventListener('DOMContentLoaded', () => {
+  console.debug('[App] DOM fully loaded');
+
+  // 1) Apply version
+  const versionEl = document.getElementById('version');
+  if (versionEl) versionEl.textContent = CONFIG.version;
+
+  // header logo sizing
+  const headerLogo = document.getElementById('header-logo');
+  if (headerLogo) {
+    headerLogo.style.height = CONFIG.headerLogoHeight;
+    headerLogo.style.width = CONFIG.headerLogoWidth;
+  }
+
+  // 2) Theme toggle setup
+  const toggle = document.getElementById('theme-toggle');
+  if (toggle) {
+    toggle.style.fontSize = CONFIG.toggleIconSize;
+    const saved = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+    console.debug('[Theme] init →', saved);
+    toggle.addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-theme');
+      const next = cur === 'dark' ? 'light' : 'dark';
+      console.debug('[Theme] toggle →', next);
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  } else {
+    console.error('[Theme] #theme-toggle not found');
+  }
+
+  // 3) Splash flow
   const screen = document.getElementById('startup-screen');
   const logo   = document.getElementById('startup-logo');
   if (screen && logo) {
-    // apply size
+    hideAllScreens();
+    document.body.appendChild(screen);
     logo.style.maxWidth = CONFIG.splashLogoMaxWidth;
     logo.style.transform = `scale(${CONFIG.splashLogoScale})`;
-    console.debug('[Splash] animate grow & fade');
+    console.debug('[Splash] animate grow');
     screen.classList.add('reveal');
     setTimeout(() => {
-      console.debug('[Splash] done, initApp');
+      console.debug('[Splash] done, proceeding to initApp');
       screen.remove();
       initApp();
     }, CONFIG.splashGrowDuration + CONFIG.splashFadeDuration);
   } else {
-    console.warn('[Splash] missing elements, initApp now');
+    console.warn('[Splash] missing #startup-screen or #startup-logo');
     initApp();
+  }
+
+  // extra listeners
+  window.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      generateBtn.click();
+    }
+  });
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
   }
 });
 
@@ -1135,47 +1176,3 @@ resetBtn.addEventListener("click", async () => {
     location.reload();
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-  console.debug('[Theme] DOMContentLoaded');
-  const toggle = document.getElementById('theme-toggle');
-  if (!toggle) {
-    console.error('[Theme] toggle not found');
-    return;
-  }
-  // set icon size
-  toggle.style.fontSize = CONFIG.toggleIconSize;
-
-  const saved = localStorage.getItem('theme') || 'light';
-  console.debug('[Theme] init →', saved);
-  document.documentElement.setAttribute('data-theme', saved);
-
-  toggle.addEventListener('click', () => {
-    const cur = document.documentElement.getAttribute('data-theme');
-    const next = cur === 'dark' ? 'light' : 'dark';
-    console.debug('[Theme] toggle →', next);
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-  });
-
-  onAuthStateChanged(auth, user => {
-    if (user && user.email !== ADMIN_EMAIL) {
-      hideAllScreens();
-      formScreen.classList.remove('hidden');
-      formScreen.classList.add('flex');
-    }
-  });
-
-  window.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-      e.preventDefault();
-      generateBtn.click();
-    }
-  });
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
-  }
-});
-
-const versionEl = document.getElementById('version');
-if (versionEl) versionEl.textContent = CONFIG.version;
