@@ -6,7 +6,7 @@
 //  - splashFadeDuration: how long (in ms) the splash overlay fades out after grow.
 const CONFIG = {
   // Splash
-  splashLogoScale:        0.85,          // e.g. use 0.85 for 85% scale
+  splashLogoScale:        0.10,          // e.g. use 0.85 for 85% scale
   splashLogoMaxWidth:     '180px',       // constrain logo width
   splashGrowDuration:     1200,          // ms for logo scaling
   splashFadeDuration:     500,           // ms for overlay fade-out
