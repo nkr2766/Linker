@@ -334,22 +334,19 @@ function escapeHTML(str) {
 // ───────────────────────────────────────────────────────────────────────────────
 //                 Then FORCE sign-out any existing user, then call initApp()
 window.addEventListener('load', () => {
-  console.debug('[Splash] load event fired');
+  console.debug('[Splash] load fired');
   const screen = document.getElementById('startup-screen');
   const logo   = document.getElementById('startup-logo');
   if (screen && logo) {
-    console.debug('[Splash] found screen & logo, starting animation');
-    logo.style.opacity = '';
-    logo.style.transform = '';
+    console.debug('[Splash] animating logo');
     screen.classList.add('reveal');
     setTimeout(() => {
-      console.debug('[Splash] animation complete, removing splash');
+      console.debug('[Splash] removing splash, showing landing');
       screen.remove();
-      console.debug('[Splash] removed splash, initializing app');
       initApp();
     }, 1700);
   } else {
-    console.warn('[Splash] missing elements, skipping splash');
+    console.warn('[Splash] missing elements, skipping to initApp');
     initApp();
   }
 });
@@ -1208,17 +1205,17 @@ document.addEventListener('DOMContentLoaded', () => {
   console.debug('[Theme] DOMContentLoaded');
   const toggle = document.getElementById('theme-toggle');
   if (!toggle) {
-    console.error('[Theme] toggle button not found');
+    console.error('[Theme] theme-toggle not found');
     return;
   }
   const saved = localStorage.getItem('theme') || 'light';
-  console.debug('[Theme] initializing to', saved);
+  console.debug('[Theme] init theme=', saved);
   document.documentElement.setAttribute('data-theme', saved);
 
   toggle.addEventListener('click', () => {
     const cur = document.documentElement.getAttribute('data-theme');
     const next = cur === 'dark' ? 'light' : 'dark';
-    console.debug('[Theme] toggling from', cur, 'to', next);
+    console.debug('[Theme] toggle from', cur, 'to', next);
     document.documentElement.setAttribute('data-theme', next);
     localStorage.setItem('theme', next);
   });

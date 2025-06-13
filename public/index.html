@@ -90,11 +90,14 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- A) STARTUP OVERLAY (black → fade to transparent + slide‐up text)             -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="startup-screen">
-      <img id="startup-logo"
-           src="/images/73294b6e-8bc4-428f-ad24-a303947fb853.png"
-           alt="Linker Logo" />
-    </div>
+  <div id="startup-screen">
+    <img
+      id="startup-logo"
+      src="/images/73294b6e-8bc4-428f-ad24-a303947fb853.png"
+      alt="Linker Logo"
+      style="width:90%; max-width:200px; opacity:0; transform:scale(0.45);"
+    />
+  </div>
 
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- C) LOGIN SCREEN (Landing Page with three big buttons)                        -->
@@ -342,7 +345,7 @@
     <!-- L) APP.JS (All the logic—auth, Firestore, UI flow, etc.)                      -->
     <!--────────────────────────────────────────────────────────────────────────────────-->
     <script type="module" src="app.js"></script>
-    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500">v23</div>
+    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500">v24</div>
 </body>
 
 </html>
