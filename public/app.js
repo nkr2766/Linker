@@ -475,8 +475,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (adminLoginBack) {
     adminLoginBack.addEventListener('click', () => {
       hideAllScreens();
-      loginScreen.classList.remove('hidden');
-      loginScreen.classList.add('flex');
+      if (loginScreen) {
+        loginScreen.classList.remove('hidden');
+        loginScreen.classList.add('flex');
+      } else {
+        console.warn('[Debug] #login-screen not found – skipping');
+      }
     });
   }
 
@@ -510,9 +514,17 @@ document.addEventListener('DOMContentLoaded', () => {
       try {
         await signOut(auth);
         hideAllScreens();
-        loginScreen.classList.remove('hidden');
-        loginScreen.classList.add('flex');
-        resetBtn.classList.add('hidden');
+        if (loginScreen) {
+          loginScreen.classList.remove('hidden');
+          loginScreen.classList.add('flex');
+        } else {
+          console.warn('[Debug] #login-screen not found – skipping');
+        }
+        if (resetBtn) {
+          resetBtn.classList.add('hidden');
+        } else {
+          console.warn('[Debug] #reset-btn not found – skipping');
+        }
       } catch (err) {
         console.error('Error signing out admin:', err);
       }
@@ -543,8 +555,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (userLoginBack) {
     userLoginBack.addEventListener('click', () => {
       hideAllScreens();
-      loginScreen.classList.remove('hidden');
-      loginScreen.classList.add('flex');
+      if (loginScreen) {
+        loginScreen.classList.remove('hidden');
+        loginScreen.classList.add('flex');
+      } else {
+        console.warn('[Debug] #login-screen not found – skipping');
+      }
     });
   }
 
@@ -585,8 +601,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (signupBackBtn) {
     signupBackBtn.addEventListener('click', () => {
       hideAllScreens();
-      loginScreen.classList.remove('hidden');
-      loginScreen.classList.add('flex');
+      if (loginScreen) {
+        loginScreen.classList.remove('hidden');
+        loginScreen.classList.add('flex');
+      } else {
+        console.warn('[Debug] #login-screen not found – skipping');
+      }
     });
   }
 
@@ -740,29 +760,41 @@ document.addEventListener('DOMContentLoaded', () => {
 // ───────────────────────────────────────────────────────────────────────────────
 // H) initApp(): Listen for Auth state changes → show the correct “screen”        //
 // ───────────────────────────────────────────────────────────────────────────────
-function initApp() {
-    onAuthStateChanged(auth, async (firebaseUser) => {
-        if (!firebaseUser) {
-            // No one signed in → show landing screen
-            hideAllScreens();
-            loginScreen.classList.remove("hidden");
-            loginScreen.classList.add("flex");
-            resetBtn.classList.add("hidden");
-        } else {
-            const email = firebaseUser.email.toLowerCase();
-            if (email === ADMIN_EMAIL.toLowerCase()) {
-                // Admin signed in
-                showAdminPanel();
-                resetBtn.classList.remove("hidden");
-            } else {
-                // Regular user signed in
-                hideAllScreens();
-                resetBtn.classList.remove("hidden");
-                startAppFlow(firebaseUser.email);
-            }
-        }
-    });
-}
+  function initApp() {
+      onAuthStateChanged(auth, async (firebaseUser) => {
+          if (!firebaseUser) {
+              // No one signed in → show landing screen
+              hideAllScreens();
+              if (loginScreen) {
+                  loginScreen.classList.remove("hidden");
+                  loginScreen.classList.add("flex");
+              } else {
+                  console.warn('[Debug] #login-screen not found – skipping');
+              }
+              if (resetBtn) {
+                  resetBtn.classList.add("hidden");
+              } else {
+                  console.warn('[Debug] #reset-btn not found – skipping');
+              }
+          } else {
+              const email = firebaseUser.email.toLowerCase();
+              if (email === ADMIN_EMAIL.toLowerCase()) {
+                  // Admin signed in
+                  showAdminPanel();
+                  if (resetBtn) {
+                      resetBtn.classList.remove("hidden");
+                  }
+              } else {
+                  // Regular user signed in
+                  hideAllScreens();
+                  if (resetBtn) {
+                      resetBtn.classList.remove("hidden");
+                  }
+                  startAppFlow(firebaseUser.email);
+              }
+          }
+      });
+  }
 
 // ───────────────────────────────────────────────────────────────────────────────
 // N) MAIN APP FLOW (After any successful login)                                  //
@@ -1099,34 +1131,50 @@ function updateGenerateButtonState() {
 // ───────────────────────────────────────────────────────────────────────────────
 function renderOutput(data) {
     document.body.style.background = `linear-gradient(to bottom right, ${data.gradientStart || "#a7f3d0"}, ${data.gradientEnd || "#6ee7b7"})`;
-    outputCard.style.backgroundColor = data.cardColor || "#ffffff";
-    if (data.cardImage) {
-        outputCard.style.backgroundImage = `url(${data.cardImage})`;
-        outputCard.style.backgroundSize = "cover";
+    if (outputCard) {
+        outputCard.style.backgroundColor = data.cardColor || "#ffffff";
+        if (data.cardImage) {
+            outputCard.style.backgroundImage = `url(${data.cardImage})`;
+            outputCard.style.backgroundSize = "cover";
+        } else {
+            outputCard.style.backgroundImage = "none";
+        }
     } else {
-        outputCard.style.backgroundImage = "none";
+        console.warn('[Debug] #output-card not found – skipping card styles');
     }
-    if (data.profilePic) {
-        outputProfilePic.src = data.profilePic;
-        outputProfilePic.classList.remove("hidden");
-    } else {
-        outputProfilePic.classList.add("hidden");
+    if (outputProfilePic) {
+        if (data.profilePic) {
+            outputProfilePic.src = data.profilePic;
+            outputProfilePic.classList.remove("hidden");
+        } else {
+            outputProfilePic.classList.add("hidden");
+        }
     }
 
-    if (data.tagline?.trim()?.length > 0) {
-        outputTagline.textContent = data.tagline;
-        outputTagline.classList.remove("hidden");
+    if (outputTagline) {
+        if (data.tagline?.trim()?.length > 0) {
+            outputTagline.textContent = data.tagline;
+            outputTagline.classList.remove("hidden");
+        } else {
+            outputTagline.classList.add("hidden");
+        }
     } else {
-        outputTagline.classList.add("hidden");
+        console.warn('[Debug] #output-tagline not found – skipping');
     }
 
     const textColor = data.cardTextColor || "#111827";
-    displayUsername.style.color = textColor;
-    outputTagline.style.color = textColor;
-
-    displayUsername.textContent = data.username || "@yourhandle";
-
-    linksContainer.innerHTML = "";
+    if (displayUsername) {
+        displayUsername.style.color = textColor;
+        displayUsername.textContent = data.username || "@yourhandle";
+    } else {
+        console.warn('[Debug] #display-username not found – skipping');
+    }
+    if (outputTagline) {
+        outputTagline.style.color = textColor;
+    }
+    if (linksContainer) {
+        linksContainer.innerHTML = "";
+    }
     data.links.forEach((link) => {
         if (link.label && isValidURL(link.url)) {
             const btn = document.createElement("a");
@@ -1141,14 +1189,22 @@ function renderOutput(data) {
             span.textContent = link.label;
             btn.appendChild(icon);
             btn.appendChild(span);
-            linksContainer.appendChild(btn);
+            if (linksContainer) {
+                linksContainer.appendChild(btn);
+            }
         }
     });
 
-    outputCard.classList.remove("animate-pulse");
-    outputCard.classList.add("animate-fadeInUp");
+    if (outputCard) {
+        outputCard.classList.remove("animate-pulse");
+        outputCard.classList.add("animate-fadeInUp");
+    }
 
     hideAllScreens();
-    linktreeScreen.classList.remove("hidden");
-    linktreeScreen.classList.add("flex");
+    if (linktreeScreen) {
+        linktreeScreen.classList.remove("hidden");
+        linktreeScreen.classList.add("flex");
+    } else {
+        console.warn('[Debug] #linktree-screen not found – cannot display output');
+    }
 }
