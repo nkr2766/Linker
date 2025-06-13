@@ -1176,4 +1176,3 @@ resetBtn.addEventListener("click", async () => {
     location.reload();
 });
 
-
