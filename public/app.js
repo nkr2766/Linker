@@ -1,5 +1,7 @@
-// v22
-// ───────────────────────────────────────────────────────────────────────────────
+// Load external configuration
+const CONFIG = window.APP_CONFIG || {};
+console.debug('[CONFIG]', CONFIG);
+
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
@@ -22,131 +24,6 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 console.log("\uD83D\uDD25 app.js has loaded!");
-// ─────────────────────────────────────────────────────────────────────────────
-// CONFIGURATION: Welcome Screen / Loading Screen Editor
-// ─────────────────────────────────────────────────────────────────────────────
-
-// 1) Device Detection (no need to change)
-const IS_MOBILE = window.matchMedia("(max-width: 768px)").matches;
-
-// ─────────── Desktop Values ───────────
-const DESKTOP_WELCOME_BLACK_DURATION_MS = 1000;      // How long the black background stays (ms) on desktop
-const DESKTOP_TEXT_APPEAR_DELAY_MS = 0;         // Delay before the text animation begins (ms) on desktop
-const DESKTOP_TEXT_INITIAL_FONT_SIZE_PX = 50;        // Starting font size of "Welcome to Linker" (px) on desktop
-const DESKTOP_TEXT_FINAL_FONT_SIZE_PX = 138;       // Final font size of "Welcome to Linker" (px) on desktop
-const DESKTOP_TEXT_INITIAL_COLOR = "rgb(101, 189, 116)";   // Initial text color on desktop
-const DESKTOP_TEXT_FINAL_COLOR = "rgb(136, 223, 149)";   // Final text color on desktop
-const DESKTOP_TEXT_SCALE_DURATION_MS = 3000;      // How long the text scales and recolors (ms) on desktop
-const DESKTOP_TEXT_SCALE_EASING = "ease-in-out"; // Easing curve for text scale/color on desktop
-
-const DESKTOP_BACKGROUND_FADE_DURATION_MS = 9000;    // How long the black overlay fades out (ms) on desktop
-const DESKTOP_BACKGROUND_FADE_EASING = "ease-in-out"; // Easing curve for background fade on desktop
-
-const DESKTOP_TEXT_FADE_DELAY_BEFORE_BG_MS = 0;      // Offset when text starts relative to bg fade (ms) on desktop
-const DESKTOP_TEXT_STAY_DURATION_MS = 0;      // How long text stays at final size before removing the overlay (ms) on desktop
-
-const DESKTOP_STARTUP_SCREEN_SELECTOR = "#startup-screen"; // CSS selector for the overlay element (desktop)
-const DESKTOP_STARTUP_TEXT_SELECTOR = "#startup-text";   // CSS selector for the welcome text element (desktop)
-
-// ─────────── Mobile Values ───────────
-const MOBILE_WELCOME_BLACK_DURATION_MS = 1000;    // How long the black background stays (ms) on mobile
-const MOBILE_TEXT_APPEAR_DELAY_MS = 0;       // Delay before the text animation begins (ms) on mobile
-const MOBILE_TEXT_INITIAL_FONT_SIZE_PX = 33;      // Starting font size of "Welcome to Linker" (px) on mobile
-const MOBILE_TEXT_FINAL_FONT_SIZE_PX = 65;      // Final font size of "Welcome to Linker" (px) on mobile
-const MOBILE_TEXT_INITIAL_COLOR = "rgb(101, 189, 116)"; // Initial text color on mobile
-const MOBILE_TEXT_FINAL_COLOR = "rgb(136, 223, 149)"; // Final text color on mobile
-const MOBILE_TEXT_SCALE_DURATION_MS = 3000;    // How long the text scales and recolors (ms) on mobile
-const MOBILE_TEXT_SCALE_EASING = "ease-in-out"; // Easing curve for text scale/color on mobile
-
-const MOBILE_BACKGROUND_FADE_DURATION_MS = 0;  // How long the black overlay fades out (ms) on mobile
-const MOBILE_BACKGROUND_FADE_EASING = "ease-in-out"; // Easing curve for background fade on mobile
-
-const MOBILE_TEXT_FADE_DELAY_BEFORE_BG_MS = 0;    // Offset when text starts relative to bg fade (ms) on mobile
-const MOBILE_TEXT_STAY_DURATION_MS = 0;    // How long text stays at final size before removing the overlay (ms) on mobile
-
-const MOBILE_STARTUP_SCREEN_SELECTOR = "#startup-screen"; // CSS selector for the overlay element (mobile)
-const MOBILE_STARTUP_TEXT_SELECTOR = "#startup-text";   // CSS selector for the welcome text element (mobile)
-
-
-// ───────────────────────────────────────────────────────────────────────────────
-// CONFIGURATION: Main UI pop-up adjustment (desktop vs. mobile)
-// ───────────────────────────────────────────────────────────────────────────────
-const DESKTOP_UI_DELAY_ADJUSTMENT_MS = -6500;   // Add/subtract ms after fade ends before showing UI (desktop)
-const MOBILE_UI_DELAY_ADJUSTMENT_MS  = -10000;   // Add/subtract ms after fade ends before showing UI (mobile)
-// Use desktop or mobile adjustment depending on viewport
-const UI_DELAY_ADJUSTMENT_MS = IS_MOBILE
-  ? MOBILE_UI_DELAY_ADJUSTMENT_MS
-  : DESKTOP_UI_DELAY_ADJUSTMENT_MS;
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SELECTED CONFIG VARIABLES (DO NOT EDIT BELOW)
-// ─────────────────────────────────────────────────────────────────────────────
-const WELCOME_BLACK_DURATION_MS     = IS_MOBILE
-  ? MOBILE_WELCOME_BLACK_DURATION_MS
-  : DESKTOP_WELCOME_BLACK_DURATION_MS;
-
-const TEXT_APPEAR_DELAY_MS          = IS_MOBILE
-  ? MOBILE_TEXT_APPEAR_DELAY_MS
-  : DESKTOP_TEXT_APPEAR_DELAY_MS;
-
-const TEXT_INITIAL_FONT_SIZE_PX     = IS_MOBILE
-  ? MOBILE_TEXT_INITIAL_FONT_SIZE_PX
-  : DESKTOP_TEXT_INITIAL_FONT_SIZE_PX;
-
-const TEXT_FINAL_FONT_SIZE_PX       = IS_MOBILE
-  ? MOBILE_TEXT_FINAL_FONT_SIZE_PX
-  : DESKTOP_TEXT_FINAL_FONT_SIZE_PX;
-
-const TEXT_INITIAL_COLOR            = IS_MOBILE
-  ? MOBILE_TEXT_INITIAL_COLOR
-  : DESKTOP_TEXT_INITIAL_COLOR;
-
-const TEXT_FINAL_COLOR              = IS_MOBILE
-  ? MOBILE_TEXT_FINAL_COLOR
-  : DESKTOP_TEXT_FINAL_COLOR;
-
-const TEXT_SCALE_DURATION_MS        = IS_MOBILE
-  ? MOBILE_TEXT_SCALE_DURATION_MS
-  : DESKTOP_TEXT_SCALE_DURATION_MS;
-
-const TEXT_SCALE_EASING             = IS_MOBILE
-  ? MOBILE_TEXT_SCALE_EASING
-  : DESKTOP_TEXT_SCALE_EASING;
-
-const BACKGROUND_FADE_DURATION_MS   = IS_MOBILE
-  ? MOBILE_BACKGROUND_FADE_DURATION_MS
-  : DESKTOP_BACKGROUND_FADE_DURATION_MS;
-
-const BACKGROUND_FADE_EASING        = IS_MOBILE
-  ? MOBILE_BACKGROUND_FADE_EASING
-  : DESKTOP_BACKGROUND_FADE_EASING;
-
-const TEXT_FADE_DELAY_BEFORE_BG_MS  = IS_MOBILE
-  ? MOBILE_TEXT_FADE_DELAY_BEFORE_BG_MS
-  : DESKTOP_TEXT_FADE_DELAY_BEFORE_BG_MS;
-
-const TEXT_STAY_DURATION_MS         = IS_MOBILE
-  ? MOBILE_TEXT_STAY_DURATION_MS
-  : DESKTOP_TEXT_STAY_DURATION_MS;
-
-const STARTUP_SCREEN_SELECTOR       = IS_MOBILE
-  ? MOBILE_STARTUP_SCREEN_SELECTOR
-  : DESKTOP_STARTUP_SCREEN_SELECTOR;
-
-const STARTUP_TEXT_SELECTOR         = IS_MOBILE
-  ? MOBILE_STARTUP_TEXT_SELECTOR
-  : DESKTOP_STARTUP_TEXT_SELECTOR;
-
-// Optional: Skip animation entirely (debug only)
-const SKIP_WELCOME_ANIMATION = false;
-
-const SIGNUP_SUCCESS_DELAY_MS    = 1200;   // Pause after account creation before continuing
-const WELCOME_BANNER_DURATION_MS = 2500;   // How long the post-login banner stays visible
-const WELCOME_BANNER_FADE_MS     = 300;    // Fade duration for the banner
-const LOADER_SPINNER_DURATION_MS = 300;    // Length of the loading spinner
-
-const fadeDurationSeconds = (BACKGROUND_FADE_DURATION_MS / 1000) + "s";
-document.documentElement.style.setProperty("--welcome-fade-duration", fadeDurationSeconds);
 
 // ───────────────────────────────────────────────────────────────────────────────
 // B) FIREBASE CONFIGURATION
@@ -190,6 +67,7 @@ const ADMIN_PASSWORD = "?616811Nt";
 
 // localStorage key for saving the Linktree data:
 const STORAGE_KEY_LINKTREE = "linkerLinktreeData";
+const SIGNUP_SUCCESS_DELAY_MS = 1200; // Pause after account creation before continuing
 
 // Keep track of link rows (for “Add Link”, “Delete”, reordering, etc.)
 let linkRows = [];
@@ -202,76 +80,74 @@ let cardImageDataURL = "";
 // E) UI ELEMENT REFERENCES
 // ───────────────────────────────────────────────────────────────────────────────
 // (These IDs must match exactly what’s in index.html—don’t rename!)
-const startupScreen = document.querySelector(STARTUP_SCREEN_SELECTOR);
-const startupText = document.querySelector(STARTUP_TEXT_SELECTOR);
-const resetBtn = document.getElementById("reset-btn");
+let resetBtn;
 
-const loginScreen = document.getElementById("login-screen");
-const btnAdminLogin = document.getElementById("btn-admin-login");
-const btnUserLogin = document.getElementById("btn-user-login");
-const btnUseAccessCode = document.getElementById("btn-use-access-code");
+let loginScreen;
+let btnAdminLogin;
+let btnUserLogin;
+let btnUseAccessCode;
 
-const adminLoginScreen = document.getElementById("admin-login-screen");
-const adminEmailInput = document.getElementById("admin-email");
-const adminPasswordInput = document.getElementById("admin-password");
-const adminError = document.getElementById("admin-error");
-const adminLoginSubmit = document.getElementById("admin-login-submit");
-const adminLoginBack = document.getElementById("admin-login-back");
+let adminLoginScreen;
+let adminEmailInput;
+let adminPasswordInput;
+let adminError;
+let adminLoginSubmit;
+let adminLoginBack;
 
-const adminPanel = document.getElementById("admin-panel");
-const newAccessCodeInput = document.getElementById("new-access-code");
-const createCodeBtn = document.getElementById("create-code-btn");
-const adminCodeSuccess = document.getElementById("admin-code-success");
-const adminBuildFormBtn = document.getElementById("admin-build-form");
-const adminLogoutBtn = document.getElementById("admin-logout");
+let adminPanel;
+let newAccessCodeInput;
+let createCodeBtn;
+let adminCodeSuccess;
+let adminBuildFormBtn;
+let adminLogoutBtn;
 
-const userLoginScreen = document.getElementById("user-login-screen");
-const userEmailInput = document.getElementById("user-email");
-const userPasswordInput = document.getElementById("user-password");
-const userError = document.getElementById("user-error");
-const userLoginSubmit = document.getElementById("user-login-submit");
-const userLoginBack = document.getElementById("user-login-back");
+let userLoginScreen;
+let userEmailInput;
+let userPasswordInput;
+let userError;
+let userLoginSubmit;
+let userLoginBack;
 
-const userSignupScreen = document.getElementById("user-signup-screen");
-const signupCodeInput = document.getElementById("signup-code");
-const signupEmailInput = document.getElementById("signup-email");
-const signupPasswordInput = document.getElementById("signup-password");
-const signupCodeError = document.getElementById("signup-code-error");
-const signupSuccess = document.getElementById("signup-success");
-const signupSubmit = document.getElementById("signup-submit");
-const signupBackBtn = document.getElementById("signup-back");
+let userSignupScreen;
+let signupCodeInput;
+let signupEmailInput;
+let signupPasswordInput;
+let signupCodeError;
+let signupSuccess;
+let signupSubmit;
+let signupBackBtn;
 
-const welcomeScreen = document.getElementById("welcome-screen");
-const welcomeText = document.getElementById("welcome-text");
+let welcomeScreen;
+let welcomeText;
 
-const formScreen = document.getElementById("form-screen");
-const profilePicFileInput = document.getElementById("profile-pic-file");
-const errorProfilePic = document.getElementById("error-profile-pic");
-const formUsernameInput = document.getElementById("username");
-const errorUsername = document.getElementById("error-username");
-const formTaglineInput = document.getElementById("tagline");
-const formTaglineCount = document.getElementById("tagline-count");
-const gradientStartInput = document.getElementById("gradient-start");
-const gradientEndInput = document.getElementById("gradient-end");
-const cardColorInput = document.getElementById("card-color");
-const cardTextColorInput = document.getElementById("card-text-color");
-const cardImageInput = document.getElementById("card-image");
-const cardImageClearBtn = document.getElementById("remove-card-image");
-const linksWrapper = document.getElementById("links-wrapper");
-const addLinkBtn = document.getElementById("add-link-btn");
-const errorLinks = document.getElementById("error-links");
-const generateBtn = document.getElementById("generate-btn");
+let formScreen;
+let profilePicFileInput;
+let errorProfilePic;
+let formUsernameInput;
+let errorUsername;
+let formTaglineInput;
+let formTaglineCount;
+let gradientStartInput;
+let gradientEndInput;
+let cardColorInput;
+let cardTextColorInput;
+let cardImageInput;
+let cardImageClearBtn;
+let linksWrapper;
+let addLinkBtn;
+let errorLinks;
+let generateBtn;
 
-const loaderScreen = document.getElementById("loader-screen");
+let loaderScreen;
 
-const linktreeScreen = document.getElementById("linktree-screen");
-const outputCard = document.getElementById("output-card");
-const outputProfilePic = document.getElementById("output-profile-pic");
-const displayUsername = document.getElementById("display-username");
-const outputTagline = document.getElementById("output-tagline");
-const linksContainer = document.getElementById("links-container");
-const backBtn = document.getElementById("back-btn");
-const downloadBtn = document.getElementById("download-btn");
+let linktreeScreen;
+let outputCard;
+let outputProfilePic;
+let displayUsername;
+let outputTagline;
+let linksContainer;
+let backBtn;
+let downloadBtn;
 
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -293,8 +169,10 @@ function hideAllScreens() {
         loaderScreen,
         linktreeScreen,
     ].forEach((el) => {
-        el.classList.add("hidden");
-        el.classList.remove("flex");
+        if (el) {
+            el.classList.add("hidden");
+            el.classList.remove("flex");
+        }
     });
 }
 
@@ -332,315 +210,542 @@ function escapeHTML(str) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// G) ON PAGE LOAD: Animate the “Welcome to Linker” fade (1s delay → 6s fade)
 //                 Then FORCE sign-out any existing user, then call initApp()
-// ───────────────────────────────────────────────────────────────────────────────
-window.addEventListener("load", () => {
-    console.log("Welcome screen loaded");
 
-    if (SKIP_WELCOME_ANIMATION) {
-        startupScreen.remove();
-        signOut(auth).finally(() => initApp());
-        return;
+document.addEventListener('DOMContentLoaded', () => {
+  console.debug('[Debug] DOMContentLoaded');
+  console.debug('[CONFIG]', CONFIG);
+
+  const lookup = (id) => {
+    console.debug(`[Debug] Looking up #${id}`);
+    const el = document.getElementById(id);
+    console.debug(`[Debug] getElementById("${id}") →`, el);
+    if (!el) {
+      console.error(`[Debug] Missing element #${id} – skipping related logic`);
     }
+    return el;
+  };
 
-    if (!IS_MOBILE) {
-        if (startupText) {
-            startupText.style.fontSize = `${TEXT_INITIAL_FONT_SIZE_PX}px`;
-            startupText.style.color = TEXT_INITIAL_COLOR;
-            void startupText.offsetWidth;
-        }
+  // grab element references now that DOM is ready
+  resetBtn = lookup('reset-btn');
+  loginScreen = lookup('login-screen');
+  btnAdminLogin = lookup('btn-admin-login');
+  btnUserLogin = lookup('btn-user-login');
+  btnUseAccessCode = lookup('btn-use-access-code');
+  adminLoginScreen = lookup('admin-login-screen');
+  adminEmailInput = lookup('admin-email');
+  adminPasswordInput = lookup('admin-password');
+  adminError = lookup('admin-error');
+  adminLoginSubmit = lookup('admin-login-submit');
+  adminLoginBack = lookup('admin-login-back');
+  adminPanel = lookup('admin-panel');
+  newAccessCodeInput = lookup('new-access-code');
+  createCodeBtn = lookup('create-code-btn');
+  adminCodeSuccess = lookup('admin-code-success');
+  adminBuildFormBtn = lookup('admin-build-form');
+  adminLogoutBtn = lookup('admin-logout');
+  userLoginScreen = lookup('user-login-screen');
+  userEmailInput = lookup('user-email');
+  userPasswordInput = lookup('user-password');
+  userError = lookup('user-error');
+  userLoginSubmit = lookup('user-login-submit');
+  userLoginBack = lookup('user-login-back');
+  userSignupScreen = lookup('user-signup-screen');
+  signupCodeInput = lookup('signup-code');
+  signupEmailInput = lookup('signup-email');
+  signupPasswordInput = lookup('signup-password');
+  signupCodeError = lookup('signup-code-error');
+  signupSuccess = lookup('signup-success');
+  signupSubmit = lookup('signup-submit');
+  signupBackBtn = lookup('signup-back');
+  welcomeScreen = lookup('welcome-screen');
+  welcomeText = lookup('welcome-text');
+  formScreen = lookup('form-screen');
+  profilePicFileInput = lookup('profile-pic-file');
+  errorProfilePic = lookup('error-profile-pic');
+  formUsernameInput = lookup('username');
+  errorUsername = lookup('error-username');
+  formTaglineInput = lookup('tagline');
+  formTaglineCount = lookup('tagline-count');
+  gradientStartInput = lookup('gradient-start');
+  gradientEndInput = lookup('gradient-end');
+  cardColorInput = lookup('card-color');
+  cardTextColorInput = lookup('card-text-color');
+  cardImageInput = lookup('card-image');
+  cardImageClearBtn = lookup('remove-card-image');
+  linksWrapper = lookup('links-wrapper');
+  addLinkBtn = lookup('add-link-btn');
+  errorLinks = lookup('error-links');
+  generateBtn = lookup('generate-btn');
+  loaderScreen = lookup('loader-screen');
+  linktreeScreen = lookup('linktree-screen');
+  outputCard = lookup('output-card');
+  outputProfilePic = lookup('output-profile-pic');
+  displayUsername = lookup('display-username');
+  outputTagline = lookup('output-tagline');
+  linksContainer = lookup('links-container');
+  backBtn = lookup('back-btn');
+  downloadBtn = lookup('download-btn');
+  const rootStyles = document.documentElement.style;
+  rootStyles.setProperty("--bg-start", CONFIG.bgGradientLight[0]);
+  rootStyles.setProperty("--bg-end", CONFIG.bgGradientLight[1]);
+  rootStyles.setProperty("--card-start", CONFIG.cardGradientLight[0]);
+  rootStyles.setProperty("--card-end", CONFIG.cardGradientLight[1]);
+  rootStyles.setProperty("--accent", CONFIG.buttonHoverAccent);
+  rootStyles.setProperty("--btn-bg", CONFIG.buttonNeutralBg);
+  if (CONFIG.buttonNeutralFg) rootStyles.setProperty("--btn-fg", CONFIG.buttonNeutralFg);
 
-        setTimeout(() => {
-            console.log("Starting text animation");
 
-            setTimeout(() => {
-                if (startupText) {
-                    startupText.style.fontSize = `${TEXT_FINAL_FONT_SIZE_PX}px`;
-                    startupText.style.color = TEXT_FINAL_COLOR;
-                }
-            }, TEXT_APPEAR_DELAY_MS);
+  // 1) Apply version
+  const versionEl = lookup('version');
+  if (versionEl) versionEl.textContent = CONFIG.version;
 
-            startupScreen.classList.add("reveal");
-            console.log("Background fade-out started");
+  // header logo sizing
+  const headerLogo = lookup('header-logo');
+  if (headerLogo) {
+    headerLogo.style.height = CONFIG.headerLogoHeight;
+    headerLogo.style.width = CONFIG.headerLogoWidth;
+  }
 
-            setTimeout(async () => {
-                console.log("Fade complete, removing overlay");
-                startupScreen.remove();
+  // 2) Theme toggle setup
+  const toggle = lookup('theme-toggle');
+  if (toggle) {
+    toggle.style.fontSize = CONFIG.toggleIconSize;
+    const saved = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+    console.debug('[Theme] init →', saved);
+    toggle.addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-theme');
+      const next = cur === 'dark' ? 'light' : 'dark';
+      console.debug('[Theme] toggle →', next);
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  } else {
+    console.error('[Theme] #theme-toggle not found');
+  }
 
-                console.log("Signing out");
-                if (getApps().length) {
-                    try {
-                        await signOut(auth);
-                    } catch (err) {
-                        console.warn(err);
-                    }
-                }
-
-                console.log("Initializing app");
-                initApp();
-            }, BACKGROUND_FADE_DURATION_MS + UI_DELAY_ADJUSTMENT_MS);
-        }, WELCOME_BLACK_DURATION_MS);
-
-        return;
-    }
-
-    // ─────────── MOBILE FLOW ───────────
+  // 3) Splash flow
+  hideAllScreens();
+  const splash = lookup('startup-screen');
+  const logo   = lookup('startup-logo');
+  if (splash && logo) {
+    splash.style.position = 'fixed';
+    splash.style.inset = '0';
+    splash.style.background = '#000';
+    splash.style.zIndex = '9999';
+    logo.style.maxWidth = CONFIG.splashLogoMaxWidth;
+    logo.style.transform = `scale(${CONFIG.splashLogoScale})`;
+    splash.classList.add('reveal');
     setTimeout(() => {
-        console.log("Starting text animation");
-        if (startupText) {
-            startupText.style.fontSize = `${MOBILE_TEXT_INITIAL_FONT_SIZE_PX}px`;
-            startupText.style.color = MOBILE_TEXT_INITIAL_COLOR;
-            startupText.style.transition =
-                `font-size ${MOBILE_TEXT_SCALE_DURATION_MS}ms ease-in-out, ` +
-                `color ${MOBILE_TEXT_SCALE_DURATION_MS}ms ease-in-out`;
-            void startupText.offsetWidth;
-            startupText.style.fontSize = `${MOBILE_TEXT_FINAL_FONT_SIZE_PX}px`;
-            startupText.style.color = MOBILE_TEXT_FINAL_COLOR;
+      splash.remove();
+      console.debug('[Splash] removed');
+      console.debug('[Debug] getElementById("login-screen") →', loginScreen);
+      if (loginScreen) {
+        loginScreen.classList.remove('hidden');
+        loginScreen.classList.add('flex');
+      }
+      initApp();
+    }, CONFIG.splashGrowDuration + CONFIG.splashFadeDuration);
+  } else {
+    console.warn('[Splash] missing elements, skipping to initApp');
+    initApp();
+  }
+
+  // extra listeners
+  window.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      generateBtn.click();
+    }
+  });
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
+  }
+
+  // landing screen buttons
+  if (btnAdminLogin) {
+    btnAdminLogin.addEventListener('click', () => {
+      hideAllScreens();
+      adminLoginScreen.classList.remove('hidden');
+      adminLoginScreen.classList.add('flex');
+      adminError.classList.add('hidden');
+      adminEmailInput.value = '';
+      adminPasswordInput.value = '';
+    });
+  } else {
+    console.error('missing #btn-admin-login');
+  }
+
+  if (btnUserLogin) {
+    btnUserLogin.addEventListener('click', () => {
+      hideAllScreens();
+      userLoginScreen.classList.remove('hidden');
+      userLoginScreen.classList.add('flex');
+      userError.classList.add('hidden');
+      userEmailInput.value = '';
+      userPasswordInput.value = '';
+    });
+  }
+
+  if (btnUseAccessCode) {
+    btnUseAccessCode.addEventListener('click', () => {
+      hideAllScreens();
+      userSignupScreen.classList.remove('hidden');
+      userSignupScreen.classList.add('flex');
+      signupCodeError.classList.add('hidden');
+      signupEmailInput.value = '';
+      signupPasswordInput.value = '';
+      signupCodeInput.value = '';
+      signupSuccess.classList.add('hidden');
+    });
+  }
+
+  if (adminLoginSubmit) {
+    adminLoginSubmit.addEventListener('click', async () => {
+      const email = adminEmailInput.value.trim().toLowerCase();
+      const pass = adminPasswordInput.value.trim();
+      if (email === ADMIN_EMAIL.toLowerCase() && pass === ADMIN_PASSWORD) {
+        try {
+          await signInWithEmailAndPassword(auth, email, pass);
+          hideAllScreens();
+          showAdminPanel();
+        } catch (err) {
+          console.error('Admin signIn error:', err);
+          adminError.textContent = 'Authentication error—check console.';
+          adminError.classList.remove('hidden');
         }
+      } else {
+        adminError.textContent = 'Incorrect admin credentials.';
+        adminError.classList.remove('hidden');
+      }
+    });
+  }
 
-        setTimeout(async () => {
-            const screen = document.querySelector(MOBILE_STARTUP_SCREEN_SELECTOR);
-            if (screen) {
-                screen.style.transition = "";
-                screen.style.backgroundColor = MOBILE_TEXT_FINAL_COLOR;
-                screen.remove();
-            }
+  if (adminLoginBack) {
+    adminLoginBack.addEventListener('click', () => {
+      hideAllScreens();
+      if (loginScreen) {
+        loginScreen.classList.remove('hidden');
+        loginScreen.classList.add('flex');
+      } else {
+        console.warn('[Debug] #login-screen not found – skipping');
+      }
+    });
+  }
 
-            const form = document.getElementById("form-screen");
-            if (form) form.style.backgroundColor = MOBILE_TEXT_FINAL_COLOR;
+  if (createCodeBtn) {
+    createCodeBtn.addEventListener('click', async () => {
+      const code = newAccessCodeInput.value.trim();
+      if (!code) return;
+      const docRef = doc(db, 'codes', code);
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        adminCodeSuccess.textContent = `Code “${code}” already exists.`;
+        adminCodeSuccess.classList.remove('hidden');
+      } else {
+        await setDoc(docRef, { createdAt: serverTimestamp() });
+        adminCodeSuccess.textContent = `Code “${code}” created!`;
+        adminCodeSuccess.classList.remove('hidden');
+      }
+      newAccessCodeInput.value = '';
+    });
+  }
 
-            console.log("Fade complete, removing overlay");
-            console.log("Signing out");
-            if (getApps().length) {
-                try {
-                    await signOut(auth);
-                } catch (err) {
-                    console.warn(err);
-                }
-            }
+  if (adminBuildFormBtn) {
+    adminBuildFormBtn.addEventListener('click', () => {
+      hideAllScreens();
+      startAppFlow(ADMIN_EMAIL);
+    });
+  }
 
-            console.log("Initializing app");
-            initApp();
-        }, MOBILE_TEXT_SCALE_DURATION_MS + MOBILE_UI_DELAY_ADJUSTMENT_MS);
-    }, MOBILE_WELCOME_BLACK_DURATION_MS);
+  if (adminLogoutBtn) {
+    adminLogoutBtn.addEventListener('click', async () => {
+      try {
+        await signOut(auth);
+        hideAllScreens();
+        if (loginScreen) {
+          loginScreen.classList.remove('hidden');
+          loginScreen.classList.add('flex');
+        } else {
+          console.warn('[Debug] #login-screen not found – skipping');
+        }
+        if (resetBtn) {
+          resetBtn.classList.add('hidden');
+        } else {
+          console.warn('[Debug] #reset-btn not found – skipping');
+        }
+      } catch (err) {
+        console.error('Error signing out admin:', err);
+      }
+    });
+  }
+
+  if (userLoginSubmit) {
+    userLoginSubmit.addEventListener('click', async () => {
+      const email = userEmailInput.value.trim().toLowerCase();
+      const pass = userPasswordInput.value.trim();
+      if (!email || !pass) {
+        userError.textContent = 'Email & password are required.';
+        userError.classList.remove('hidden');
+        return;
+      }
+      try {
+        await signInWithEmailAndPassword(auth, email, pass);
+        hideAllScreens();
+        startAppFlow(email);
+      } catch (err) {
+        console.error('User login error:', err);
+        userError.textContent = 'Invalid email or password.';
+        userError.classList.remove('hidden');
+      }
+    });
+  }
+
+  if (userLoginBack) {
+    userLoginBack.addEventListener('click', () => {
+      hideAllScreens();
+      if (loginScreen) {
+        loginScreen.classList.remove('hidden');
+        loginScreen.classList.add('flex');
+      } else {
+        console.warn('[Debug] #login-screen not found – skipping');
+      }
+    });
+  }
+
+  if (signupSubmit) {
+    signupSubmit.addEventListener('click', async () => {
+      const code = signupCodeInput.value.trim();
+      const email = signupEmailInput.value.trim().toLowerCase();
+      const pass = signupPasswordInput.value.trim();
+      if (!code || !email || !pass) {
+        signupCodeError.textContent = 'All fields are required.';
+        signupCodeError.classList.remove('hidden');
+        return;
+      }
+      const docRef = doc(db, 'codes', code);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) {
+        signupCodeError.textContent = 'Invalid or expired access code.';
+        signupCodeError.classList.remove('hidden');
+        return;
+      }
+      try {
+        await createUserWithEmailAndPassword(auth, email, pass);
+        await deleteDoc(docRef);
+        signupCodeError.classList.add('hidden');
+        signupSuccess.classList.remove('hidden');
+        setTimeout(() => {
+          hideAllScreens();
+          startAppFlow(email);
+        }, SIGNUP_SUCCESS_DELAY_MS);
+      } catch (err) {
+        console.error('Error creating user:', err);
+        signupCodeError.textContent = 'Signup failed—email may already be in use.';
+        signupCodeError.classList.remove('hidden');
+      }
+    });
+  }
+
+  if (signupBackBtn) {
+    signupBackBtn.addEventListener('click', () => {
+      hideAllScreens();
+      if (loginScreen) {
+        loginScreen.classList.remove('hidden');
+        loginScreen.classList.add('flex');
+      } else {
+        console.warn('[Debug] #login-screen not found – skipping');
+      }
+    });
+  }
+
+  if (gradientStartInput) gradientStartInput.addEventListener('input', updateFormGradient);
+  if (gradientEndInput) gradientEndInput.addEventListener('input', updateFormGradient);
+
+  if (addLinkBtn) {
+    addLinkBtn.addEventListener('click', () => {
+      if (linkRows.length < 10) addLinkRow();
+      if (linkRows.length >= 10) {
+        addLinkBtn.setAttribute('disabled', 'true');
+        addLinkBtn.classList.add('opacity-50', 'cursor-not-allowed');
+      }
+      updateGenerateButtonState();
+    });
+  }
+
+  if (profilePicFileInput) {
+    profilePicFileInput.addEventListener('change', () => {
+      const file = profilePicFileInput.files[0];
+      if (file && file.type.startsWith('image/')) {
+        errorProfilePic.classList.add('hidden');
+        const reader = new FileReader();
+        reader.onload = e => { profilePicDataURL = e.target.result; };
+        reader.readAsDataURL(file);
+      } else {
+        errorProfilePic.classList.remove('hidden');
+        profilePicDataURL = '';
+      }
+      updateGenerateButtonState();
+    });
+  }
+
+  if (cardImageInput) {
+    cardImageInput.addEventListener('change', () => {
+      const file = cardImageInput.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = e => { cardImageDataURL = e.target.result; };
+        reader.readAsDataURL(file);
+      } else {
+        cardImageDataURL = '';
+      }
+    });
+  }
+
+  if (cardImageClearBtn) {
+    cardImageClearBtn.addEventListener('click', () => {
+      cardImageDataURL = '';
+      cardImageInput.value = '';
+    });
+  }
+
+  if (formUsernameInput) {
+    formUsernameInput.addEventListener('blur', () => {
+      let val = formUsernameInput.value.trim();
+      if (!val.startsWith('@') && val.length > 0) {
+        val = '@' + val;
+        formUsernameInput.value = val;
+      }
+      if (isValidHandle(val)) {
+        formUsernameInput.classList.remove('border-red-500');
+        formUsernameInput.classList.add('border-green-500');
+        errorUsername.classList.add('hidden');
+      } else {
+        formUsernameInput.classList.remove('border-green-500');
+        formUsernameInput.classList.add('border-red-500');
+        errorUsername.classList.remove('hidden');
+      }
+      updateGenerateButtonState();
+    });
+  }
+
+  if (formTaglineInput) {
+    formTaglineInput.addEventListener('input', () => {
+      formTaglineCount.textContent = `${formTaglineInput.value.length}/100`;
+    });
+  }
+
+  if (generateBtn) {
+    generateBtn.addEventListener('click', async e => {
+      e.preventDefault();
+      hideAllScreens();
+      const data = {
+        profilePic: profilePicDataURL,
+        username: formUsernameInput.value.trim(),
+        tagline: formTaglineInput.value.trim(),
+        gradientStart: gradientStartInput.value,
+        gradientEnd: gradientEndInput.value,
+        cardColor: cardColorInput.value,
+        cardTextColor: cardTextColorInput.value,
+        cardImage: cardImageDataURL,
+        links: linkRows.map(r => ({ label: r.labelInput.value.trim(), icon: r.iconSelect.value, url: r.urlInput.value.trim() }))
+      };
+      try {
+        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(data));
+      } catch (err) {
+        console.warn('LocalStorage quota exceeded, stripping images', err);
+        const tmp = { ...data, profilePic: '', cardImage: '' };
+        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(tmp));
+      }
+      loaderScreen.classList.remove('hidden');
+      loaderScreen.classList.add('flex');
+      await delay(CONFIG.loaderSpinnerDuration);
+      loaderScreen.classList.add('hidden');
+      loaderScreen.classList.remove('flex');
+      renderOutput(data);
+    });
+  }
+
+  if (backBtn) {
+    backBtn.addEventListener('click', () => {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || '{}');
+      showBuilderForm(saved);
+    });
+  }
+
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', () => {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || '{}');
+      if (!data || !data.links || data.links.length === 0) return;
+      const safeUsername = data.username.replace('@','') || 'linker';
+      const safeTagline = escapeHTML(data.tagline || '');
+      const safePic = data.profilePic || '';
+      const bgColorStart = data.gradientStart || '#a7f3d0';
+      const bgColorEnd = data.gradientEnd || '#6ee7b7';
+      const cardColor = data.cardColor || '#ffffff';
+      const textColor = data.cardTextColor || '#111827';
+      const cardImage = data.cardImage || '';
+      const outputHtml = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>${escapeHTML(data.username)}’s Linktree</title><style>body{margin:0;padding:0;font-family:Inter,sans-serif;background:linear-gradient(to bottom right,${bgColorStart},${bgColorEnd});display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;} .card{background-color:${cardColor};${cardImage ? `background-image:url('${cardImage}');background-size:cover;` : ''}border-radius:16px;box-shadow:0 4px 12px rgba(0,0,0,0.1);padding:32px;text-align:center;max-width:360px;width:90%;box-sizing:border-box;} img.profile{width:128px;height:128px;border-radius:50%;object-fit:cover;margin-bottom:16px;} h1{margin:0 0 8px;font-size:1.5rem;color:${textColor};} p.tag{margin:0 0 16px;font-size:1rem;color:${textColor};} .link-btn{display:block;width:100%;box-sizing:border-box;margin:8px 0;padding:12px 16px;background-color:#10b981;color:white;border-radius:8px;text-decoration:none;font-weight:500;font-size:1rem;transition:background-color .2s ease-in-out;} .link-btn:hover{background-color:#059669;} .link-btn i{margin-right:8px;}</style><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-papZHh3cY3VpsQa0bpo0uZtBi8gm38UH3rzZBZagh1SWlDwptG25pbLBO0e4XgbV4QYxRo/mOZxjwRF+dc+0Fg==" crossorigin="anonymous" referrerpolicy="no-referrer"/></head><body><div class="card">${safePic ? `<img src="${safePic}" alt="Profile picture" class="profile" />` : ''}<h1>${escapeHTML(data.username)}</h1>${safeTagline ? `<p class="tag">${safeTagline}</p>` : ''}${data.links.map(link=>`<a href="${escapeHTML(link.url)}" target="_blank" class="link-btn"><i class="fa ${link.icon}" aria-hidden="true"></i>${escapeHTML(link.label)}</a>`).join('\n    ')}</div></body></html>`;
+      const blob = new Blob([outputHtml], { type: 'text/html' });
+      const filename = `${safeUsername}-linktree.html`;
+      downloadBlob(filename, blob);
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', async () => {
+      localStorage.removeItem(STORAGE_KEY_LINKTREE);
+      try {
+        await signOut(auth);
+      } catch (err) {
+        console.error('Error signing out:', err);
+      }
+      location.reload();
+    });
+  }
+  console.debug('[Debug] Initialization complete');
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
 // H) initApp(): Listen for Auth state changes → show the correct “screen”        //
 // ───────────────────────────────────────────────────────────────────────────────
-function initApp() {
-    onAuthStateChanged(auth, async (firebaseUser) => {
-        if (!firebaseUser) {
-            // No one signed in → show landing screen
-            hideAllScreens();
-            loginScreen.classList.remove("hidden");
-            loginScreen.classList.add("flex");
-            resetBtn.classList.add("hidden");
-        } else {
-            const email = firebaseUser.email.toLowerCase();
-            if (email === ADMIN_EMAIL.toLowerCase()) {
-                // Admin signed in
-                showAdminPanel();
-                resetBtn.classList.remove("hidden");
-            } else {
-                // Regular user signed in
-                hideAllScreens();
-                resetBtn.classList.remove("hidden");
-                startAppFlow(firebaseUser.email);
-            }
-        }
-    });
-}
-
-// ───────────────────────────────────────────────────────────────────────────────
-// I) BUTTON HANDLERS ON LANDING SCREEN                                           //
-// ───────────────────────────────────────────────────────────────────────────────
-btnAdminLogin.addEventListener("click", () => {
-    hideAllScreens();
-    adminLoginScreen.classList.remove("hidden");
-    adminLoginScreen.classList.add("flex");
-    adminError.classList.add("hidden");
-    adminEmailInput.value = "";
-    adminPasswordInput.value = "";
-});
-
-btnUserLogin.addEventListener("click", () => {
-    hideAllScreens();
-    userLoginScreen.classList.remove("hidden");
-    userLoginScreen.classList.add("flex");
-    userError.classList.add("hidden");
-    userEmailInput.value = "";
-    userPasswordInput.value = "";
-});
-
-btnUseAccessCode.addEventListener("click", () => {
-    hideAllScreens();
-    userSignupScreen.classList.remove("hidden");
-    userSignupScreen.classList.add("flex");
-    signupCodeError.classList.add("hidden");
-    signupEmailInput.value = "";
-    signupPasswordInput.value = "";
-    signupCodeInput.value = "";
-    signupSuccess.classList.add("hidden");
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// J) ADMIN LOGIN LOGIC                                                           //
-// ───────────────────────────────────────────────────────────────────────────────
-adminLoginSubmit.addEventListener("click", async () => {
-    const email = adminEmailInput.value.trim().toLowerCase();
-    const pass = adminPasswordInput.value.trim();
-
-    if (email === ADMIN_EMAIL.toLowerCase() && pass === ADMIN_PASSWORD) {
-        try {
-            await signInWithEmailAndPassword(auth, email, pass);
-            hideAllScreens();
-            showAdminPanel();
-        } catch (err) {
-            console.error("Admin signIn error:", err);
-            adminError.textContent = "Authentication error—check console.";
-            adminError.classList.remove("hidden");
-        }
-    } else {
-        adminError.textContent = "Incorrect admin credentials.";
-        adminError.classList.remove("hidden");
-    }
-});
-
-adminLoginBack.addEventListener("click", () => {
-    hideAllScreens();
-    loginScreen.classList.remove("hidden");
-    loginScreen.classList.add("flex");
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// K) SHOW ADMIN PANEL                                                            //
-// ───────────────────────────────────────────────────────────────────────────────
-async function showAdminPanel() {
-    hideAllScreens();
-    adminPanel.classList.remove("hidden");
-    adminPanel.classList.add("flex");
-    newAccessCodeInput.value = "";
-    adminCodeSuccess.classList.add("hidden");
-}
-
-// Generate a new access code (Firestore “codes” collection)
-createCodeBtn.addEventListener("click", async () => {
-    const code = newAccessCodeInput.value.trim();
-    if (!code) return;
-
-    const docRef = doc(db, "codes", code);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        adminCodeSuccess.textContent = `Code “${code}” already exists.`;
-        adminCodeSuccess.classList.remove("hidden");
-    } else {
-        await setDoc(docRef, { createdAt: serverTimestamp() });
-        adminCodeSuccess.textContent = `Code “${code}” created!`;
-        adminCodeSuccess.classList.remove("hidden");
-    }
-    newAccessCodeInput.value = "";
-});
-
-// Build Form (skip directly to the Linktree builder)
-adminBuildFormBtn.addEventListener("click", () => {
-    hideAllScreens();
-    startAppFlow(ADMIN_EMAIL);
-});
-
-// Admin “Logout”
-adminLogoutBtn.addEventListener("click", async () => {
-    try {
-        await signOut(auth);
-        hideAllScreens();
-        loginScreen.classList.remove("hidden");
-        loginScreen.classList.add("flex");
-        resetBtn.classList.add("hidden");
-    } catch (err) {
-        console.error("Error signing out admin:", err);
-    }
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// L) USER LOGIN LOGIC                                                            //
-// ───────────────────────────────────────────────────────────────────────────────
-userLoginSubmit.addEventListener("click", async () => {
-    const email = userEmailInput.value.trim().toLowerCase();
-    const pass = userPasswordInput.value.trim();
-
-    if (!email || !pass) {
-        userError.textContent = "Email & password are required.";
-        userError.classList.remove("hidden");
-        return;
-    }
-
-    try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        hideAllScreens();
-        startAppFlow(email);
-    } catch (err) {
-        console.error("User login error:", err);
-        userError.textContent = "Invalid email or password.";
-        userError.classList.remove("hidden");
-    }
-});
-
-userLoginBack.addEventListener("click", () => {
-    hideAllScreens();
-    loginScreen.classList.remove("hidden");
-    loginScreen.classList.add("flex");
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// M) USER SIGNUP LOGIC (Access Code → Create Auth User → Delete Code)            //
-// ───────────────────────────────────────────────────────────────────────────────
-signupSubmit.addEventListener("click", async () => {
-    const code = signupCodeInput.value.trim();
-    const email = signupEmailInput.value.trim().toLowerCase();
-    const pass = signupPasswordInput.value.trim();
-
-    if (!code || !email || !pass) {
-        signupCodeError.textContent = "All fields are required.";
-        signupCodeError.classList.remove("hidden");
-        return;
-    }
-
-    // Verify code in Firestore
-    const docRef = doc(db, "codes", code);
-    const docSnap = await getDoc(docRef);
-    if (!docSnap.exists()) {
-        signupCodeError.textContent = "Invalid or expired access code.";
-        signupCodeError.classList.remove("hidden");
-        return;
-    }
-
-    // Create Auth user
-    try {
-        await createUserWithEmailAndPassword(auth, email, pass);
-        // Delete the used code so it can’t be reused
-        await deleteDoc(docRef);
-
-        signupCodeError.classList.add("hidden");
-        signupSuccess.classList.remove("hidden");
-
-        // Slight pause so user sees “Account created!” briefly
-        setTimeout(() => {
-            hideAllScreens();
-            startAppFlow(email);
-        }, SIGNUP_SUCCESS_DELAY_MS);
-    } catch (err) {
-        console.error("Error creating user:", err);
-        signupCodeError.textContent = "Signup failed—email may already be in use.";
-        signupCodeError.classList.remove("hidden");
-    }
-});
-
-signupBackBtn.addEventListener("click", () => {
-    hideAllScreens();
-    loginScreen.classList.remove("hidden");
-    loginScreen.classList.add("flex");
-});
+  function initApp() {
+      onAuthStateChanged(auth, async (firebaseUser) => {
+          if (!firebaseUser) {
+              // No one signed in → show landing screen
+              hideAllScreens();
+              if (loginScreen) {
+                  loginScreen.classList.remove("hidden");
+                  loginScreen.classList.add("flex");
+              } else {
+                  console.warn('[Debug] #login-screen not found – skipping');
+              }
+              if (resetBtn) {
+                  resetBtn.classList.add("hidden");
+              } else {
+                  console.warn('[Debug] #reset-btn not found – skipping');
+              }
+          } else {
+              const email = firebaseUser.email.toLowerCase();
+              if (email === ADMIN_EMAIL.toLowerCase()) {
+                  // Admin signed in
+                  showAdminPanel();
+                  if (resetBtn) {
+                      resetBtn.classList.remove("hidden");
+                  }
+              } else {
+                  // Regular user signed in
+                  hideAllScreens();
+                  if (resetBtn) {
+                      resetBtn.classList.remove("hidden");
+                  }
+                  startAppFlow(firebaseUser.email);
+              }
+          }
+      });
+  }
 
 // ───────────────────────────────────────────────────────────────────────────────
 // N) MAIN APP FLOW (After any successful login)                                  //
@@ -659,9 +764,9 @@ async function startAppFlow(currentEmail) {
 
     // Fade banner in/out:
     welcomeText.classList.remove("opacity-0");    // show it
-    await delay(WELCOME_BANNER_DURATION_MS);                            // keep it visible 2.5s
+    await delay(CONFIG.welcomeBannerDuration);                            // keep it visible 2.5s
     welcomeText.classList.add("opacity-0");       // fade it out
-    await delay(WELCOME_BANNER_FADE_MS);                             // wait 0.3s for fade to complete
+    await delay(CONFIG.welcomeBannerFade);                             // wait 0.3s for fade to complete
     // Hide the welcome overlay before proceeding
     welcomeScreen.classList.add("hidden");
     welcomeScreen.classList.remove("flex");
@@ -677,7 +782,7 @@ async function startAppFlow(currentEmail) {
     if (savedData) {
         loaderScreen.classList.remove("hidden");
         loaderScreen.classList.add("flex");
-        await delay(LOADER_SPINNER_DURATION_MS);                           // spinner for 0.3s
+        await delay(CONFIG.loaderSpinnerDuration);                           // spinner for 0.3s
         loaderScreen.classList.add("hidden");
         loaderScreen.classList.remove("flex");
         renderOutput(savedData);
@@ -696,8 +801,6 @@ function updateFormGradient() {
     const end = gradientEndInput.value || "#6ee7b7";
     formScreen.style.background = `linear-gradient(to bottom right, ${start}, ${end})`;
 }
-gradientStartInput.addEventListener("input", updateFormGradient);
-gradientEndInput.addEventListener("input", updateFormGradient);
 
 function showBuilderForm(prefillData = null) {
     hideAllScreens();
@@ -947,81 +1050,6 @@ function addLinkRow(prefill = null) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// Q) “+ Add New Link” Button                                                     //
-// ───────────────────────────────────────────────────────────────────────────────
-addLinkBtn.addEventListener("click", () => {
-    if (linkRows.length < 10) {
-        addLinkRow();
-    }
-    if (linkRows.length >= 10) {
-        addLinkBtn.setAttribute("disabled", "true");
-        addLinkBtn.classList.add("opacity-50", "cursor-not-allowed");
-    }
-    updateGenerateButtonState();
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// R) VALIDATE INPUTS & ENABLE “Generate”                                          //
-// ───────────────────────────────────────────────────────────────────────────────
-// Profile picture upload
-profilePicFileInput.addEventListener("change", () => {
-    const file = profilePicFileInput.files[0];
-    if (file && file.type.startsWith("image/")) {
-        errorProfilePic.classList.add("hidden");
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            profilePicDataURL = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    } else {
-        errorProfilePic.classList.remove("hidden");
-        profilePicDataURL = "";
-    }
-    updateGenerateButtonState();
-});
-
-// Card background image upload (optional)
-cardImageInput.addEventListener("change", () => {
-    const file = cardImageInput.files[0];
-    if (file && file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            cardImageDataURL = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    } else {
-        cardImageDataURL = "";
-    }
-});
-
-cardImageClearBtn.addEventListener("click", () => {
-    cardImageDataURL = "";
-    cardImageInput.value = "";
-});
-
-// Username validation on blur
-formUsernameInput.addEventListener("blur", () => {
-    let val = formUsernameInput.value.trim();
-    if (!val.startsWith("@") && val.length > 0) {
-        val = "@" + val;
-        formUsernameInput.value = val;
-    }
-    if (isValidHandle(val)) {
-        formUsernameInput.classList.remove("border-red-500");
-        formUsernameInput.classList.add("border-green-500");
-        errorUsername.classList.add("hidden");
-    } else {
-        formUsernameInput.classList.remove("border-green-500");
-        formUsernameInput.classList.add("border-red-500");
-        errorUsername.classList.remove("hidden");
-    }
-    updateGenerateButtonState();
-});
-
-// Tagline counter
-formTaglineInput.addEventListener("input", () => {
-    formTaglineCount.textContent = `${formTaglineInput.value.length}/100`;
-});
 
 // Show/hide Generate button
 function updateGenerateButtonState() {
@@ -1048,77 +1076,56 @@ function updateGenerateButtonState() {
     }
 }
 
-// ───────────────────────────────────────────────────────────────────────────────
-// S) “Generate My Linktree” → SHOW LOADER → RENDER OUTPUT                          //
-// ───────────────────────────────────────────────────────────────────────────────
-generateBtn.addEventListener("click", async (e) => {
-    e.preventDefault();
-    hideAllScreens();
-
-    const data = {
-        profilePic: profilePicDataURL,
-        username: formUsernameInput.value.trim(),
-        tagline: formTaglineInput.value.trim(),
-        gradientStart: gradientStartInput.value,
-        gradientEnd: gradientEndInput.value,
-        cardColor: cardColorInput.value,
-        cardTextColor: cardTextColorInput.value,
-        cardImage: cardImageDataURL,
-        links: linkRows.map((r) => ({
-            label: r.labelInput.value.trim(),
-            icon: r.iconSelect.value,
-            url: r.urlInput.value.trim()
-        }))
-    };
-    try {
-        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(data));
-    } catch (err) {
-        console.warn("LocalStorage quota exceeded, stripping images", err);
-        const tmp = { ...data, profilePic: "", cardImage: "" };
-        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(tmp));
-    }
-
-    loaderScreen.classList.remove("hidden");
-    loaderScreen.classList.add("flex");
-    await delay(LOADER_SPINNER_DURATION_MS);
-    loaderScreen.classList.add("hidden");
-    loaderScreen.classList.remove("flex");
-    renderOutput(data);
-});
 
 // ───────────────────────────────────────────────────────────────────────────────
 // T) RENDER OUTPUT (in-app Linktree with Download + Back-to-Edit)                 //
 // ───────────────────────────────────────────────────────────────────────────────
 function renderOutput(data) {
     document.body.style.background = `linear-gradient(to bottom right, ${data.gradientStart || "#a7f3d0"}, ${data.gradientEnd || "#6ee7b7"})`;
-    outputCard.style.backgroundColor = data.cardColor || "#ffffff";
-    if (data.cardImage) {
-        outputCard.style.backgroundImage = `url(${data.cardImage})`;
-        outputCard.style.backgroundSize = "cover";
+    if (outputCard) {
+        outputCard.style.backgroundColor = data.cardColor || "#ffffff";
+        if (data.cardImage) {
+            outputCard.style.backgroundImage = `url(${data.cardImage})`;
+            outputCard.style.backgroundSize = "cover";
+        } else {
+            outputCard.style.backgroundImage = "none";
+        }
     } else {
-        outputCard.style.backgroundImage = "none";
+        console.warn('[Debug] #output-card not found – skipping card styles');
     }
-    if (data.profilePic) {
-        outputProfilePic.src = data.profilePic;
-        outputProfilePic.classList.remove("hidden");
-    } else {
-        outputProfilePic.classList.add("hidden");
+    if (outputProfilePic) {
+        if (data.profilePic) {
+            outputProfilePic.src = data.profilePic;
+            outputProfilePic.classList.remove("hidden");
+        } else {
+            outputProfilePic.classList.add("hidden");
+        }
     }
 
-    if (data.tagline?.trim()?.length > 0) {
-        outputTagline.textContent = data.tagline;
-        outputTagline.classList.remove("hidden");
+    if (outputTagline) {
+        if (data.tagline?.trim()?.length > 0) {
+            outputTagline.textContent = data.tagline;
+            outputTagline.classList.remove("hidden");
+        } else {
+            outputTagline.classList.add("hidden");
+        }
     } else {
-        outputTagline.classList.add("hidden");
+        console.warn('[Debug] #output-tagline not found – skipping');
     }
 
     const textColor = data.cardTextColor || "#111827";
-    displayUsername.style.color = textColor;
-    outputTagline.style.color = textColor;
-
-    displayUsername.textContent = data.username || "@yourhandle";
-
-    linksContainer.innerHTML = "";
+    if (displayUsername) {
+        displayUsername.style.color = textColor;
+        displayUsername.textContent = data.username || "@yourhandle";
+    } else {
+        console.warn('[Debug] #display-username not found – skipping');
+    }
+    if (outputTagline) {
+        outputTagline.style.color = textColor;
+    }
+    if (linksContainer) {
+        linksContainer.innerHTML = "";
+    }
     data.links.forEach((link) => {
         if (link.label && isValidURL(link.url)) {
             const btn = document.createElement("a");
@@ -1133,178 +1140,22 @@ function renderOutput(data) {
             span.textContent = link.label;
             btn.appendChild(icon);
             btn.appendChild(span);
-            linksContainer.appendChild(btn);
+            if (linksContainer) {
+                linksContainer.appendChild(btn);
+            }
         }
     });
 
-    outputCard.classList.remove("animate-pulse");
-    outputCard.classList.add("animate-fadeInUp");
+    if (outputCard) {
+        outputCard.classList.remove("animate-pulse");
+        outputCard.classList.add("animate-fadeInUp");
+    }
 
     hideAllScreens();
-    linktreeScreen.classList.remove("hidden");
-    linktreeScreen.classList.add("flex");
+    if (linktreeScreen) {
+        linktreeScreen.classList.remove("hidden");
+        linktreeScreen.classList.add("flex");
+    } else {
+        console.warn('[Debug] #linktree-screen not found – cannot display output');
+    }
 }
-
-// “Back to Edit”
-backBtn.addEventListener("click", () => {
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "{}");
-    showBuilderForm(saved);
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// U) DOWNLOAD: Standalone HTML (just the Linktree, no extra buttons)             //
-// ───────────────────────────────────────────────────────────────────────────────
-downloadBtn.addEventListener("click", () => {
-    const data = JSON.parse(localStorage.getItem(STORAGE_KEY_LINKTREE) || "{}");
-    if (!data || !data.links || data.links.length === 0) return;
-
-    const safeUsername = data.username.replace("@", "") || "linker";
-    const safeTagline = escapeHTML(data.tagline || "");
-    const safePic = data.profilePic || "";
-    const bgColorStart = data.gradientStart || "#a7f3d0";
-    const bgColorEnd = data.gradientEnd || "#6ee7b7";
-    const cardColor = data.cardColor || "#ffffff";
-    const textColor = data.cardTextColor || "#111827";
-    const cardImage = data.cardImage || "";
-
-    // Build minimal HTML
-    const outputHtml = `<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>${escapeHTML(data.username)}’s Linktree</title>
-<style>
-  body {
-    margin: 0;
-    padding: 0;
-    font-family: "Inter", sans-serif;
-    background: linear-gradient(to bottom right, ${bgColorStart}, ${bgColorEnd});
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-  }
-  .card {
-    background-color: ${cardColor};
-    ${cardImage ? `background-image: url('${cardImage}'); background-size: cover;` : ""}
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 32px;
-    text-align: center;
-    max-width: 360px;
-    width: 90%;
-    box-sizing: border-box;
-  }
-  img.profile {
-    width: 128px;
-    height: 128px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 16px;
-  }
-  h1 {
-    margin: 0 0 8px 0;
-    font-size: 1.5rem;
-    color: ${textColor};
-  }
-  p.tag {
-    margin: 0 0 16px 0;
-    font-size: 1rem;
-    color: ${textColor};
-  }
-  .link-btn {
-    display: block;
-    width: 100%;
-    box-sizing: border-box;
-    margin: 8px 0;
-    padding: 12px 16px;
-    background-color: #10b981; /* emerald-500 */
-    color: white;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 1rem;
-    transition: background-color 0.2s ease-in-out;
-  }
-  .link-btn:hover {
-    background-color: #059669; /* emerald-600 */
-  }
-  .link-btn i {
-    margin-right: 8px;
-  }
-</style>
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  integrity="sha512-papZHh3cY3VpsQa0bpo0uZtBi8gm38UH3rzZBZagh1SWlDwptG25pbLBO0e4XgbV4QYxRo/mOZxjwRF+dc+0Fg=="
-  crossorigin="anonymous"
-  referrerpolicy="no-referrer"
-/>
-</head>
-<body>
-  <div class="card">
-    ${safePic ? `<img src="${safePic}" alt="Profile picture" class="profile" />` : ""}
-    <h1>${escapeHTML(data.username)}</h1>
-    ${safeTagline ? `<p class="tag">${safeTagline}</p>` : ""}
-    ${data.links
-            .map(
-                (link) =>
-                    `<a href="${escapeHTML(link.url)}" target="_blank" class="link-btn"><i class="fa ${link.icon}" aria-hidden="true"></i>${escapeHTML(link.label)}</a>`
-            )
-            .join("\n    ")}
-  </div>
-</body>
-</html>`;
-
-    const blob = new Blob([outputHtml], { type: "text/html" });
-    const filename = `${safeUsername}-linktree.html`;
-    downloadBlob(filename, blob);
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// W) RESET BUTTON: Clear localStorage + Sign Out + reload page                   //
-// ───────────────────────────────────────────────────────────────────────────────
-resetBtn.addEventListener("click", async () => {
-    localStorage.removeItem(STORAGE_KEY_LINKTREE);
-    try {
-        await signOut(auth);
-    } catch (err) {
-        console.error("Error signing out:", err);
-    }
-    location.reload();
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-  const toggle = document.getElementById('theme-toggle');
-  if (toggle) {
-    const saved = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', saved);
-    toggle.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme');
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem('theme', next);
-    });
-  }
-
-  onAuthStateChanged(auth, user => {
-    if (user && user.email !== ADMIN_EMAIL) {
-      hideAllScreens();
-      formScreen.classList.remove('hidden');
-      formScreen.classList.add('flex');
-    }
-  });
-
-  window.addEventListener('keydown', e => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-      e.preventDefault();
-      generateBtn.click();
-    }
-  });
-
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
-  }
-});
