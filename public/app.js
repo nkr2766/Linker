@@ -1,57 +1,6 @@
-// ─────────────── COMMAND CENTER CONFIG ───────────────
-// SPLASH SCREEN SETTINGS:
-//  - splashLogoScale: final scale factor of the splash logo (1.0 = 100% of its natural size).
-//  - splashLogoMaxWidth: CSS max-width applied to logo (helps constrain on large screens).
-//  - splashGrowDuration: how long (in ms) the logo “grow” animation runs.
-//  - splashFadeDuration: how long (in ms) the splash overlay fades out after grow.
-const CONFIG = {
-  // Splash
-  splashLogoScale:        0.85,          // e.g. use 0.85 for 85% scale
-  splashLogoMaxWidth:     '180px',       // constrain logo width
-  splashGrowDuration:     1200,          // ms for logo scaling
-  splashFadeDuration:     500,           // ms for overlay fade-out
-
-  // HEADER LOGO (static, top-left):
-  //  - headerLogoHeight: CSS height for the header logo image.
-  //  - headerLogoWidth: optional CSS width.
-  headerLogoHeight:       '2.5rem',
-  headerLogoWidth:        'auto',
-
-  // THEMING & GRADIENTS:
-  //  - bgGradientLight: [startColor, endColor] for page background in light mode.
-  //  - bgGradientDark:  [startColor, endColor] for dark mode.
-  //  - cardGradientLight: opposing gradient for cards in light mode.
-  //  - cardGradientDark:  opposing gradient for cards in dark mode.
-  bgGradientLight:        ['#f5f7fa', '#c3cfe2'],
-  bgGradientDark:         ['#2c3e50', '#4ca1af'],
-  cardGradientLight:      ['#c3cfe2', '#f5f7fa'],
-  cardGradientDark:       ['#4ca1af', '#2c3e50'],
-
-  // BUTTON STYLES:
-  //  - buttonNeutralBg: base background color for all buttons.
-  //  - buttonNeutralFg: base text color (if empty, will inherit `--fg`).
-  //  - buttonHoverAccent: color used in gradient-wave on hover.
-  buttonNeutralBg:        'rgba(255,255,255,0.85)',
-  buttonNeutralFg:        '',             // leave blank to inherit --fg
-  buttonHoverAccent:      'var(--accent)',
-
-  // ANIMATIONS & TIMING:
-  //  - welcomeBannerDuration: ms to show “Thank you for logging in” banner.
-  //  - welcomeBannerFade:     ms for that banner to fade out.
-  //  - loaderSpinnerDuration: ms to show the loader spinner.
-  welcomeBannerDuration:  2500,
-  welcomeBannerFade:      300,
-  loaderSpinnerDuration:  300,
-
-  // THEME TOGGLE ICON:
-  //  - toggleIconSize: CSS font-size for the 🌗 button.
-  toggleIconSize:         '1.5rem',
-
-  // APP VERSION:
-  //  - version: text displayed in the bottom-right corner.
-  version:                'v25'
-};
-// ────────────────────────────────────────────────────────
+// Load external configuration
+const CONFIG = window.APP_CONFIG || {};
+console.debug('[CONFIG]', CONFIG);
 
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -340,6 +289,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const rootStyles = document.documentElement.style;
   rootStyles.setProperty("--bg-start", CONFIG.bgGradientLight[0]);
   rootStyles.setProperty("--bg-end", CONFIG.bgGradientLight[1]);
+  rootStyles.setProperty("--card-start", CONFIG.cardGradientLight[0]);
+  rootStyles.setProperty("--card-end", CONFIG.cardGradientLight[1]);
   rootStyles.setProperty("--accent", CONFIG.buttonHoverAccent);
   rootStyles.setProperty("--btn-bg", CONFIG.buttonNeutralBg);
   if (CONFIG.buttonNeutralFg) rootStyles.setProperty("--btn-fg", CONFIG.buttonNeutralFg);
