@@ -325,6 +325,13 @@ document.addEventListener('DOMContentLoaded', () => {
   linksContainer = document.getElementById('links-container');
   backBtn = document.getElementById('back-btn');
   downloadBtn = document.getElementById('download-btn');
+  const rootStyles = document.documentElement.style;
+  rootStyles.setProperty("--bg-start", CONFIG.bgGradientLight[0]);
+  rootStyles.setProperty("--bg-end", CONFIG.bgGradientLight[1]);
+  rootStyles.setProperty("--accent", CONFIG.buttonHoverAccent);
+  rootStyles.setProperty("--btn-bg", CONFIG.buttonNeutralBg);
+  if (CONFIG.buttonNeutralFg) rootStyles.setProperty("--btn-fg", CONFIG.buttonNeutralFg);
+
 
   // 1) Apply version
   const versionEl = document.getElementById('version');
@@ -1073,42 +1080,6 @@ function updateGenerateButtonState() {
     }
 }
 
-// ───────────────────────────────────────────────────────────────────────────────
-// S) “Generate My Linktree” → SHOW LOADER → RENDER OUTPUT                          //
-// ───────────────────────────────────────────────────────────────────────────────
-    e.preventDefault();
-    hideAllScreens();
-
-    const data = {
-        profilePic: profilePicDataURL,
-        username: formUsernameInput.value.trim(),
-        tagline: formTaglineInput.value.trim(),
-        gradientStart: gradientStartInput.value,
-        gradientEnd: gradientEndInput.value,
-        cardColor: cardColorInput.value,
-        cardTextColor: cardTextColorInput.value,
-        cardImage: cardImageDataURL,
-        links: linkRows.map((r) => ({
-            label: r.labelInput.value.trim(),
-            icon: r.iconSelect.value,
-            url: r.urlInput.value.trim()
-        }))
-    };
-    try {
-        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(data));
-    } catch (err) {
-        console.warn("LocalStorage quota exceeded, stripping images", err);
-        const tmp = { ...data, profilePic: "", cardImage: "" };
-        localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(tmp));
-    }
-
-    loaderScreen.classList.remove("hidden");
-    loaderScreen.classList.add("flex");
-    await delay(CONFIG.loaderSpinnerDuration);
-    loaderScreen.classList.add("hidden");
-    loaderScreen.classList.remove("flex");
-    renderOutput(data);
-});
 
 // ───────────────────────────────────────────────────────────────────────────────
 // T) RENDER OUTPUT (in-app Linktree with Download + Back-to-Edit)                 //
