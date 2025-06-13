@@ -332,98 +332,18 @@ function escapeHTML(str) {
 }
 
 // ───────────────────────────────────────────────────────────────────────────────
-// G) ON PAGE LOAD: Animate the “Welcome to Linker” fade (1s delay → 6s fade)
 //                 Then FORCE sign-out any existing user, then call initApp()
-// ───────────────────────────────────────────────────────────────────────────────
-window.addEventListener("load", () => {
-    console.log("Welcome screen loaded");
-
-    if (SKIP_WELCOME_ANIMATION) {
-        startupScreen.remove();
-        signOut(auth).finally(() => initApp());
-        return;
-    }
-
-    if (!IS_MOBILE) {
-        if (startupText) {
-            startupText.style.fontSize = `${TEXT_INITIAL_FONT_SIZE_PX}px`;
-            startupText.style.color = TEXT_INITIAL_COLOR;
-            void startupText.offsetWidth;
-        }
-
-        setTimeout(() => {
-            console.log("Starting text animation");
-
-            setTimeout(() => {
-                if (startupText) {
-                    startupText.style.fontSize = `${TEXT_FINAL_FONT_SIZE_PX}px`;
-                    startupText.style.color = TEXT_FINAL_COLOR;
-                }
-            }, TEXT_APPEAR_DELAY_MS);
-
-            startupScreen.classList.add("reveal");
-            console.log("Background fade-out started");
-
-            setTimeout(async () => {
-                console.log("Fade complete, removing overlay");
-                startupScreen.remove();
-
-                console.log("Signing out");
-                if (getApps().length) {
-                    try {
-                        await signOut(auth);
-                    } catch (err) {
-                        console.warn(err);
-                    }
-                }
-
-                console.log("Initializing app");
-                initApp();
-            }, BACKGROUND_FADE_DURATION_MS + UI_DELAY_ADJUSTMENT_MS);
-        }, WELCOME_BLACK_DURATION_MS);
-
-        return;
-    }
-
-    // ─────────── MOBILE FLOW ───────────
+window.addEventListener('load', () => {
+  const screen = document.getElementById('startup-screen');
+  const logo = document.getElementById('startup-logo');
+  if (screen && logo) {
+    screen.classList.add('reveal');
     setTimeout(() => {
-        console.log("Starting text animation");
-        if (startupText) {
-            startupText.style.fontSize = `${MOBILE_TEXT_INITIAL_FONT_SIZE_PX}px`;
-            startupText.style.color = MOBILE_TEXT_INITIAL_COLOR;
-            startupText.style.transition =
-                `font-size ${MOBILE_TEXT_SCALE_DURATION_MS}ms ease-in-out, ` +
-                `color ${MOBILE_TEXT_SCALE_DURATION_MS}ms ease-in-out`;
-            void startupText.offsetWidth;
-            startupText.style.fontSize = `${MOBILE_TEXT_FINAL_FONT_SIZE_PX}px`;
-            startupText.style.color = MOBILE_TEXT_FINAL_COLOR;
-        }
-
-        setTimeout(async () => {
-            const screen = document.querySelector(MOBILE_STARTUP_SCREEN_SELECTOR);
-            if (screen) {
-                screen.style.transition = "";
-                screen.style.backgroundColor = MOBILE_TEXT_FINAL_COLOR;
-                screen.remove();
-            }
-
-            const form = document.getElementById("form-screen");
-            if (form) form.style.backgroundColor = MOBILE_TEXT_FINAL_COLOR;
-
-            console.log("Fade complete, removing overlay");
-            console.log("Signing out");
-            if (getApps().length) {
-                try {
-                    await signOut(auth);
-                } catch (err) {
-                    console.warn(err);
-                }
-            }
-
-            console.log("Initializing app");
-            initApp();
-        }, MOBILE_TEXT_SCALE_DURATION_MS + MOBILE_UI_DELAY_ADJUSTMENT_MS);
-    }, MOBILE_WELCOME_BLACK_DURATION_MS);
+      screen.remove();
+    }, 1700); // 1.2s grow + 0.5s fade
+  }
+  // Then initialize app…
+  initApp();
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
