@@ -6,7 +6,7 @@
 //  - splashFadeDuration: how long (in ms) the splash overlay fades out after grow.
 const CONFIG = {
   // Splash
-  splashLogoScale:        0.10,          // e.g. use 0.85 for 85% scale
+  splashLogoScale:        0.85,          // e.g. use 0.85 for 85% scale
   splashLogoMaxWidth:     '180px',       // constrain logo width
   splashGrowDuration:     1200,          // ms for logo scaling
   splashFadeDuration:     500,           // ms for overlay fade-out
@@ -262,7 +262,8 @@ function escapeHTML(str) {
 //                 Then FORCE sign-out any existing user, then call initApp()
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.debug('[App] DOM fully loaded');
+  console.debug('[App] DOM ready');
+  console.debug('[CONFIG]', CONFIG);
 
   // grab element references now that DOM is ready
   resetBtn = document.getElementById('reset-btn');
@@ -355,22 +356,29 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 3) Splash flow
-  const screen = document.getElementById('startup-screen');
+  hideAllScreens();
+  const splash = document.getElementById('startup-screen');
   const logo   = document.getElementById('startup-logo');
-  if (screen && logo) {
-    hideAllScreens();
-    document.body.appendChild(screen);
+  if (splash && logo) {
+    splash.style.position = 'fixed';
+    splash.style.inset = '0';
+    splash.style.background = '#000';
+    splash.style.zIndex = '9999';
     logo.style.maxWidth = CONFIG.splashLogoMaxWidth;
     logo.style.transform = `scale(${CONFIG.splashLogoScale})`;
-    console.debug('[Splash] animate grow');
-    screen.classList.add('reveal');
+    splash.classList.add('reveal');
     setTimeout(() => {
-      console.debug('[Splash] done, proceeding to initApp');
-      screen.remove();
+      splash.remove();
+      console.debug('[Splash] removed');
+      const login = document.getElementById('login-screen');
+      if (login) {
+        login.classList.remove('hidden');
+        login.classList.add('flex');
+      }
       initApp();
     }, CONFIG.splashGrowDuration + CONFIG.splashFadeDuration);
   } else {
-    console.warn('[Splash] missing #startup-screen or #startup-logo');
+    console.warn('[Splash] missing elements, skipping to initApp');
     initApp();
   }
 
@@ -735,183 +743,6 @@ function initApp() {
         }
     });
 }
-
-// ───────────────────────────────────────────────────────────────────────────────
-// I) BUTTON HANDLERS ON LANDING SCREEN                                           //
-// ───────────────────────────────────────────────────────────────────────────────
-    hideAllScreens();
-    adminLoginScreen.classList.remove("hidden");
-    adminLoginScreen.classList.add("flex");
-    adminError.classList.add("hidden");
-    adminEmailInput.value = "";
-    adminPasswordInput.value = "";
-});
-
-    hideAllScreens();
-    userLoginScreen.classList.remove("hidden");
-    userLoginScreen.classList.add("flex");
-    userError.classList.add("hidden");
-    userEmailInput.value = "";
-    userPasswordInput.value = "";
-});
-
-    hideAllScreens();
-    userSignupScreen.classList.remove("hidden");
-    userSignupScreen.classList.add("flex");
-    signupCodeError.classList.add("hidden");
-    signupEmailInput.value = "";
-    signupPasswordInput.value = "";
-    signupCodeInput.value = "";
-    signupSuccess.classList.add("hidden");
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// J) ADMIN LOGIN LOGIC                                                           //
-// ───────────────────────────────────────────────────────────────────────────────
-    const email = adminEmailInput.value.trim().toLowerCase();
-    const pass = adminPasswordInput.value.trim();
-
-    if (email === ADMIN_EMAIL.toLowerCase() && pass === ADMIN_PASSWORD) {
-        try {
-            await signInWithEmailAndPassword(auth, email, pass);
-            hideAllScreens();
-            showAdminPanel();
-        } catch (err) {
-            console.error("Admin signIn error:", err);
-            adminError.textContent = "Authentication error—check console.";
-            adminError.classList.remove("hidden");
-        }
-    } else {
-        adminError.textContent = "Incorrect admin credentials.";
-        adminError.classList.remove("hidden");
-    }
-});
-
-    hideAllScreens();
-    loginScreen.classList.remove("hidden");
-    loginScreen.classList.add("flex");
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// K) SHOW ADMIN PANEL                                                            //
-// ───────────────────────────────────────────────────────────────────────────────
-async function showAdminPanel() {
-    hideAllScreens();
-    adminPanel.classList.remove("hidden");
-    adminPanel.classList.add("flex");
-    newAccessCodeInput.value = "";
-    adminCodeSuccess.classList.add("hidden");
-}
-
-// Generate a new access code (Firestore “codes” collection)
-    const code = newAccessCodeInput.value.trim();
-    if (!code) return;
-
-    const docRef = doc(db, "codes", code);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-        adminCodeSuccess.textContent = `Code “${code}” already exists.`;
-        adminCodeSuccess.classList.remove("hidden");
-    } else {
-        await setDoc(docRef, { createdAt: serverTimestamp() });
-        adminCodeSuccess.textContent = `Code “${code}” created!`;
-        adminCodeSuccess.classList.remove("hidden");
-    }
-    newAccessCodeInput.value = "";
-});
-
-// Build Form (skip directly to the Linktree builder)
-    hideAllScreens();
-    startAppFlow(ADMIN_EMAIL);
-});
-
-// Admin “Logout”
-    try {
-        await signOut(auth);
-        hideAllScreens();
-        loginScreen.classList.remove("hidden");
-        loginScreen.classList.add("flex");
-        resetBtn.classList.add("hidden");
-    } catch (err) {
-        console.error("Error signing out admin:", err);
-    }
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// L) USER LOGIN LOGIC                                                            //
-// ───────────────────────────────────────────────────────────────────────────────
-    const email = userEmailInput.value.trim().toLowerCase();
-    const pass = userPasswordInput.value.trim();
-
-    if (!email || !pass) {
-        userError.textContent = "Email & password are required.";
-        userError.classList.remove("hidden");
-        return;
-    }
-
-    try {
-        await signInWithEmailAndPassword(auth, email, pass);
-        hideAllScreens();
-        startAppFlow(email);
-    } catch (err) {
-        console.error("User login error:", err);
-        userError.textContent = "Invalid email or password.";
-        userError.classList.remove("hidden");
-    }
-});
-
-    hideAllScreens();
-    loginScreen.classList.remove("hidden");
-    loginScreen.classList.add("flex");
-});
-
-// ───────────────────────────────────────────────────────────────────────────────
-// M) USER SIGNUP LOGIC (Access Code → Create Auth User → Delete Code)            //
-// ───────────────────────────────────────────────────────────────────────────────
-    const code = signupCodeInput.value.trim();
-    const email = signupEmailInput.value.trim().toLowerCase();
-    const pass = signupPasswordInput.value.trim();
-
-    if (!code || !email || !pass) {
-        signupCodeError.textContent = "All fields are required.";
-        signupCodeError.classList.remove("hidden");
-        return;
-    }
-
-    // Verify code in Firestore
-    const docRef = doc(db, "codes", code);
-    const docSnap = await getDoc(docRef);
-    if (!docSnap.exists()) {
-        signupCodeError.textContent = "Invalid or expired access code.";
-        signupCodeError.classList.remove("hidden");
-        return;
-    }
-
-    // Create Auth user
-    try {
-        await createUserWithEmailAndPassword(auth, email, pass);
-        // Delete the used code so it can’t be reused
-        await deleteDoc(docRef);
-
-        signupCodeError.classList.add("hidden");
-        signupSuccess.classList.remove("hidden");
-
-        // Slight pause so user sees “Account created!” briefly
-        setTimeout(() => {
-            hideAllScreens();
-            startAppFlow(email);
-        }, SIGNUP_SUCCESS_DELAY_MS);
-    } catch (err) {
-        console.error("Error creating user:", err);
-        signupCodeError.textContent = "Signup failed—email may already be in use.";
-        signupCodeError.classList.remove("hidden");
-    }
-});
-
-    hideAllScreens();
-    loginScreen.classList.remove("hidden");
-    loginScreen.classList.add("flex");
-});
 
 // ───────────────────────────────────────────────────────────────────────────────
 // N) MAIN APP FLOW (After any successful login)                                  //
@@ -1534,4 +1365,3 @@ function renderOutput(data) {
     }
     location.reload();
 });
-
