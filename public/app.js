@@ -272,7 +272,6 @@ const outputTagline = document.getElementById("output-tagline");
 const linksContainer = document.getElementById("links-container");
 const backBtn = document.getElementById("back-btn");
 const downloadBtn = document.getElementById("download-btn");
-const toggle = document.getElementById("theme-toggle");
 
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -1275,23 +1274,23 @@ resetBtn.addEventListener("click", async () => {
     location.reload();
 });
 
-if (toggle) {
-    toggle.addEventListener("click", () => {
-        const t = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-        document.documentElement.setAttribute("data-theme", t);
-        localStorage.setItem("theme", t);
-    });
-}
-document.documentElement.setAttribute("data-theme", localStorage.getItem("theme") || "light");
+// THEME TOGGLE
+const toggle = document.getElementById('theme-toggle');
+toggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+});
+// Initialize on load
+const saved = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', saved);
 
-window.addEventListener("keydown", (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "s") {
-        e.preventDefault();
-        generateBtn.click();
-    }
-    if (e.key === "Escape") {
-        document.querySelectorAll('[role="alert"]').forEach((el) => el.classList.add("hidden"));
-    }
+window.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    generateBtn.click();
+  }
 });
 
 if ("serviceWorker" in navigator) {
