@@ -682,7 +682,9 @@ async function startAppFlow(currentEmail) {
         loaderScreen.classList.remove("flex");
         renderOutput(savedData);
     } else {
-        showBuilderForm(savedData);
+        hideAllScreens();
+        formScreen.classList.remove('hidden');
+        formScreen.classList.add('flex');
     }
 }
 
@@ -1274,25 +1276,35 @@ resetBtn.addEventListener("click", async () => {
     location.reload();
 });
 
-// THEME TOGGLE
-const toggle = document.getElementById('theme-toggle');
-toggle.addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme') || 'light';
-  const next = current === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  localStorage.setItem('theme', next);
-});
-// Initialize on load
-const saved = localStorage.getItem('theme') || 'light';
-document.documentElement.setAttribute('data-theme', saved);
+document.addEventListener('DOMContentLoaded', () => {
+  const toggle = document.getElementById('theme-toggle');
+  if (toggle) {
+    const saved = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', saved);
+    toggle.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+  }
 
-window.addEventListener('keydown', e => {
-  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-    e.preventDefault();
-    generateBtn.click();
+  onAuthStateChanged(auth, user => {
+    if (user && user.email !== ADMIN_EMAIL) {
+      hideAllScreens();
+      formScreen.classList.remove('hidden');
+      formScreen.classList.add('flex');
+    }
+  });
+
+  window.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+      e.preventDefault();
+      generateBtn.click();
+    }
+  });
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js');
   }
 });
-
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/service-worker.js");
-}

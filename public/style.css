@@ -204,18 +204,17 @@ input:focus, textarea:focus, select:focus {
 
 .card-wrapper,
 #output-card {
-    background: var(--bg);
-    color: var(--fg);
-    border: 1px solid var(--border);
-    box-shadow: 0 10px 25px var(--shadow);
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     border-radius: 1rem;
-    padding: 2rem;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .card-wrapper:hover,
 #output-card:hover {
     transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 15px 40px var(--shadow);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
 }
 
 @keyframes fadeInUp {
