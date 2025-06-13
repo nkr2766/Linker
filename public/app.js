@@ -1136,6 +1136,7 @@ function renderOutput(data) {
         }
     });
 
+    outputCard.classList.remove("animate-pulse");
     outputCard.classList.add("animate-fadeInUp");
 
     hideAllScreens();

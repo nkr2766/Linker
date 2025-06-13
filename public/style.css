@@ -9,14 +9,16 @@
 }
 
 :root[data-theme="light"] {
-  --bg: #ffffff;
-  --fg: #111827;
-  --accent: #10b981;
+  --bg: #f0f0f0;
+  --fg: #1f1f1f;
+  --accent: #00d2ff;
+  --accent-dark: #0099cc;
 }
 :root[data-theme="dark"] {
-  --bg: #1f2937;
-  --fg: #f9fafb;
-  --accent: #059669;
+  --bg: #1f1f1f;
+  --fg: #e5e7eb;
+  --accent: #00d2ff;
+  --accent-dark: #0099cc;
 }
 body {
   background: var(--bg);
@@ -201,16 +203,25 @@ body {
 
 .card-wrapper,
 .output-card {
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border: 1px solid rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
     transition: all 0.3s ease-in-out;
+    background: var(--bg);
+    color: var(--fg);
 }
 
 .link-btn {
-    transform: translateZ(0);
-    transition: transform 0.2s ease-in-out;
+  background-color: var(--accent);
+  color: #ffffff;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  transform: translateZ(0);
 }
 .link-btn:hover {
-    transform: scale(1.05);
+  background-color: var(--accent-dark);
+  transform: scale(1.05);
+}
+.link-btn:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0,210,255,0.5);
 }
 
