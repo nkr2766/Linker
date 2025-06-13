@@ -220,8 +220,10 @@ function hideAllScreens() {
         loaderScreen,
         linktreeScreen,
     ].forEach((el) => {
-        el.classList.add("hidden");
-        el.classList.remove("flex");
+        if (el) {
+            el.classList.add("hidden");
+            el.classList.remove("flex");
+        }
     });
 }
 
@@ -262,69 +264,79 @@ function escapeHTML(str) {
 //                 Then FORCE sign-out any existing user, then call initApp()
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.debug('[App] DOM ready');
+  console.debug('[Debug] DOMContentLoaded');
   console.debug('[CONFIG]', CONFIG);
 
+  const lookup = (id) => {
+    console.debug(`[Debug] Looking up #${id}`);
+    const el = document.getElementById(id);
+    console.debug(`[Debug] getElementById("${id}") →`, el);
+    if (!el) {
+      console.error(`[Debug] Missing element #${id} – skipping related logic`);
+    }
+    return el;
+  };
+
   // grab element references now that DOM is ready
-  resetBtn = document.getElementById('reset-btn');
-  loginScreen = document.getElementById('login-screen');
-  btnAdminLogin = document.getElementById('btn-admin-login');
-  btnUserLogin = document.getElementById('btn-user-login');
-  btnUseAccessCode = document.getElementById('btn-use-access-code');
-  adminLoginScreen = document.getElementById('admin-login-screen');
-  adminEmailInput = document.getElementById('admin-email');
-  adminPasswordInput = document.getElementById('admin-password');
-  adminError = document.getElementById('admin-error');
-  adminLoginSubmit = document.getElementById('admin-login-submit');
-  adminLoginBack = document.getElementById('admin-login-back');
-  adminPanel = document.getElementById('admin-panel');
-  newAccessCodeInput = document.getElementById('new-access-code');
-  createCodeBtn = document.getElementById('create-code-btn');
-  adminCodeSuccess = document.getElementById('admin-code-success');
-  adminBuildFormBtn = document.getElementById('admin-build-form');
-  adminLogoutBtn = document.getElementById('admin-logout');
-  userLoginScreen = document.getElementById('user-login-screen');
-  userEmailInput = document.getElementById('user-email');
-  userPasswordInput = document.getElementById('user-password');
-  userError = document.getElementById('user-error');
-  userLoginSubmit = document.getElementById('user-login-submit');
-  userLoginBack = document.getElementById('user-login-back');
-  userSignupScreen = document.getElementById('user-signup-screen');
-  signupCodeInput = document.getElementById('signup-code');
-  signupEmailInput = document.getElementById('signup-email');
-  signupPasswordInput = document.getElementById('signup-password');
-  signupCodeError = document.getElementById('signup-code-error');
-  signupSuccess = document.getElementById('signup-success');
-  signupSubmit = document.getElementById('signup-submit');
-  signupBackBtn = document.getElementById('signup-back');
-  welcomeScreen = document.getElementById('welcome-screen');
-  welcomeText = document.getElementById('welcome-text');
-  formScreen = document.getElementById('form-screen');
-  profilePicFileInput = document.getElementById('profile-pic-file');
-  errorProfilePic = document.getElementById('error-profile-pic');
-  formUsernameInput = document.getElementById('username');
-  errorUsername = document.getElementById('error-username');
-  formTaglineInput = document.getElementById('tagline');
-  formTaglineCount = document.getElementById('tagline-count');
-  gradientStartInput = document.getElementById('gradient-start');
-  gradientEndInput = document.getElementById('gradient-end');
-  cardColorInput = document.getElementById('card-color');
-  cardTextColorInput = document.getElementById('card-text-color');
-  cardImageInput = document.getElementById('card-image');
-  cardImageClearBtn = document.getElementById('remove-card-image');
-  linksWrapper = document.getElementById('links-wrapper');
-  addLinkBtn = document.getElementById('add-link-btn');
-  errorLinks = document.getElementById('error-links');
-  generateBtn = document.getElementById('generate-btn');
-  loaderScreen = document.getElementById('loader-screen');
-  linktreeScreen = document.getElementById('linktree-screen');
-  outputCard = document.getElementById('output-card');
-  outputProfilePic = document.getElementById('output-profile-pic');
-  displayUsername = document.getElementById('display-username');
-  outputTagline = document.getElementById('output-tagline');
-  linksContainer = document.getElementById('links-container');
-  backBtn = document.getElementById('back-btn');
-  downloadBtn = document.getElementById('download-btn');
+  resetBtn = lookup('reset-btn');
+  loginScreen = lookup('login-screen');
+  btnAdminLogin = lookup('btn-admin-login');
+  btnUserLogin = lookup('btn-user-login');
+  btnUseAccessCode = lookup('btn-use-access-code');
+  adminLoginScreen = lookup('admin-login-screen');
+  adminEmailInput = lookup('admin-email');
+  adminPasswordInput = lookup('admin-password');
+  adminError = lookup('admin-error');
+  adminLoginSubmit = lookup('admin-login-submit');
+  adminLoginBack = lookup('admin-login-back');
+  adminPanel = lookup('admin-panel');
+  newAccessCodeInput = lookup('new-access-code');
+  createCodeBtn = lookup('create-code-btn');
+  adminCodeSuccess = lookup('admin-code-success');
+  adminBuildFormBtn = lookup('admin-build-form');
+  adminLogoutBtn = lookup('admin-logout');
+  userLoginScreen = lookup('user-login-screen');
+  userEmailInput = lookup('user-email');
+  userPasswordInput = lookup('user-password');
+  userError = lookup('user-error');
+  userLoginSubmit = lookup('user-login-submit');
+  userLoginBack = lookup('user-login-back');
+  userSignupScreen = lookup('user-signup-screen');
+  signupCodeInput = lookup('signup-code');
+  signupEmailInput = lookup('signup-email');
+  signupPasswordInput = lookup('signup-password');
+  signupCodeError = lookup('signup-code-error');
+  signupSuccess = lookup('signup-success');
+  signupSubmit = lookup('signup-submit');
+  signupBackBtn = lookup('signup-back');
+  welcomeScreen = lookup('welcome-screen');
+  welcomeText = lookup('welcome-text');
+  formScreen = lookup('form-screen');
+  profilePicFileInput = lookup('profile-pic-file');
+  errorProfilePic = lookup('error-profile-pic');
+  formUsernameInput = lookup('username');
+  errorUsername = lookup('error-username');
+  formTaglineInput = lookup('tagline');
+  formTaglineCount = lookup('tagline-count');
+  gradientStartInput = lookup('gradient-start');
+  gradientEndInput = lookup('gradient-end');
+  cardColorInput = lookup('card-color');
+  cardTextColorInput = lookup('card-text-color');
+  cardImageInput = lookup('card-image');
+  cardImageClearBtn = lookup('remove-card-image');
+  linksWrapper = lookup('links-wrapper');
+  addLinkBtn = lookup('add-link-btn');
+  errorLinks = lookup('error-links');
+  generateBtn = lookup('generate-btn');
+  loaderScreen = lookup('loader-screen');
+  linktreeScreen = lookup('linktree-screen');
+  outputCard = lookup('output-card');
+  outputProfilePic = lookup('output-profile-pic');
+  displayUsername = lookup('display-username');
+  outputTagline = lookup('output-tagline');
+  linksContainer = lookup('links-container');
+  backBtn = lookup('back-btn');
+  downloadBtn = lookup('download-btn');
   const rootStyles = document.documentElement.style;
   rootStyles.setProperty("--bg-start", CONFIG.bgGradientLight[0]);
   rootStyles.setProperty("--bg-end", CONFIG.bgGradientLight[1]);
@@ -334,18 +346,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
   // 1) Apply version
-  const versionEl = document.getElementById('version');
+  const versionEl = lookup('version');
   if (versionEl) versionEl.textContent = CONFIG.version;
 
   // header logo sizing
-  const headerLogo = document.getElementById('header-logo');
+  const headerLogo = lookup('header-logo');
   if (headerLogo) {
     headerLogo.style.height = CONFIG.headerLogoHeight;
     headerLogo.style.width = CONFIG.headerLogoWidth;
   }
 
   // 2) Theme toggle setup
-  const toggle = document.getElementById('theme-toggle');
+  const toggle = lookup('theme-toggle');
   if (toggle) {
     toggle.style.fontSize = CONFIG.toggleIconSize;
     const saved = localStorage.getItem('theme') || 'light';
@@ -364,8 +376,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3) Splash flow
   hideAllScreens();
-  const splash = document.getElementById('startup-screen');
-  const logo   = document.getElementById('startup-logo');
+  const splash = lookup('startup-screen');
+  const logo   = lookup('startup-logo');
   if (splash && logo) {
     splash.style.position = 'fixed';
     splash.style.inset = '0';
@@ -377,10 +389,10 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
       splash.remove();
       console.debug('[Splash] removed');
-      const login = document.getElementById('login-screen');
-      if (login) {
-        login.classList.remove('hidden');
-        login.classList.add('flex');
+      console.debug('[Debug] getElementById("login-screen") →', loginScreen);
+      if (loginScreen) {
+        loginScreen.classList.remove('hidden');
+        loginScreen.classList.add('flex');
       }
       initApp();
     }, CONFIG.splashGrowDuration + CONFIG.splashFadeDuration);
@@ -722,6 +734,7 @@ document.addEventListener('DOMContentLoaded', () => {
       location.reload();
     });
   }
+  console.debug('[Debug] Initialization complete');
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
