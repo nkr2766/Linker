@@ -5,6 +5,8 @@
 //  - splashGrowDuration: how long (in ms) the logo “grow” animation runs.
 //  - splashFadeDuration: how long (in ms) the splash overlay fades out after grow.
 const CONFIG = {
+  // Path to your header logo (absolute on your machine):
+  logoSrc: "C:\\Users\\reyno\\OneDrive\\Desktop\\Coding\\Linktree\\public\\image\\73294b6e-8bc4-428f-ad24-a303947fb853.png",
   // Splash
   splashLogoScale:        0.85,          // e.g. use 0.85 for 85% scale
   splashLogoMaxWidth:     '180px',       // constrain logo width
@@ -58,6 +60,10 @@ CONFIG.version = `v${parseInt(CONFIG.version.replace(/\D/g, '')) + 1}`;
 document.addEventListener('DOMContentLoaded', () => {
   const versionEl = document.getElementById('version');
   if (versionEl) versionEl.textContent = CONFIG.version;
+  const headerImg = document.querySelector('header img');
+  if (headerImg && CONFIG.logoSrc) {
+    headerImg.src = CONFIG.logoSrc;
+  }
   console.log(`[CONFIG] Loaded version: ${CONFIG.version}`);
 });
 // ────────────────────────────────────────────────────────
