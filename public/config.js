@@ -1,6 +1,10 @@
 // public/config.js
+// base animation + sizing constants
+export const ANIMATION_TIMING = '0.3s';
+export const ELEMENT_SIZE = '16px';
+
 // ────────── App Configuration ─────────
-window.APP_CONFIG = {
+export const APP_CONFIG = {
   // Splash screen
   splashLogoScale:      0.85,
   splashLogoMaxWidth:   '180px',
@@ -35,4 +39,8 @@ window.APP_CONFIG = {
   // App version
   version:              'v26'
 };
+
+if (typeof window !== 'undefined') {
+  window.APP_CONFIG = APP_CONFIG;
+}
 // ─────────────────────────

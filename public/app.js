@@ -1,5 +1,5 @@
 // Load external configuration
-const CONFIG = window.APP_CONFIG || {};
+import { APP_CONFIG as CONFIG, ANIMATION_TIMING, ELEMENT_SIZE } from './config.js';
 console.debug('[CONFIG]', CONFIG);
 
 // A) FIREBASE IMPORTS (Modular v11.8.1)
@@ -46,18 +46,7 @@ const db = getFirestore(app);
 
 // ───────────────────────────────────────────────────────────────────────────────
 // C) CONNECT TO EMULATORS WHEN RUNNING LOCALLY (localhost, 127.0.0.1, ::1)
-// ───────────────────────────────────────────────────────────────────────────────
-const hostname = location.hostname;
-if (
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname === "::1"
-) {
-    console.log("⚙️  Connecting to Firebase emulators…");
-    connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
-    connectFirestoreEmulator(db, "localhost", 8080);
-}
-
+// (logic moved to DOMContentLoaded below)
 // ───────────────────────────────────────────────────────────────────────────────
 // D) CONSTANTS & STATE
 // ───────────────────────────────────────────────────────────────────────────────
@@ -233,6 +222,20 @@ document.addEventListener('DOMContentLoaded', () => {
   console.debug('[Debug] DOMContentLoaded');
   console.debug('[CONFIG]', CONFIG);
 
+  document.documentElement.style.setProperty('--animation-duration', ANIMATION_TIMING);
+  document.documentElement.style.setProperty('--element-size', ELEMENT_SIZE);
+
+  const hostname = location.hostname;
+  if (
+    hostname === "localhost" ||
+    hostname === "127.0.0.1" ||
+    hostname === "::1"
+  ) {
+    console.log("⚙️ Connecting to Firebase emulators…");
+    connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
+    connectFirestoreEmulator(db, "localhost", 8080);
+  }
+
   const lookup = (id) => {
     const el = document.getElementById(id);
     console.debug(`[Lookup] #${id} →`, el);
@@ -361,11 +364,9 @@ document.addEventListener('DOMContentLoaded', () => {
         loginScreen.classList.remove('hidden');
         loginScreen.classList.add('flex');
       }
-      initApp();
     }, CONFIG.splashGrowDuration + CONFIG.splashFadeDuration);
   } else {
-    console.warn('[Splash] missing elements, skipping to initApp');
-    initApp();
+    console.warn('[Splash] missing elements');
   }
 
   // extra listeners
@@ -739,6 +740,8 @@ document.addEventListener('DOMContentLoaded', () => {
       location.reload();
     });
   }
+
+  initApp();
   console.debug('[Init] DOM ready and all guarded lookups complete');
 });
 
