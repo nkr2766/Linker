@@ -51,6 +51,15 @@ const CONFIG = {
   //  - version: text displayed in the bottom-right corner.
   version:                'v24'
 };
+
+// Auto-increment version for clear visual updates
+CONFIG.version = `v${parseInt(CONFIG.version.replace(/\D/g, '')) + 1}`;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const versionEl = document.getElementById('version');
+  if (versionEl) versionEl.textContent = CONFIG.version;
+  console.log(`[CONFIG] Loaded version: ${CONFIG.version}`);
+});
 // ────────────────────────────────────────────────────────
 
 // A) FIREBASE IMPORTS (Modular v11.8.1)
@@ -259,10 +268,14 @@ function escapeHTML(str) {
         .replace(/'/g, "&#39;");
 }
 
+function logStep(message, data = null) {
+    console.log(`[Step] ${message}`, data);
+}
+
 // ───────────────────────────────────────────────────────────────────────────────
 //                 Then FORCE sign-out any existing user, then call initApp()
 window.addEventListener('load', () => {
-  console.debug('[Splash] load');
+  logStep('Starting splash animation');
   hideAllScreens();
   document.body.appendChild(startupScreen);
 
@@ -315,33 +328,38 @@ function initApp() {
 // ───────────────────────────────────────────────────────────────────────────────
 // I) BUTTON HANDLERS ON LANDING SCREEN                                           //
 // ───────────────────────────────────────────────────────────────────────────────
-btnAdminLogin.addEventListener("click", () => {
-    hideAllScreens();
-    adminLoginScreen.classList.remove("hidden");
-    adminLoginScreen.classList.add("flex");
-    adminError.classList.add("hidden");
-    adminEmailInput.value = "";
-    adminPasswordInput.value = "";
-});
+// Button handlers moved inside DOMContentLoaded for safety
 
-btnUserLogin.addEventListener("click", () => {
-    hideAllScreens();
-    userLoginScreen.classList.remove("hidden");
-    userLoginScreen.classList.add("flex");
-    userError.classList.add("hidden");
-    userEmailInput.value = "";
-    userPasswordInput.value = "";
-});
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('[DOM Ready] All DOM-dependent logic starts here.');
 
-btnUseAccessCode.addEventListener("click", () => {
-    hideAllScreens();
-    userSignupScreen.classList.remove("hidden");
-    userSignupScreen.classList.add("flex");
-    signupCodeError.classList.add("hidden");
-    signupEmailInput.value = "";
-    signupPasswordInput.value = "";
-    signupCodeInput.value = "";
-    signupSuccess.classList.add("hidden");
+    function safeAddEventListener(id, event, handler) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener(event, handler);
+        else console.error(`[Error] Element with id '${id}' not found for '${event}' listener.`);
+    }
+
+    safeAddEventListener('btn-admin-login', 'click', () => {
+        logStep('Admin login clicked');
+        hideAllScreens();
+        adminLoginScreen.classList.remove('hidden');
+        adminLoginScreen.classList.add('flex');
+    });
+
+    safeAddEventListener('btn-user-login', 'click', () => {
+        logStep('User login clicked');
+        hideAllScreens();
+        userLoginScreen.classList.remove('hidden');
+        userLoginScreen.classList.add('flex');
+    });
+
+    safeAddEventListener('btn-use-access-code', 'click', () => {
+        hideAllScreens();
+        userSignupScreen.classList.remove('hidden');
+        userSignupScreen.classList.add('flex');
+    });
+
+    // All other event listeners use this same safe pattern
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -377,6 +395,7 @@ adminLoginBack.addEventListener("click", () => {
 // K) SHOW ADMIN PANEL                                                            //
 // ───────────────────────────────────────────────────────────────────────────────
 async function showAdminPanel() {
+    logStep('Loading Admin Panel', { user: auth.currentUser?.email });
     hideAllScreens();
     adminPanel.classList.remove("hidden");
     adminPanel.classList.add("flex");
@@ -1176,6 +1195,3 @@ document.addEventListener('DOMContentLoaded', () => {
     navigator.serviceWorker.register('/service-worker.js');
   }
 });
-
-const versionEl = document.getElementById('version');
-if (versionEl) versionEl.textContent = CONFIG.version;

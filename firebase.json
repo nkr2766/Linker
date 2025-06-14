@@ -11,6 +11,22 @@
         "source": "**",
         "destination": "/index.html"
       }
+    ],
+    "headers": [
+      {
+        "source": "**/*.@(png|woff|woff2|jpg|jpeg|svg|ico)",
+        "headers": [
+          { "key": "Cache-Control", "value": "max-age=31536000, immutable" },
+          { "key": "X-Content-Type-Options", "value": "nosniff" }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-store" },
+          { "key": "X-Content-Type-Options", "value": "nosniff" }
+        ]
+      }
     ]
   },
   "emulators": {
