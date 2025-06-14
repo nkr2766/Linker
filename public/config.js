@@ -36,3 +36,6 @@ window.APP_CONFIG = {
   version:              'v26'
 };
 // ─────────────────────────
+
+export const ANIMATION_TIMING = `${window.APP_CONFIG.welcomeBannerDuration}ms`;
+export const SIZE_CONFIG = window.APP_CONFIG.toggleIconSize;

@@ -1,3 +1,15 @@
+:root {
+  --animation-duration: 0.3s;
+  --element-size: 16px;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+.some-element {
+  animation-duration: var(--animation-duration);
+  font-size: var(--element-size);
+}
 :root[data-theme="light"] {
   --bg-start: #f5f7fa;
   --bg-end:   #c3cfe2;
@@ -28,7 +40,7 @@ body {
   pointer-events: all;
 }
 #startup-logo {
-  animation: logoGrow 1200ms ease-out forwards;
+  animation: logoGrow var(--animation-duration) ease-out forwards;
 }
 @keyframes logoGrow {
   0%   { opacity: 0; transform: scale(0.5); }
