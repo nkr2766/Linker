@@ -746,38 +746,55 @@ document.addEventListener('DOMContentLoaded', () => {
 // H) initApp(): Listen for Auth state changes → show the correct “screen”        //
 // ───────────────────────────────────────────────────────────────────────────────
   function initApp() {
-      onAuthStateChanged(auth, async (firebaseUser) => {
-          if (!firebaseUser) {
-              // No one signed in → show landing screen
-              hideAllScreens();
-              if (loginScreen) {
-                  loginScreen.classList.remove("hidden");
-                  loginScreen.classList.add("flex");
+      onAuthStateChanged(auth, (user) => {
+          console.debug('[Auth] state changed start', user);
+          const formScreen = document.getElementById('form-screen');
+          console.debug('[Auth] lookup #form-screen →', formScreen);
+          const outputScreen = document.getElementById('output-screen');
+          console.debug('[Auth] lookup #output-screen →', outputScreen);
+          const builderScreen = document.getElementById('builder-screen');
+          console.debug('[Auth] lookup #builder-screen →', builderScreen);
+          const displayNameEl = document.getElementById('display-username');
+          console.debug('[Auth] lookup #display-username →', displayNameEl);
+          if (user) {
+              if (formScreen) {
+                  formScreen.classList.add('hidden');
               } else {
-                  console.warn('[Debug] #login-screen not found – skipping');
+                  console.error('[Auth Error] #form-screen not found; user=', user);
               }
-              if (resetBtn) {
-                  resetBtn.classList.add("hidden");
+              if (outputScreen) {
+                  outputScreen.classList.add('hidden');
               } else {
-                  console.warn('[Debug] #reset-btn not found – skipping');
+                  console.error('[Auth Error] #output-screen not found; user=', user);
+              }
+              if (builderScreen) {
+                  builderScreen.classList.remove('hidden');
+              } else {
+                  console.error('[Auth Error] #builder-screen not found; user=', user);
+              }
+              if (displayNameEl) {
+                  displayNameEl.textContent = user.displayName || user.email;
+              } else {
+                  console.error('[Auth Error] #display-username not found; user=', user);
               }
           } else {
-              const email = firebaseUser.email.toLowerCase();
-              if (email === ADMIN_EMAIL.toLowerCase()) {
-                  // Admin signed in
-                  showAdminPanel();
-                  if (resetBtn) {
-                      resetBtn.classList.remove("hidden");
-                  }
+              if (formScreen) {
+                  formScreen.classList.remove('hidden');
               } else {
-                  // Regular user signed in
-                  hideAllScreens();
-                  if (resetBtn) {
-                      resetBtn.classList.remove("hidden");
-                  }
-                  startAppFlow(firebaseUser.email);
+                  console.error('[Auth Error] #form-screen not found; user=', user);
+              }
+              if (outputScreen) {
+                  outputScreen.classList.add('hidden');
+              } else {
+                  console.error('[Auth Error] #output-screen not found; user=', user);
+              }
+              if (builderScreen) {
+                  builderScreen.classList.add('hidden');
+              } else {
+                  console.error('[Auth Error] #builder-screen not found; user=', user);
               }
           }
+          console.debug('[Auth] state changed end');
       });
   }
 
