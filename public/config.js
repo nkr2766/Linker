@@ -1,6 +1,6 @@
 // public/config.js
 // ────────── App Configuration ─────────
-window.APP_CONFIG = {
+export const APP_CONFIG = {
   // Splash screen
   splashLogoScale:      0.85,
   splashLogoMaxWidth:   '180px',
@@ -35,4 +35,11 @@ window.APP_CONFIG = {
   // App version
   version:              'v26'
 };
+
+export const ANIMATION_TIMING = `${APP_CONFIG.loaderSpinnerDuration}ms`;
+export const SIZE_CONFIG = APP_CONFIG.toggleIconSize || '16px';
+
+if (typeof window !== 'undefined') {
+  window.APP_CONFIG = APP_CONFIG;
+}
 // ─────────────────────────

@@ -1,5 +1,5 @@
 // Load external configuration
-const CONFIG = window.APP_CONFIG || {};
+import { APP_CONFIG as CONFIG, ANIMATION_TIMING, SIZE_CONFIG } from './config.js';
 console.debug('[CONFIG]', CONFIG);
 
 // A) FIREBASE IMPORTS (Modular v11.8.1)
@@ -310,6 +310,8 @@ document.addEventListener('DOMContentLoaded', () => {
   rootStyles.setProperty("--accent", CONFIG.buttonHoverAccent);
   rootStyles.setProperty("--btn-bg", CONFIG.buttonNeutralBg);
   if (CONFIG.buttonNeutralFg) rootStyles.setProperty("--btn-fg", CONFIG.buttonNeutralFg);
+  rootStyles.setProperty("--animation-duration", ANIMATION_TIMING);
+  rootStyles.setProperty("--element-size", SIZE_CONFIG);
 
 
   // 1) Apply version
