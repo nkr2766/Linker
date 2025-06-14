@@ -14,54 +14,52 @@ html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  background: #e0f8f7;
-}
-body {
-  color: var(--fg);
-  font-family: 'Inter', sans-serif;
 }
 
+/* center every full-page “screen” */
+.screen {
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+/* header at top */
 header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
 }
 
-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1.5rem;
-  padding: 0 1rem;
-}
-
-main h1 {
-  font-size: 2.5rem;
-  color: #1a1f2b;
-}
-
-.button-group {
+/* vertical stack for buttons inside any .screen */
+.screen .buttons {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  margin-top: 1rem;
 }
 
-@media (min-width: 640px) {
-  .button-group {
-    flex-direction: row;
-  }
+/* version bottom-right */
+.version {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  font-size: 0.9rem;
+  color: var(--fg);
 }
 
-footer {
-  text-align: right;
-  padding: 0.75rem 1rem;
-  color: #555;
-  font-size: 0.875rem;
+body {
+  color: var(--fg);
+  font-family: 'Inter', sans-serif;
 }
 
 #startup-screen {
