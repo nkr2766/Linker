@@ -29,10 +29,17 @@ window.APP_CONFIG = {
   welcomeBannerFade:    300,
   loaderSpinnerDuration:300,
 
+  // Global animation + size configs
+  ANIMATION_TIMING:      '0.6s',
+  SIZE_CONFIG:           '18px',
+
   // Theme toggle icon size
   toggleIconSize:       '1.5rem',
 
   // App version
   version:              'v26'
 };
+// Export for module usage
+export const ANIMATION_TIMING = window.APP_CONFIG.ANIMATION_TIMING;
+export const SIZE_CONFIG = window.APP_CONFIG.SIZE_CONFIG;
 // ─────────────────────────

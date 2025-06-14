@@ -1,3 +1,13 @@
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+:root {
+  --animation-duration: 0.3s;
+  --element-size: 16px;
+}
+
 :root[data-theme="light"] {
   --bg-start: #f5f7fa;
   --bg-end:   #c3cfe2;
@@ -28,7 +38,7 @@ body {
   pointer-events: all;
 }
 #startup-logo {
-  animation: logoGrow 1200ms ease-out forwards;
+  animation: logoGrow var(--animation-duration) ease-out forwards;
 }
 @keyframes logoGrow {
   0%   { opacity: 0; transform: scale(0.5); }
@@ -199,6 +209,7 @@ input:focus, textarea:focus, select:focus {
     var(--bg-start) 100%
   );
   color: var(--fg);
+  font-size: var(--element-size);
   border-radius: 1rem;
   box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
