@@ -1,4 +1,5 @@
 // Load external configuration
+import { ANIMATION_TIMING, SIZE_CONFIG } from './config.js';
 const CONFIG = window.APP_CONFIG || {};
 console.debug('[CONFIG]', CONFIG);
 
@@ -309,6 +310,8 @@ document.addEventListener('DOMContentLoaded', () => {
   rootStyles.setProperty("--card-end", CONFIG.cardGradientLight[1]);
   rootStyles.setProperty("--accent", CONFIG.buttonHoverAccent);
   rootStyles.setProperty("--btn-bg", CONFIG.buttonNeutralBg);
+  rootStyles.setProperty("--animation-duration", ANIMATION_TIMING);
+  rootStyles.setProperty("--element-size", SIZE_CONFIG);
   if (CONFIG.buttonNeutralFg) rootStyles.setProperty("--btn-fg", CONFIG.buttonNeutralFg);
 
 

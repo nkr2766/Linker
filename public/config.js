@@ -1,5 +1,8 @@
 // public/config.js
 // ────────── App Configuration ─────────
+export const ANIMATION_TIMING = '0.3s';
+export const SIZE_CONFIG = '16px';
+
 window.APP_CONFIG = {
   // Splash screen
   splashLogoScale:      0.85,

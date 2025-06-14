@@ -1,3 +1,12 @@
+:root {
+  --animation-duration: 0.3s;
+  --element-size: 16px;
+}
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 :root[data-theme="light"] {
   --bg-start: #f5f7fa;
   --bg-end:   #c3cfe2;
@@ -230,6 +239,11 @@ body::before {
 @keyframes moveGradient {
   from { background-position: 0% 50%; }
   to   { background-position: 100% 50%; }
+}
+
+.some-element {
+  animation-duration: var(--animation-duration);
+  font-size: var(--element-size);
 }
 
 
