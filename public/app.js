@@ -308,17 +308,17 @@ function initApp() {
             hideAllScreens();
             loginScreen.classList.remove("hidden");
             loginScreen.classList.add("flex");
-            resetBtn.classList.add("hidden");
+            resetBtn.style.display = "none";
         } else {
             const email = firebaseUser.email.toLowerCase();
             if (email === ADMIN_EMAIL.toLowerCase()) {
                 // Admin signed in
                 showAdminPanel();
-                resetBtn.classList.remove("hidden");
+                resetBtn.style.display = "block";
             } else {
                 // Regular user signed in
                 hideAllScreens();
-                resetBtn.classList.remove("hidden");
+                resetBtn.style.display = "block";
                 startAppFlow(firebaseUser.email);
             }
         }
@@ -434,7 +434,7 @@ adminLogoutBtn.addEventListener("click", async () => {
         hideAllScreens();
         loginScreen.classList.remove("hidden");
         loginScreen.classList.add("flex");
-        resetBtn.classList.add("hidden");
+        resetBtn.style.display = "none";
     } catch (err) {
         console.error("Error signing out admin:", err);
     }

@@ -1,4 +1,4 @@
-<!-- v24 (Command Center Config) -->
+<!-- v25 -->
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 
@@ -28,8 +28,16 @@
 
 </head>
 
-<body>
-  <header class="fixed top-0 inset-x-0 z-40 flex justify-between items-center p-6">
+<body class="flex flex-col min-h-full">
+  <!-- hidden by default, we'll show it when needed -->
+  <button
+    id="reset-btn"
+    style="display:none;position:fixed;bottom:1rem;right:1rem;z-index:50;"
+  >
+    🔄 Reset
+  </button>
+
+  <header>
     <img src="/images/73294b6e-8bc4-428f-ad24-a303947fb853.png"
          alt="Linker Logo" style="height: 2.5rem; width: auto;" />
     <button id="theme-toggle" aria-label="Toggle theme">🌗</button>
@@ -48,29 +56,23 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- C) LOGIN SCREEN (Landing Page with three big buttons)                        -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="login-screen" class="hidden flex-col items-center justify-center min-h-screen text-center space-y-6 px-4">
-        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-            <h1 class="text-2xl font-semibold text-gray-900 mb-6">Welcome to Linker</h1>
-            <button id="btn-admin-login"
-                class="w-full py-3 mb-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
-                Admin Login
-            </button>
-            <button id="btn-user-login"
-                class="w-full py-3 mb-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
-                User Login
-            </button>
-            <button id="btn-use-access-code"
-                class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
-                Sign Up with Access Code
-            </button>
-        </div>
+  <div id="login-screen" class="screen hidden">
+    <h1>Welcome to Linker</h1>
+    <div class="buttons">
+      <button id="btn-admin-login" class="py-3 px-6 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">Admin Login</button>
+      <button id="btn-user-login" class="py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">User Login</button>
+      <button id="btn-use-access-code" class="py-3 px-6 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">Sign Up with Access Code</button>
     </div>
+  </div>
+
+  <!-- repeat the "class=\"screen hidden\"" wrapper on every full-page <div> 
+       (#admin-panel, #user-login-screen, #user-signup-screen, 
+        #welcome-screen, #form-screen, #loader-screen, #linktree-screen) -->
 
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- D) ADMIN LOGIN SCREEN                                                         -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="admin-login-screen"
-        class="hidden flex-col items-center justify-center min-h-screen text-center space-y-4 px-4">
+    <div id="admin-login-screen" class="screen hidden">
         <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
             <h2 class="text-2xl font-semibold text-gray-900 mb-4">Admin Login</h2>
             <form id="admin-login-form" class="space-y-4">
@@ -93,7 +95,7 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- E) ADMIN PANEL (Create Codes / Build Form / Logout)                           -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="admin-panel" class="hidden flex-col items-center justify-center min-h-screen space-y-6 px-4">
+    <div id="admin-panel" class="screen hidden">
         <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6">
             <h2 class="text-2xl font-semibold text-gray-900">Admin Panel</h2>
 
@@ -125,8 +127,7 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- F) USER LOGIN SCREEN                                                          -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="user-login-screen"
-        class="hidden flex-col items-center justify-center min-h-screen text-center space-y-4 px-4">
+    <div id="user-login-screen" class="screen hidden">
         <h2 class="text-2xl font-semibold text-gray-900 mb-4">User Login</h2>
         <form id="user-login-form" class="space-y-4">
             <p id="user-error" class="text-red-500 text-sm hidden" role="alert"></p>
@@ -148,8 +149,7 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- G) USER SIGNUP SCREEN (Access Code → Email → Password)                        -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="user-signup-screen"
-        class="hidden flex-col items-center justify-center min-h-screen text-center space-y-4 px-4">
+    <div id="user-signup-screen" class="screen hidden">
         <form id="user-signup-form" class="space-y-4">
             <p id="signup-code-error" class="text-red-500 text-sm hidden" role="alert"></p>
             <input id="signup-code" type="text" placeholder="Enter access code" autocomplete="off"
@@ -173,8 +173,7 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- H) WELCOME SCREEN (After Login, Before Builder)                               -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="welcome-screen"
-        class="hidden fixed inset-0 z-40 flex items-center justify-center bg-black bg-opacity-80 text-center px-4">
+    <div id="welcome-screen" class="screen hidden fixed inset-0 z-40 bg-black bg-opacity-80">
         <h2 id="welcome-text" class="text-2xl font-semibold text-white opacity-0 transition-opacity duration-500">
             <!-- Filled dynamically -->
         </h2>
@@ -183,7 +182,7 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- I) BUILDER FORM SCREEN (Upload Picture / Handle / Tagline / Links)            -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-<div id="form-screen" class="hidden flex items-center justify-center min-h-screen pt-6 px-4 overflow-y-auto">
+<div id="form-screen" class="screen hidden overflow-y-auto pt-6 px-4">
   <div class="card-wrapper w-full max-w-md bg-white/75 backdrop-blur-md rounded-2xl shadow-lg p-6 space-y-6">
     <h2 class="text-2xl font-semibold text-gray-900">Build Your Linktree</h2>
             <p class="text-gray-800">
@@ -268,12 +267,12 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- J) LOADER SCREEN (Spinning Icon)                                             -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="loader-screen" class="hidden flex-col items-center justify-center min-h-screen bg-gray-900 bg-opacity-50">
+    <div id="loader-screen" class="screen hidden bg-gray-900 bg-opacity-50">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-green-400"></div>
     </div>
     <!-- K) LINKTREE OUTPUT SCREEN (Profile + Links + Back / Download)                -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="linktree-screen" class="hidden flex-col items-center justify-center min-h-screen px-4">
+    <div id="linktree-screen" class="screen hidden px-4">
         <div id="output-card" class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6 animate-fadeInUp">
             <div class="flex flex-col items-center space-y-4">
                 <img id="output-profile-pic" src="" alt="Profile Picture"
@@ -297,7 +296,7 @@
     <!-- L) APP.JS (All the logic—auth, Firestore, UI flow, etc.)                      -->
     <!--────────────────────────────────────────────────────────────────────────────────-->
     <script type="module" src="app.js"></script>
-    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500"></div>
-</body>
+    <footer class="version">v25</footer>
+  </body>
 
 </html>
