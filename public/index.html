@@ -1,4 +1,4 @@
-<!-- v24 (Command Center Config) -->
+<!-- v25 -->
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 
@@ -28,7 +28,7 @@
 
 </head>
 
-<body>
+<body class="flex flex-col min-h-full">
   <!-- hidden by default, we'll show it when needed -->
   <button
     id="reset-btn"
@@ -37,7 +37,7 @@
     🔄 Reset
   </button>
 
-  <header class="fixed top-0 inset-x-0 z-40 flex justify-between items-center p-6">
+  <header>
     <img src="/images/73294b6e-8bc4-428f-ad24-a303947fb853.png"
          alt="Linker Logo" style="height: 2.5rem; width: auto;" />
     <button id="theme-toggle" aria-label="Toggle theme">🌗</button>
@@ -56,23 +56,14 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- C) LOGIN SCREEN (Landing Page with three big buttons)                        -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
-    <div id="login-screen" class="hidden flex-col items-center justify-center min-h-screen text-center space-y-6 px-4">
-        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-            <h1 class="text-2xl font-semibold text-gray-900 mb-6">Welcome to Linker</h1>
-            <button id="btn-admin-login"
-                class="w-full py-3 mb-4 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
-                Admin Login
-            </button>
-            <button id="btn-user-login"
-                class="w-full py-3 mb-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
-                User Login
-            </button>
-            <button id="btn-use-access-code"
-                class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
-                Sign Up with Access Code
-            </button>
-        </div>
+  <main id="login-screen" class="hidden">
+    <h1>Welcome to Linker</h1>
+    <div class="button-group">
+      <button id="btn-admin-login" class="py-3 px-6 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">Admin Login</button>
+      <button id="btn-user-login" class="py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">User Login</button>
+      <button id="btn-use-access-code" class="py-3 px-6 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">Sign Up with Access Code</button>
     </div>
+  </main>
 
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <!-- D) ADMIN LOGIN SCREEN                                                         -->
@@ -305,7 +296,7 @@
     <!-- L) APP.JS (All the logic—auth, Firestore, UI flow, etc.)                      -->
     <!--────────────────────────────────────────────────────────────────────────────────-->
     <script type="module" src="app.js"></script>
-    <div id="version" class="fixed bottom-2 right-2 text-xs text-gray-500"></div>
-</body>
+    <footer>v25</footer>
+  </body>
 
 </html>
