@@ -745,58 +745,41 @@ document.addEventListener('DOMContentLoaded', () => {
 // ───────────────────────────────────────────────────────────────────────────────
 // H) initApp(): Listen for Auth state changes → show the correct “screen”        //
 // ───────────────────────────────────────────────────────────────────────────────
-  function initApp() {
-      onAuthStateChanged(auth, (user) => {
-          console.debug('[Auth] state changed start', user);
-          const formScreen = document.getElementById('form-screen');
-          console.debug('[Auth] lookup #form-screen →', formScreen);
-          const outputScreen = document.getElementById('output-screen');
-          console.debug('[Auth] lookup #output-screen →', outputScreen);
-          const builderScreen = document.getElementById('builder-screen');
-          console.debug('[Auth] lookup #builder-screen →', builderScreen);
-          const displayNameEl = document.getElementById('display-username');
-          console.debug('[Auth] lookup #display-username →', displayNameEl);
-          if (user) {
-              if (formScreen) {
-                  formScreen.classList.add('hidden');
-              } else {
-                  console.error('[Auth Error] #form-screen not found; user=', user);
-              }
-              if (outputScreen) {
-                  outputScreen.classList.add('hidden');
-              } else {
-                  console.error('[Auth Error] #output-screen not found; user=', user);
-              }
-              if (builderScreen) {
-                  builderScreen.classList.remove('hidden');
-              } else {
-                  console.error('[Auth Error] #builder-screen not found; user=', user);
-              }
-              if (displayNameEl) {
-                  displayNameEl.textContent = user.displayName || user.email;
-              } else {
-                  console.error('[Auth Error] #display-username not found; user=', user);
-              }
-          } else {
-              if (formScreen) {
-                  formScreen.classList.remove('hidden');
-              } else {
-                  console.error('[Auth Error] #form-screen not found; user=', user);
-              }
-              if (outputScreen) {
-                  outputScreen.classList.add('hidden');
-              } else {
-                  console.error('[Auth Error] #output-screen not found; user=', user);
-              }
-              if (builderScreen) {
-                  builderScreen.classList.add('hidden');
-              } else {
-                  console.error('[Auth Error] #builder-screen not found; user=', user);
-              }
-          }
-          console.debug('[Auth] state changed end');
-      });
-  }
+function initApp() {
+    onAuthStateChanged(auth, (user) => {
+        console.debug('[Auth] state changed', user);
+        const root = document.getElementById('app-root');
+        if (!root) {
+            console.error('[Auth] #app-root not found');
+            return;
+        }
+        if (user) {
+            root.innerHTML = `
+                <div id="dashboard" class="p-4 space-y-4">
+                    <h2>Welcome, ${user.displayName || user.email}</h2>
+                    <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
+                </div>`;
+            document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
+        } else {
+            root.innerHTML = `
+                <div id="login-form" class="p-4 space-y-4 max-w-sm mx-auto">
+                    <input id="login-email" type="email" placeholder="Email" class="border p-2 w-full" />
+                    <input id="login-password" type="password" placeholder="Password" class="border p-2 w-full" />
+                    <button id="login-submit" class="bg-blue-500 text-white px-4 py-2 rounded w-full">Login</button>
+                </div>`;
+            document.getElementById('login-submit')?.addEventListener('click', async () => {
+                const email = document.getElementById('login-email')?.value.trim();
+                const pass = document.getElementById('login-password')?.value.trim();
+                if (!email || !pass) return;
+                try {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                } catch (err) {
+                    console.error('[Auth] login failed', err);
+                }
+            });
+        }
+    });
+}
 
 // ───────────────────────────────────────────────────────────────────────────────
 // N) MAIN APP FLOW (After any successful login)                                  //
