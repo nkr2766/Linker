@@ -234,11 +234,10 @@ document.addEventListener('DOMContentLoaded', () => {
   console.debug('[CONFIG]', CONFIG);
 
   const lookup = (id) => {
-    console.debug(`[Debug] Looking up #${id}`);
     const el = document.getElementById(id);
-    console.debug(`[Debug] getElementById("${id}") →`, el);
+    console.debug(`[Lookup] #${id} →`, el);
     if (!el) {
-      console.error(`[Debug] Missing element #${id} – skipping related logic`);
+      console.error(`[Error] Element #${id} not found, skipping related logic`);
     }
     return el;
   };
@@ -740,7 +739,7 @@ document.addEventListener('DOMContentLoaded', () => {
       location.reload();
     });
   }
-  console.debug('[Init] All guarded lookups complete; no null.classList calls remain');
+  console.debug('[Init] DOM ready and all guarded lookups complete');
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
