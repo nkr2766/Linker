@@ -1,0 +1,12 @@
+{
+  "name": "linker",
+  "version": "1.0.0",
+  "description": "Linker app",
+  "scripts": {
+    "test": "echo \"No tests configured yet\" && exit 0"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {}
+}

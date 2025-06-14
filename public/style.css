@@ -1,65 +1,47 @@
-/* style.css */
-/* ← THEME PALETTE VARIABLES → */
 :root[data-theme="light"] {
-  --bg: #e0f8f7;            /* mint-light */
-  --fg: #1a1f2b;            /* charcoal */
-  --accent: #00d2ff;        /* neon-blue */
-  --accent-dark: #0099cc;   /* ocean-dark */
-  --border: rgba(26,31,43,0.1);
-  --shadow: rgba(26,31,43,0.15);
+  --bg-start: #f5f7fa;
+  --bg-end:   #c3cfe2;
+  --fg:       #1a1f2b;
+  --accent:   #00d2ff;
 }
 :root[data-theme="dark"] {
-  --bg: #1a1f2b;
-  --fg: #e0f8f7;
-  --accent: #00d2ff;
-  --accent-dark: #0099cc;
-  --border: rgba(224,248,247,0.2);
-  --shadow: rgba(0,0,0,0.3);
+  --bg-start: #2c3e50;
+  --bg-end:   #4ca1af;
+  --fg:       #e0f8f7;
+  --accent:   #00d2ff;
 }
 body {
   margin: 0;
-  background: var(--bg);
+  background: linear-gradient(135deg, var(--bg-start), var(--bg-end));
   color: var(--fg);
   font-family: 'Inter', sans-serif;
-  overflow-x: hidden;
 }
 
-/* ──────────────────────────────────────────────────────────────────────────── */
-/* A) STARTUP FADE KEYFRAMES (1.5 s total)                                      */
-/* ──────────────────────────────────────────────────────────────────────────── */
-@keyframes fade-bg {
-    0% {
-        background-color: #000000;
-    }
-
-    100% {
-        background-color: transparent;
-    }
+#startup-screen {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: all;
 }
-
-@keyframes slide-text {
-    0% {
-        transform: translateY(0);
-        color: #ffffff;
-        opacity: 1;
-    }
-
-    100% {
-        transform: translateY(-40px);
-        color: #000000;
-        opacity: 0;
-    }
+#startup-logo {
+  animation: logoGrow 1200ms ease-out forwards;
 }
-
-/* Classes we will add via JS to kick off the animations */
-.fade-bg-out {
-    animation: fade-bg 1.5s ease-in-out forwards;
+@keyframes logoGrow {
+  0%   { opacity: 0; transform: scale(0.5); }
+  80%  { opacity: 1; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
 }
-
-.slide-text-up {
-    animation: slide-text 1.5s ease-in-out forwards;
+#startup-screen.reveal {
+  animation: fadeOut 500ms ease-in-out 1200ms forwards;
 }
-
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
 /* ──────────────────────────────────────────────────────────────────────────── */
 /* B) UTILITY: hide vs. flex (JS toggles these)                                */
 /* ──────────────────────────────────────────────────────────────────────────── */
@@ -76,7 +58,7 @@ body {
 /* ──────────────────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent-dark); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
 /* ──────────────────────────────────────────────────────────────────────────── */
 /* D) FOCUS STYLES                                                             */
@@ -150,26 +132,33 @@ body {
 }
 
 /* Buttons & Links */
-button,
-.btn-reset, .btn-remove, #generate-btn, #add-link-btn, .link-btn {
-  background: var(--accent);
-  color: #fff;
-  border: none;
+button, .btn-reset, .btn-remove, #generate-btn, #add-link-btn {
+  background-color: rgba(255,255,255,0.85);
+  color: var(--fg);
+  border: 1px solid rgba(255,255,255,0.4);
   border-radius: 0.75rem;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
-  text-transform: uppercase;
-  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-  cursor: pointer;
+  background-image: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.85) 50%,
+    var(--accent) 50%
+  );
+  background-size: 200% 100%;
+  background-position: 0% 0%;
+  transition: background-position 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 button:hover,
-.btn-reset:hover, .btn-remove:hover, #generate-btn:hover, #add-link-btn:hover, .link-btn:hover {
-  background: var(--accent-dark);
+.btn-reset:hover, .btn-remove:hover,
+#generate-btn:hover, #add-link-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 20px var(--shadow);
+  background-position: 100% 0%;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  color: #fff;
 }
 button:focus,
-.btn-reset:focus, .btn-remove:focus, #generate-btn:focus, #add-link-btn:focus, .link-btn:focus {
+.btn-reset:focus, .btn-remove:focus,
+#generate-btn:focus, #add-link-btn:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(0,210,255,0.5);
 }
@@ -204,17 +193,20 @@ input:focus, textarea:focus, select:focus {
 
 .card-wrapper,
 #output-card {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    border-radius: 1rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: linear-gradient(
+    135deg,
+    var(--bg-end) 0%,
+    var(--bg-start) 100%
+  );
+  color: var(--fg);
+  border-radius: 1rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .card-wrapper:hover,
 #output-card:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 15px 45px rgba(0,0,0,0.2);
 }
 
 @keyframes fadeInUp {
