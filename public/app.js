@@ -209,6 +209,23 @@ function escapeHTML(str) {
         .replace(/'/g, "&#39;");
 }
 
+// Helper utilities to safely modify class lists without risking null errors
+function addCls(el, ...cls) {
+    if (el) {
+        el.classList.add(...cls);
+    } else {
+        console.warn('[Warning] element missing – cannot add classes', cls);
+    }
+}
+
+function removeCls(el, ...cls) {
+    if (el) {
+        el.classList.remove(...cls);
+    } else {
+        console.warn('[Warning] element missing – cannot remove classes', cls);
+    }
+}
+
 // ───────────────────────────────────────────────────────────────────────────────
 //                 Then FORCE sign-out any existing user, then call initApp()
 
@@ -368,11 +385,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnAdminLogin) {
     btnAdminLogin.addEventListener('click', () => {
       hideAllScreens();
-      adminLoginScreen.classList.remove('hidden');
-      adminLoginScreen.classList.add('flex');
-      adminError.classList.add('hidden');
-      adminEmailInput.value = '';
-      adminPasswordInput.value = '';
+      removeCls(adminLoginScreen, 'hidden');
+      addCls(adminLoginScreen, 'flex');
+      addCls(adminError, 'hidden');
+      if (adminEmailInput) adminEmailInput.value = '';
+      if (adminPasswordInput) adminPasswordInput.value = '';
     });
   } else {
     console.error('missing #btn-admin-login');
@@ -381,24 +398,24 @@ document.addEventListener('DOMContentLoaded', () => {
   if (btnUserLogin) {
     btnUserLogin.addEventListener('click', () => {
       hideAllScreens();
-      userLoginScreen.classList.remove('hidden');
-      userLoginScreen.classList.add('flex');
-      userError.classList.add('hidden');
-      userEmailInput.value = '';
-      userPasswordInput.value = '';
+      removeCls(userLoginScreen, 'hidden');
+      addCls(userLoginScreen, 'flex');
+      addCls(userError, 'hidden');
+      if (userEmailInput) userEmailInput.value = '';
+      if (userPasswordInput) userPasswordInput.value = '';
     });
   }
 
   if (btnUseAccessCode) {
     btnUseAccessCode.addEventListener('click', () => {
       hideAllScreens();
-      userSignupScreen.classList.remove('hidden');
-      userSignupScreen.classList.add('flex');
-      signupCodeError.classList.add('hidden');
-      signupEmailInput.value = '';
-      signupPasswordInput.value = '';
-      signupCodeInput.value = '';
-      signupSuccess.classList.add('hidden');
+      removeCls(userSignupScreen, 'hidden');
+      addCls(userSignupScreen, 'flex');
+      addCls(signupCodeError, 'hidden');
+      if (signupEmailInput) signupEmailInput.value = '';
+      if (signupPasswordInput) signupPasswordInput.value = '';
+      if (signupCodeInput) signupCodeInput.value = '';
+      addCls(signupSuccess, 'hidden');
     });
   }
 
@@ -413,12 +430,16 @@ document.addEventListener('DOMContentLoaded', () => {
           showAdminPanel();
         } catch (err) {
           console.error('Admin signIn error:', err);
-          adminError.textContent = 'Authentication error—check console.';
-          adminError.classList.remove('hidden');
+          if (adminError) {
+            adminError.textContent = 'Authentication error—check console.';
+            removeCls(adminError, 'hidden');
+          }
         }
       } else {
-        adminError.textContent = 'Incorrect admin credentials.';
-        adminError.classList.remove('hidden');
+        if (adminError) {
+          adminError.textContent = 'Incorrect admin credentials.';
+          removeCls(adminError, 'hidden');
+        }
       }
     });
   }
@@ -442,14 +463,18 @@ document.addEventListener('DOMContentLoaded', () => {
       const docRef = doc(db, 'codes', code);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
-        adminCodeSuccess.textContent = `Code “${code}” already exists.`;
-        adminCodeSuccess.classList.remove('hidden');
+        if (adminCodeSuccess) {
+          adminCodeSuccess.textContent = `Code “${code}” already exists.`;
+          removeCls(adminCodeSuccess, 'hidden');
+        }
       } else {
         await setDoc(docRef, { createdAt: serverTimestamp() });
-        adminCodeSuccess.textContent = `Code “${code}” created!`;
-        adminCodeSuccess.classList.remove('hidden');
+        if (adminCodeSuccess) {
+          adminCodeSuccess.textContent = `Code “${code}” created!`;
+          removeCls(adminCodeSuccess, 'hidden');
+        }
       }
-      newAccessCodeInput.value = '';
+      if (newAccessCodeInput) newAccessCodeInput.value = '';
     });
   }
 
@@ -466,13 +491,13 @@ document.addEventListener('DOMContentLoaded', () => {
         await signOut(auth);
         hideAllScreens();
         if (loginScreen) {
-          loginScreen.classList.remove('hidden');
-          loginScreen.classList.add('flex');
+          removeCls(loginScreen, 'hidden');
+          addCls(loginScreen, 'flex');
         } else {
           console.warn('[Debug] #login-screen not found – skipping');
         }
         if (resetBtn) {
-          resetBtn.classList.add('hidden');
+          addCls(resetBtn, 'hidden');
         } else {
           console.warn('[Debug] #reset-btn not found – skipping');
         }
@@ -487,8 +512,10 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = userEmailInput.value.trim().toLowerCase();
       const pass = userPasswordInput.value.trim();
       if (!email || !pass) {
-        userError.textContent = 'Email & password are required.';
-        userError.classList.remove('hidden');
+        if (userError) {
+          userError.textContent = 'Email & password are required.';
+          removeCls(userError, 'hidden');
+        }
         return;
       }
       try {
@@ -497,8 +524,10 @@ document.addEventListener('DOMContentLoaded', () => {
         startAppFlow(email);
       } catch (err) {
         console.error('User login error:', err);
-        userError.textContent = 'Invalid email or password.';
-        userError.classList.remove('hidden');
+        if (userError) {
+          userError.textContent = 'Invalid email or password.';
+          removeCls(userError, 'hidden');
+        }
       }
     });
   }
@@ -521,30 +550,36 @@ document.addEventListener('DOMContentLoaded', () => {
       const email = signupEmailInput.value.trim().toLowerCase();
       const pass = signupPasswordInput.value.trim();
       if (!code || !email || !pass) {
-        signupCodeError.textContent = 'All fields are required.';
-        signupCodeError.classList.remove('hidden');
+        if (signupCodeError) {
+          signupCodeError.textContent = 'All fields are required.';
+          removeCls(signupCodeError, 'hidden');
+        }
         return;
       }
       const docRef = doc(db, 'codes', code);
       const docSnap = await getDoc(docRef);
       if (!docSnap.exists()) {
-        signupCodeError.textContent = 'Invalid or expired access code.';
-        signupCodeError.classList.remove('hidden');
+        if (signupCodeError) {
+          signupCodeError.textContent = 'Invalid or expired access code.';
+          removeCls(signupCodeError, 'hidden');
+        }
         return;
       }
       try {
         await createUserWithEmailAndPassword(auth, email, pass);
         await deleteDoc(docRef);
-        signupCodeError.classList.add('hidden');
-        signupSuccess.classList.remove('hidden');
+        addCls(signupCodeError, 'hidden');
+        removeCls(signupSuccess, 'hidden');
         setTimeout(() => {
           hideAllScreens();
           startAppFlow(email);
         }, SIGNUP_SUCCESS_DELAY_MS);
       } catch (err) {
         console.error('Error creating user:', err);
-        signupCodeError.textContent = 'Signup failed—email may already be in use.';
-        signupCodeError.classList.remove('hidden');
+        if (signupCodeError) {
+          signupCodeError.textContent = 'Signup failed—email may already be in use.';
+          removeCls(signupCodeError, 'hidden');
+        }
       }
     });
   }
@@ -569,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (linkRows.length < 10) addLinkRow();
       if (linkRows.length >= 10) {
         addLinkBtn.setAttribute('disabled', 'true');
-        addLinkBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        addCls(addLinkBtn, 'opacity-50', 'cursor-not-allowed');
       }
       updateGenerateButtonState();
     });
@@ -579,12 +614,12 @@ document.addEventListener('DOMContentLoaded', () => {
     profilePicFileInput.addEventListener('change', () => {
       const file = profilePicFileInput.files[0];
       if (file && file.type.startsWith('image/')) {
-        errorProfilePic.classList.add('hidden');
+        addCls(errorProfilePic, 'hidden');
         const reader = new FileReader();
         reader.onload = e => { profilePicDataURL = e.target.result; };
         reader.readAsDataURL(file);
       } else {
-        errorProfilePic.classList.remove('hidden');
+        removeCls(errorProfilePic, 'hidden');
         profilePicDataURL = '';
       }
       updateGenerateButtonState();
@@ -619,13 +654,13 @@ document.addEventListener('DOMContentLoaded', () => {
         formUsernameInput.value = val;
       }
       if (isValidHandle(val)) {
-        formUsernameInput.classList.remove('border-red-500');
-        formUsernameInput.classList.add('border-green-500');
-        errorUsername.classList.add('hidden');
+        removeCls(formUsernameInput, 'border-red-500');
+        addCls(formUsernameInput, 'border-green-500');
+        addCls(errorUsername, 'hidden');
       } else {
-        formUsernameInput.classList.remove('border-green-500');
-        formUsernameInput.classList.add('border-red-500');
-        errorUsername.classList.remove('hidden');
+        removeCls(formUsernameInput, 'border-green-500');
+        addCls(formUsernameInput, 'border-red-500');
+        removeCls(errorUsername, 'hidden');
       }
       updateGenerateButtonState();
     });
@@ -659,11 +694,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const tmp = { ...data, profilePic: '', cardImage: '' };
         localStorage.setItem(STORAGE_KEY_LINKTREE, JSON.stringify(tmp));
       }
-      loaderScreen.classList.remove('hidden');
-      loaderScreen.classList.add('flex');
+      removeCls(loaderScreen, 'hidden');
+      addCls(loaderScreen, 'flex');
       await delay(CONFIG.loaderSpinnerDuration);
-      loaderScreen.classList.add('hidden');
-      loaderScreen.classList.remove('flex');
+      addCls(loaderScreen, 'hidden');
+      removeCls(loaderScreen, 'flex');
       renderOutput(data);
     });
   }
@@ -705,7 +740,7 @@ document.addEventListener('DOMContentLoaded', () => {
       location.reload();
     });
   }
-  console.debug('[Debug] Initialization complete');
+  console.debug('[Init] All guarded lookups complete; no null.classList calls remain');
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -755,21 +790,21 @@ document.addEventListener('DOMContentLoaded', () => {
 // ───────────────────────────────────────────────────────────────────────────────
 async function startAppFlow(currentEmail) {
     hideAllScreens();
-    welcomeScreen.classList.remove("hidden");
-    welcomeScreen.classList.add("flex");
+    removeCls(welcomeScreen, "hidden");
+    addCls(welcomeScreen, "flex");
 
     const h = new Date().getHours();
     const greet = h < 12 ? "Good morning" : h < 18 ? "Good afternoon" : "Good evening";
     welcomeText.textContent = `${greet}, ${currentEmail}! Ready to Link?`;
 
     // Fade banner in/out:
-    welcomeText.classList.remove("opacity-0");    // show it
+    removeCls(welcomeText, "opacity-0");    // show it
     await delay(CONFIG.welcomeBannerDuration);                            // keep it visible 2.5s
-    welcomeText.classList.add("opacity-0");       // fade it out
+    addCls(welcomeText, "opacity-0");       // fade it out
     await delay(CONFIG.welcomeBannerFade);                             // wait 0.3s for fade to complete
     // Hide the welcome overlay before proceeding
-    welcomeScreen.classList.add("hidden");
-    welcomeScreen.classList.remove("flex");
+    addCls(welcomeScreen, "hidden");
+    removeCls(welcomeScreen, "flex");
 
     // Now either show loader + output or show builder form
     let savedData = null;
@@ -780,16 +815,16 @@ async function startAppFlow(currentEmail) {
         localStorage.removeItem(STORAGE_KEY_LINKTREE);
     }
     if (savedData) {
-        loaderScreen.classList.remove("hidden");
-        loaderScreen.classList.add("flex");
+        removeCls(loaderScreen, "hidden");
+        addCls(loaderScreen, "flex");
         await delay(CONFIG.loaderSpinnerDuration);                           // spinner for 0.3s
-        loaderScreen.classList.add("hidden");
-        loaderScreen.classList.remove("flex");
+        addCls(loaderScreen, "hidden");
+        removeCls(loaderScreen, "flex");
         renderOutput(savedData);
     } else {
         hideAllScreens();
-        formScreen.classList.remove('hidden');
-        formScreen.classList.add('flex');
+        removeCls(formScreen, 'hidden');
+        addCls(formScreen, 'flex');
     }
 }
 
@@ -799,13 +834,15 @@ async function startAppFlow(currentEmail) {
 function updateFormGradient() {
     const start = gradientStartInput.value || "#a7f3d0";
     const end = gradientEndInput.value || "#6ee7b7";
-    formScreen.style.background = `linear-gradient(to bottom right, ${start}, ${end})`;
+    if (formScreen) {
+        formScreen.style.background = `linear-gradient(to bottom right, ${start}, ${end})`;
+    }
 }
 
 function showBuilderForm(prefillData = null) {
     hideAllScreens();
-    formScreen.classList.remove("hidden");
-    formScreen.classList.add("flex");
+    removeCls(formScreen, "hidden");
+    addCls(formScreen, "flex");
 
     updateFormGradient();
 
@@ -817,9 +854,9 @@ function showBuilderForm(prefillData = null) {
     cardImageInput.value = "";
 
     // Hide errors
-    errorProfilePic.classList.add("hidden");
-    errorUsername.classList.add("hidden");
-    errorLinks.classList.add("hidden");
+    addCls(errorProfilePic, "hidden");
+    addCls(errorUsername, "hidden");
+    addCls(errorLinks, "hidden");
 
     if (prefillData) {
         // Prefill picture (we’ll use data URL)
@@ -946,8 +983,10 @@ function addLinkRow(prefill = null) {
         linksWrapper.removeChild(rowDiv);
         linkRows = linkRows.filter((r) => r.container !== rowDiv);
         if (linkRows.length < 10) {
-            addLinkBtn.removeAttribute("disabled");
-            addLinkBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            if (addLinkBtn) {
+                addLinkBtn.removeAttribute("disabled");
+                removeCls(addLinkBtn, "opacity-50", "cursor-not-allowed");
+            }
         }
         updateGenerateButtonState();
     });
@@ -1061,18 +1100,22 @@ function updateGenerateButtonState() {
     });
 
     if (anyLinkValid) {
-        errorLinks.classList.add("hidden");
+        addCls(errorLinks, "hidden");
     } else {
-        errorLinks.classList.remove("hidden");
+        removeCls(errorLinks, "hidden");
     }
 
     if (picValid && unameValid && anyLinkValid) {
-        generateBtn.removeAttribute("disabled");
-        generateBtn.classList.remove("bg-gray-600", "text-gray-300", "cursor-not-allowed");
-        generateBtn.classList.add("bg-emerald-500", "text-white", "hover:bg-emerald-600");
+        if (generateBtn) {
+            generateBtn.removeAttribute("disabled");
+            removeCls(generateBtn, "bg-gray-600", "text-gray-300", "cursor-not-allowed");
+            addCls(generateBtn, "bg-emerald-500", "text-white", "hover:bg-emerald-600");
+        }
     } else {
-        generateBtn.setAttribute("disabled", "true");
-        generateBtn.classList.add("bg-gray-600", "text-gray-300", "cursor-not-allowed");
+        if (generateBtn) {
+            generateBtn.setAttribute("disabled", "true");
+            addCls(generateBtn, "bg-gray-600", "text-gray-300", "cursor-not-allowed");
+        }
     }
 }
 
@@ -1095,19 +1138,19 @@ function renderOutput(data) {
     }
     if (outputProfilePic) {
         if (data.profilePic) {
-            outputProfilePic.src = data.profilePic;
-            outputProfilePic.classList.remove("hidden");
-        } else {
-            outputProfilePic.classList.add("hidden");
-        }
+        outputProfilePic.src = data.profilePic;
+        removeCls(outputProfilePic, "hidden");
+      } else {
+        addCls(outputProfilePic, "hidden");
+      }
     }
 
     if (outputTagline) {
         if (data.tagline?.trim()?.length > 0) {
             outputTagline.textContent = data.tagline;
-            outputTagline.classList.remove("hidden");
+            removeCls(outputTagline, "hidden");
         } else {
-            outputTagline.classList.add("hidden");
+            addCls(outputTagline, "hidden");
         }
     } else {
         console.warn('[Debug] #output-tagline not found – skipping');
@@ -1147,14 +1190,14 @@ function renderOutput(data) {
     });
 
     if (outputCard) {
-        outputCard.classList.remove("animate-pulse");
-        outputCard.classList.add("animate-fadeInUp");
+        removeCls(outputCard, "animate-pulse");
+        addCls(outputCard, "animate-fadeInUp");
     }
 
     hideAllScreens();
     if (linktreeScreen) {
-        linktreeScreen.classList.remove("hidden");
-        linktreeScreen.classList.add("flex");
+        removeCls(linktreeScreen, "hidden");
+        addCls(linktreeScreen, "flex");
     } else {
         console.warn('[Debug] #linktree-screen not found – cannot display output');
     }
