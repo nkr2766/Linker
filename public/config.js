@@ -1,6 +1,18 @@
 // public/config.js
+// base animation + sizing constants
+export const ANIMATION_TIMING = '0.3s';
+export const ELEMENT_SIZE = '16px';
+
+// Auto-increment and persist version number in localStorage
+let version = parseInt(localStorage.getItem('app_version') || '26', 10);
+version += 1;
+localStorage.setItem('app_version', version.toString());
+
+// Clearly log updated version to console
+console.log(`[Config] Current Version: v${version}`);
+
 // ────────── App Configuration ─────────
-window.APP_CONFIG = {
+export const APP_CONFIG = {
   // Splash screen
   splashLogoScale:      0.85,
   splashLogoMaxWidth:   '180px',
@@ -33,6 +45,10 @@ window.APP_CONFIG = {
   toggleIconSize:       '1.5rem',
 
   // App version
-  version:              'v26'
+  version:              `v${version}`
 };
+
+if (typeof window !== 'undefined') {
+  window.APP_CONFIG = APP_CONFIG;
+}
 // ─────────────────────────

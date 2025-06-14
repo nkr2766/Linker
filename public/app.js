@@ -1,5 +1,5 @@
 // Load external configuration
-const CONFIG = window.APP_CONFIG || {};
+import { APP_CONFIG as CONFIG, ANIMATION_TIMING, ELEMENT_SIZE } from './config.js';
 console.debug('[CONFIG]', CONFIG);
 
 // A) FIREBASE IMPORTS (Modular v11.8.1)
@@ -46,18 +46,7 @@ const db = getFirestore(app);
 
 // ───────────────────────────────────────────────────────────────────────────────
 // C) CONNECT TO EMULATORS WHEN RUNNING LOCALLY (localhost, 127.0.0.1, ::1)
-// ───────────────────────────────────────────────────────────────────────────────
-const hostname = location.hostname;
-if (
-    hostname === "localhost" ||
-    hostname === "127.0.0.1" ||
-    hostname === "::1"
-) {
-    console.log("⚙️  Connecting to Firebase emulators…");
-    connectAuthEmulator(auth, "http://localhost:9099", { disableWarnings: true });
-    connectFirestoreEmulator(db, "localhost", 8080);
-}
-
+// (logic moved to DOMContentLoaded below)
 // ───────────────────────────────────────────────────────────────────────────────
 // D) CONSTANTS & STATE
 // ───────────────────────────────────────────────────────────────────────────────
@@ -233,6 +222,28 @@ document.addEventListener('DOMContentLoaded', () => {
   console.debug('[Debug] DOMContentLoaded');
   console.debug('[CONFIG]', CONFIG);
 
+  if (typeof ANIMATION_TIMING === 'string' && ANIMATION_TIMING.trim()) {
+    document.documentElement.style.setProperty('--animation-duration', ANIMATION_TIMING);
+  } else {
+    console.warn('[Config] invalid ANIMATION_TIMING', ANIMATION_TIMING);
+  }
+  if (typeof ELEMENT_SIZE === 'string' && ELEMENT_SIZE.trim()) {
+    document.documentElement.style.setProperty('--element-size', ELEMENT_SIZE);
+  } else {
+    console.warn('[Config] invalid ELEMENT_SIZE', ELEMENT_SIZE);
+  }
+
+  if (typeof window !== 'undefined' && window.location) {
+    const hostname = window.location.hostname;
+    if (hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1') {
+      console.log('⚙️ Connecting to Firebase emulators…');
+      connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true });
+      connectFirestoreEmulator(db, 'localhost', 8080);
+    }
+  } else {
+    console.warn('[Firebase] no window.location, skipping emulator connect');
+  }
+
   const lookup = (id) => {
     const el = document.getElementById(id);
     console.debug(`[Lookup] #${id} →`, el);
@@ -245,7 +256,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // grab element references now that DOM is ready
   resetBtn = lookup('reset-btn');
   loginScreen = lookup('login-screen');
-  btnAdminLogin = lookup('btn-admin-login');
+  btnAdminLogin = document.getElementById('btn-admin-login');
+  if (!btnAdminLogin) console.warn('[Splash] #btn-admin-login not found, skipping');
   btnUserLogin = lookup('btn-user-login');
   btnUseAccessCode = lookup('btn-use-access-code');
   adminLoginScreen = lookup('admin-login-screen');
@@ -344,14 +356,18 @@ document.addEventListener('DOMContentLoaded', () => {
   // 3) Splash flow
   hideAllScreens();
   const splash = lookup('startup-screen');
-  const logo   = lookup('startup-logo');
-  if (splash && logo) {
+  const logo   = document.getElementById('startup-logo');
+  if (logo) {
+    logo.style.maxWidth = CONFIG.splashLogoMaxWidth;
+    logo.style.transform = `scale(${CONFIG.splashLogoScale})`;
+  } else {
+    console.warn('[Splash] #startup-logo not found, skipping');
+  }
+  if (splash) {
     splash.style.position = 'fixed';
     splash.style.inset = '0';
     splash.style.background = '#000';
     splash.style.zIndex = '9999';
-    logo.style.maxWidth = CONFIG.splashLogoMaxWidth;
-    logo.style.transform = `scale(${CONFIG.splashLogoScale})`;
     splash.classList.add('reveal');
     setTimeout(() => {
       splash.remove();
@@ -361,11 +377,9 @@ document.addEventListener('DOMContentLoaded', () => {
         loginScreen.classList.remove('hidden');
         loginScreen.classList.add('flex');
       }
-      initApp();
     }, CONFIG.splashGrowDuration + CONFIG.splashFadeDuration);
   } else {
-    console.warn('[Splash] missing elements, skipping to initApp');
-    initApp();
+    console.warn('[Splash] #startup-screen not found');
   }
 
   // extra listeners
@@ -377,7 +391,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/service-worker.js');
+    // navigator.serviceWorker.register('/service-worker.js');
   }
 
   // landing screen buttons
@@ -391,7 +405,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (adminPasswordInput) adminPasswordInput.value = '';
     });
   } else {
-    console.error('missing #btn-admin-login');
+    console.warn('[Splash] #btn-admin-login not found, skipping');
   }
 
   if (btnUserLogin) {
@@ -739,6 +753,7 @@ document.addEventListener('DOMContentLoaded', () => {
       location.reload();
     });
   }
+
   console.debug('[Init] DOM ready and all guarded lookups complete');
 });
 
@@ -746,40 +761,48 @@ document.addEventListener('DOMContentLoaded', () => {
 // H) initApp(): Listen for Auth state changes → show the correct “screen”        //
 // ───────────────────────────────────────────────────────────────────────────────
 function initApp() {
-    onAuthStateChanged(auth, (user) => {
-        console.debug('[Auth] state changed', user);
-        const root = document.getElementById('app-root');
-        if (!root) {
-            console.error('[Auth] #app-root not found');
-            return;
+  onAuthStateChanged(auth, (user) => {
+    const root = document.getElementById('app-root');
+    if (!root) {
+      console.error('[Auth] app-root element missing!');
+      return;
+    }
+
+    if (user) {
+      root.innerHTML = `
+        <div id="dashboard">
+          Welcome ${user.email}
+          <button id="logout-btn">Logout</button>
+        </div>`;
+
+      document.getElementById('logout-btn')?.addEventListener('click', () => {
+        signOut(auth);
+        location.reload();
+      });
+    } else {
+      root.innerHTML = `
+        <div id="login-form">
+          <input id="login-email" type="email" placeholder="Email"/>
+          <input id="login-password" type="password" placeholder="Password"/>
+          <button id="login-btn" type="button">Login</button>
+        </div>`;
+
+      document.getElementById('login-btn')?.addEventListener('click', async () => {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          location.reload();
+        } catch (err) {
+          console.error('Login failed:', err);
+          alert('Login failed. Check credentials.');
         }
-        if (user) {
-            root.innerHTML = `
-                <div id="dashboard" class="p-4 space-y-4">
-                    <h2>Welcome, ${user.displayName || user.email}</h2>
-                    <button id="logout-btn" class="bg-red-500 text-white px-4 py-2 rounded">Logout</button>
-                </div>`;
-            document.getElementById('logout-btn')?.addEventListener('click', () => signOut(auth));
-        } else {
-            root.innerHTML = `
-                <div id="login-form" class="p-4 space-y-4 max-w-sm mx-auto">
-                    <input id="login-email" type="email" placeholder="Email" class="border p-2 w-full" />
-                    <input id="login-password" type="password" placeholder="Password" class="border p-2 w-full" />
-                    <button id="login-submit" class="bg-blue-500 text-white px-4 py-2 rounded w-full">Login</button>
-                </div>`;
-            document.getElementById('login-submit')?.addEventListener('click', async () => {
-                const email = document.getElementById('login-email')?.value.trim();
-                const pass = document.getElementById('login-password')?.value.trim();
-                if (!email || !pass) return;
-                try {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                } catch (err) {
-                    console.error('[Auth] login failed', err);
-                }
-            });
-        }
-    });
+      });
+    }
+  });
 }
+
+document.addEventListener('DOMContentLoaded', initApp);
 
 // ───────────────────────────────────────────────────────────────────────────────
 // N) MAIN APP FLOW (After any successful login)                                  //
