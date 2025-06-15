@@ -649,9 +649,9 @@ function showBuilderForm(prefillData = null) {
     cardImageInput.value = "";
 
     // Hide errors
-    fadeOutElement(errorProfilePic, 0);
-    fadeOutElement(errorUsername, 0);
-    fadeOutElement(errorLinks, 0);
+    fadeOutElement(errorProfilePic);
+    fadeOutElement(errorUsername);
+    fadeOutElement(errorLinks);
 
     if (prefillData) {
         // Prefill picture (we’ll use data URL)
@@ -709,7 +709,7 @@ function showBuilderForm(prefillData = null) {
 function addLinkRow(prefill = null) {
     const rowIndex = linkRows.length;
     const rowDiv = document.createElement("div");
-    rowDiv.className = "space-y-1 bg-gray-800 p-4 rounded-lg";
+    rowDiv.className = "space-y-5 bg-gray-800 p-4 rounded-lg";
     rowDiv.setAttribute("draggable", "true");
 
     // 1) Label input
@@ -764,7 +764,7 @@ function addLinkRow(prefill = null) {
     // 4) Error text below URL
     const errorText = document.createElement("p");
     errorText.id = `error-url-${rowIndex}`;
-    errorText.className = "text-sm text-red-500 hidden";
+    errorText.className = "text-sm text-red-500 fade-message hidden";
     errorText.setAttribute("role", "alert");
     errorText.textContent = "Please enter a valid URL.";
 
@@ -773,7 +773,7 @@ function addLinkRow(prefill = null) {
     deleteBtn.type = "button";
     deleteBtn.innerHTML = '<i class="fa fa-trash text-red-500" aria-hidden="true"></i>';
     deleteBtn.setAttribute("aria-label", "Remove this link");
-    deleteBtn.className = "mt-2 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-full";
+    deleteBtn.className = "focus:outline-none focus:ring-2 focus:ring-red-500 rounded-full";
     deleteBtn.addEventListener("click", () => {
         linksWrapper.removeChild(rowDiv);
         linkRows = linkRows.filter((r) => r.container !== rowDiv);
@@ -790,7 +790,7 @@ function addLinkRow(prefill = null) {
     moveUpBtn.innerHTML = '<i class="fa fa-arrow-up" aria-hidden="true"></i>';
     moveUpBtn.setAttribute("aria-label", "Move this link up");
     moveUpBtn.className =
-        "ml-2 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
+        "text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
     moveUpBtn.addEventListener("click", () => {
         const idx = linkRows.findIndex((r) => r.container === rowDiv);
         if (idx > 0) {
@@ -805,7 +805,7 @@ function addLinkRow(prefill = null) {
     moveDownBtn.innerHTML = '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
     moveDownBtn.setAttribute("aria-label", "Move this link down");
     moveDownBtn.className =
-        "ml-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
+        "text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
     moveDownBtn.addEventListener("click", () => {
         const idx = linkRows.findIndex((r) => r.container === rowDiv);
         if (idx < linkRows.length - 1) {
@@ -873,9 +873,13 @@ function addLinkRow(prefill = null) {
     rowDiv.appendChild(iconSelect);
     rowDiv.appendChild(urlInput);
     rowDiv.appendChild(errorText);
-    rowDiv.appendChild(deleteBtn);
-    rowDiv.appendChild(moveUpBtn);
-    rowDiv.appendChild(moveDownBtn);
+
+    const btnGroup = document.createElement("div");
+    btnGroup.className = "button-group";
+    btnGroup.appendChild(deleteBtn);
+    btnGroup.appendChild(moveUpBtn);
+    btnGroup.appendChild(moveDownBtn);
+    rowDiv.appendChild(btnGroup);
     linksWrapper.appendChild(rowDiv);
 
     linkRows.push({ container: rowDiv, labelInput, iconSelect, urlInput, errorText });
@@ -1048,10 +1052,13 @@ function renderOutput(data) {
     }
 
     const textColor = data.cardTextColor || "#111827";
-    displayUsername.style.color = textColor;
-    outputTagline.style.color = textColor;
-
-    displayUsername.textContent = data.username || "@yourhandle";
+    if (displayUsername) {
+        displayUsername.style.color = textColor;
+        displayUsername.textContent = data.username || "@yourhandle";
+    }
+    if (outputTagline) {
+        outputTagline.style.color = textColor;
+    }
 
     linksContainer.innerHTML = "";
     data.links.forEach((link) => {
