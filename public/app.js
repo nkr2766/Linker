@@ -228,7 +228,7 @@ window.addEventListener('load', () => {
       console.debug('[Splash] done, initApp');
       screen.remove();
       initApp();
-    }, 1700);
+    }, 1100);
   } else {
     console.warn('[Splash] missing elements, initApp now');
     initApp();

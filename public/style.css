@@ -1,9 +1,10 @@
 :root[data-theme="light"] {
-  --bg-start: #f5f7fa;
-  --bg-end:   #c3cfe2;
+  --bg-start: #ffffff;
+  --bg-end:   #e0f8ff;   /* subtle blue tint */
   --fg:       #1a1f2b;
   --accent:   #00d2ff;
 }
+
 :root[data-theme="dark"] {
   --bg-start: #2c3e50;
   --bg-end:   #4ca1af;
@@ -72,8 +73,8 @@ body {
 }
 @keyframes logoGrow {
   0%   { opacity: 0;   transform: scale(1.35); }   /* (0.5 × 2.7) = 1.35, or just start however you want */
-  80%  { opacity: 1;   transform: scale(3.24); }   /* (1.2 × 2.7) = 3.24 */
-  100% { opacity: 1;   transform: scale(2.7); }    /* ends at 2.7x */
+  80%  { opacity: 1;   transform: scale(3.2); }   /* (1.2 × 2.7) = 3.24 */
+  100% { opacity: 1;   transform: scale(3.4); }    /* ends at 2.7x */
 }
 
 
