@@ -308,29 +308,19 @@
     <div id="loader-screen" class="screen hidden bg-gray-900 bg-opacity-50">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-green-400"></div>
     </div>
-    <!-- K) LINKTREE OUTPUT SCREEN (Profile + Links + Back / Download)                -->
+    <!-- K) LINKTREE OUTPUT SCREEN (Profile + Links + Back / Download) -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="linktree-screen" class="screen hidden px-4">
-        <div id="output-card" class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
-            <div class="flex flex-col items-center space-y-4">
-                <img id="output-profile-pic" src="" alt="Profile Picture" />
-                <p id="display-username" class="text-gray-700"></p>
-                <p id="output-tagline" class="text-gray-700">
-                    <!-- tagline text here -->
-                </p>
+        <div id="output-card" class="card-wrapper animate-fadeInUp">
+            <div class="output-profile">
+                <img id="output-profile-pic" src="" alt="Profile Picture" class="output-avatar" />
+                <div id="output-username" class="output-username">@username</div>
+                <div id="output-tagline" class="output-tagline">Tagline goes here</div>
             </div>
-            <div id="links-container" class="space-y-4"></div>
-            <div class="form-group">
-                <button id="back-btn"
-                    class="w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
-                    ← Back to Edit
-                </button>
-            </div>
-            <div class="form-group">
-                <button id="download-btn"
-                    class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
-                    Download My Linktree
-                </button>
+            <div id="links-container" class="output-links"></div>
+            <div class="button-stack output-buttons">
+                <button id="back-btn">← Back to Edit</button>
+                <button id="download-btn">Download My Linktree</button>
             </div>
         </div>
     </div>
