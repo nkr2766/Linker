@@ -157,6 +157,19 @@ html, body {
   padding: 2rem;
 }
 
+/* Ensure the Linktree preview stays centered on any screen */
+#linktree-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 2rem;
+  overflow-y: auto;
+}
+
 
 /* vertical stack for buttons inside any .screen */
 .screen .buttons {
@@ -177,10 +190,7 @@ html, body {
 
 body {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: block;
   position: relative;
   padding: 2rem;
   color: var(--fg);
@@ -379,8 +389,7 @@ input:focus, textarea:focus, select:focus {
     }
 }
 
-.card-wrapper,
-#output-card {
+.card-wrapper {
   background: var(--card-gradient);
   backdrop-filter: blur(14px);
   color: var(--fg);
@@ -550,6 +559,7 @@ button:active {
   background: #fff;
   box-shadow: 0 8px 32px rgba(80, 80, 160, 0.17), 0 1.5px 10px rgba(128, 101, 217, 0.06);
   border-radius: 2.2rem;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
