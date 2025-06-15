@@ -1,72 +1,4 @@
-// ─────────────── COMMAND CENTER CONFIG ───────────────
-// SPLASH SCREEN SETTINGS:
-//  - splashLogoScale: final scale factor of the splash logo (1.0 = 100% of its natural size).
-//  - splashLogoMaxWidth: CSS max-width applied to logo (helps constrain on large screens).
-//  - splashGrowDuration: how long (in ms) the logo “grow” animation runs.
-//  - splashFadeDuration: how long (in ms) the splash overlay fades out after grow.
-const CONFIG = {
-  // Path to your header logo (absolute on your machine):
-  logoSrc: '/images/logo.png',
-  // Splash
-  splashLogoScale:        0.85,          // e.g. use 0.85 for 85% scale
-  splashLogoMaxWidth:     '180px',       // constrain logo width
-  splashGrowDuration:     1200,          // ms for logo scaling
-  splashFadeDuration:     500,           // ms for overlay fade-out
-
-  // HEADER LOGO (static, top-left):
-  //  - headerLogoHeight: CSS height for the header logo image.
-  //  - headerLogoWidth: optional CSS width.
-  headerLogoHeight:       '2.5rem',
-  headerLogoWidth:        'auto',
-
-  // THEMING & GRADIENTS:
-  //  - bgGradientLight: [startColor, endColor] for page background in light mode.
-  //  - bgGradientDark:  [startColor, endColor] for dark mode.
-  //  - cardGradientLight: opposing gradient for cards in light mode.
-  //  - cardGradientDark:  opposing gradient for cards in dark mode.
-  bgGradientLight:        ['#f5f7fa', '#c3cfe2'],
-  bgGradientDark:         ['#2c3e50', '#4ca1af'],
-  cardGradientLight:      ['#c3cfe2', '#f5f7fa'],
-  cardGradientDark:       ['#4ca1af', '#2c3e50'],
-
-  // BUTTON STYLES:
-  //  - buttonNeutralBg: base background color for all buttons.
-  //  - buttonNeutralFg: base text color (if empty, will inherit `--fg`).
-  //  - buttonHoverAccent: color used in gradient-wave on hover.
-  buttonNeutralBg:        'rgba(255,255,255,0.85)',
-  buttonNeutralFg:        '',             // leave blank to inherit --fg
-  buttonHoverAccent:      'var(--accent)',
-
-  // ANIMATIONS & TIMING:
-  //  - welcomeBannerDuration: ms to show “Thank you for logging in” banner.
-  //  - welcomeBannerFade:     ms for that banner to fade out.
-  //  - loaderSpinnerDuration: ms to show the loader spinner.
-  welcomeBannerDuration:  2500,
-  welcomeBannerFade:      300,
-  loaderSpinnerDuration:  300,
-
-  // THEME TOGGLE ICON:
-  //  - toggleIconSize: CSS font-size for the 🌗 button.
-  toggleIconSize:         '1.5rem',
-
-  // APP VERSION:
-  //  - version: text displayed in the bottom-right corner.
-  version:                'v24'
-};
-
-// Auto-increment version for clear visual updates
-CONFIG.version = `v${parseInt(CONFIG.version.replace(/\D/g, '')) + 1}`;
-
-document.addEventListener('DOMContentLoaded', () => {
-  const versionEl = document.getElementById('version');
-  if (versionEl) versionEl.textContent = CONFIG.version;
-  const headerImg = document.querySelector('header img');
-  if (headerImg && CONFIG.logoSrc) {
-    headerImg.src = CONFIG.logoSrc;
-  }
-  console.log(`[CONFIG] Loaded version: ${CONFIG.version}`);
-});
-// ────────────────────────────────────────────────────────
+// ─────────────── INITIAL SETUP ───────────────
 
 // A) FIREBASE IMPORTS (Modular v11.8.1)
 // ───────────────────────────────────────────────────────────────────────────────
@@ -289,15 +221,14 @@ window.addEventListener('load', () => {
   const logo   = document.getElementById('startup-logo');
   if (screen && logo) {
     // apply size
-    logo.style.maxWidth = CONFIG.splashLogoMaxWidth;
-    logo.style.transform = `scale(${CONFIG.splashLogoScale})`;
+    logo.style.maxWidth = '190px';
     console.debug('[Splash] animate grow & fade');
     screen.classList.add('reveal');
     setTimeout(() => {
       console.debug('[Splash] done, initApp');
       screen.remove();
       initApp();
-    }, CONFIG.splashGrowDuration + CONFIG.splashFadeDuration);
+    }, 1700);
   } else {
     console.warn('[Splash] missing elements, initApp now');
     initApp();
@@ -543,9 +474,9 @@ async function startAppFlow(currentEmail) {
 
     // Fade banner in/out:
     welcomeText.classList.remove("opacity-0");    // show it
-    await delay(CONFIG.welcomeBannerDuration);                            // keep it visible 2.5s
+    await delay(2500);                            // keep it visible 2.5s
     welcomeText.classList.add("opacity-0");       // fade it out
-    await delay(CONFIG.welcomeBannerFade);                             // wait 0.3s for fade to complete
+    await delay(300);                             // wait 0.3s for fade to complete
     // Hide the welcome overlay before proceeding
     welcomeScreen.classList.add("hidden");
     welcomeScreen.classList.remove("flex");
@@ -561,7 +492,7 @@ async function startAppFlow(currentEmail) {
     if (savedData) {
         loaderScreen.classList.remove("hidden");
         loaderScreen.classList.add("flex");
-        await delay(CONFIG.loaderSpinnerDuration);                           // spinner for 0.3s
+        await delay(300);                           // spinner for 0.3s
         loaderScreen.classList.add("hidden");
         loaderScreen.classList.remove("flex");
         renderOutput(savedData);
@@ -964,7 +895,7 @@ generateBtn.addEventListener("click", async (e) => {
 
     loaderScreen.classList.remove("hidden");
     loaderScreen.classList.add("flex");
-    await delay(CONFIG.loaderSpinnerDuration);
+    await delay(300);
     loaderScreen.classList.add("hidden");
     loaderScreen.classList.remove("flex");
     renderOutput(data);
@@ -1168,7 +1099,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
   // set icon size
-  toggle.style.fontSize = CONFIG.toggleIconSize;
+  toggle.style.fontSize = '1.5rem';
 
   const saved = localStorage.getItem('theme') || 'light';
   console.debug('[Theme] init →', saved);

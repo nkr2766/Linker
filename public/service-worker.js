@@ -1,7 +1,7 @@
 const CACHE = 'linker-v2';
 const ASSETS = [
   '/', '/index.html', '/style.css', '/app.js',
-  '/linker-icon-192.png', '/linker-icon-512.png', '/favicon.ico',
+  '/images/icon-192.png', '/images/icon-512.png', '/favicon.ico',
   '/images/logo.png'
 ];
 self.addEventListener('install', e => e.waitUntil(
