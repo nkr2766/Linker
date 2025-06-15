@@ -1,79 +1,137 @@
-/* === LINKER DESIGN SYSTEM VARIABLES === */
-/* === Edit below for color surgery === */
+/* === LINKER DESIGN SYSTEM VARIABLES ====================================== */
+/* All visual styles are controlled through the variables below. Tweak them  */
+/* to create entirely new themes without touching the rest of the CSS.       */
+
+/* ------------------------------------------------------------------------- */
+/* GLOBAL SIZES & SHARED SETTINGS                                            */
+/* ------------------------------------------------------------------------- */
 :root {
-  /* Brand accent used throughout the UI */
-  --brand-accent: #00d2ff;
-
-  /* Gradient background colors */
-  --bg-start-light: #f5f7fa; /* Light gradient start */
-  --bg-end-light:   #c3cfe2; /* Light gradient end */
-  --bg-start-dark: #2c3e50;  /* Dark gradient start */
-  --bg-end-dark:   #4ca1af;  /* Dark gradient end */
-
-  /* Base text colors */
-  --fg-light: #1a1f2b;
-  --fg-dark:  #e0f8f7;
-
-  /* Card appearance */
-  --card-bg: #ffffff;             /* Solid card background */
-  --card-border: #d1d5db;         /* Card border color */
-  --card-shadow: 0 10px 30px rgba(0,0,0,0.15);    /* Default card shadow */
-  --card-hover-shadow: 0 15px 45px rgba(0,0,0,0.2); /* Hover shadow */
-
-  /* Button appearance */
-  --button-bg: rgba(255,255,255,0.85);            /* Button base color */
-  --button-text: var(--fg-light);                 /* Button text */
-  --button-border: rgba(255,255,255,0.4);         /* Button border */
-  --button-gradient: linear-gradient(90deg, rgba(255,255,255,0.85) 50%, var(--brand-accent) 50%); /* Sliding gradient */
-  --button-hover-shadow: 0 6px 16px rgba(0,0,0,0.15); /* Hover shadow */
-  --button-hover-text: #ffffff;                   /* Hover text */
-
-  /* Header & logo */
-  --header-bg: transparent;       /* Header background */
-  --header-border: transparent;   /* Header bottom border */
   --logo-size: 3.6rem;            /* Logo height */
   --splash-logo-width: 190px;     /* Splash logo width */
+}
 
-  /* Links */
-  --link-color: var(--brand-accent);
+/* ------------------------------------------------------------------------- */
+/* LIGHT THEME PALETTE                                                       */
+/* ------------------------------------------------------------------------- */
+:root[data-theme="light"] {
+  /* === BRAND & ACCENTS === */
+  --brand-accent: #00d2ff;
 
-  /* Input fields */
-  --input-bg: #ffffff;            /* Input background */
-  --border-color: #d1d5db;        /* Generic border color */
+  /* === BACKGROUNDS === */
+  --bg-start: #f5f7fa;            /* Gradient start */
+  --bg-end:   #c3cfe2;            /* Gradient end   */
+  --overlay-1: rgba(0,210,255,0.4);
+  --overlay-2: rgba(255,142,232,0.4);
+  --overlay-3: rgba(89,255,180,0.4);
+  --fg:       #1a1f2b;            /* Foreground/text */
+  --page-gradient: linear-gradient(120deg, var(--bg-start), var(--bg-end));
 
-  /* Form screen background */
-  --form-gradient: #1f2937;
+  /* === HEADER === */
+  --header-bg: var(--page-gradient);
+  --header-border: rgba(0,0,0,0.05);
+  --header-shadow: 0 2px 6px rgba(0,0,0,0.05);
 
-  /* Status colors */
-  --success: #10b981;
-  --warn:    #f59e0b;
-  --error:   #ef4444;
+  /* === CARDS === */
+  --card-bg: #ffffff;
+  --card-border: #d1d5db;
+  --card-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  --card-hover-shadow: 0 15px 45px rgba(0,0,0,0.2);
+  --card-gradient: linear-gradient(135deg, var(--bg-end) 0%, var(--bg-start) 100%);
 
-  /* Focus ring */
+  /* === BUTTONS === */
+  --button-bg: rgba(255,255,255,0.85);
+  --button-gradient: linear-gradient(90deg, rgba(255,255,255,0.85) 50%, var(--brand-accent) 50%);
+  --button-text: var(--fg);
+  --button-border: rgba(255,255,255,0.4);
+  --button-shadow: none;
+  --button-hover-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  --button-hover-text: #ffffff;
+  --button-disabled-bg: rgba(255,255,255,0.5);
+  --button-disabled-text: rgba(0,0,0,0.3);
+  --button-disabled-border: rgba(255,255,255,0.2);
+
+  /* === FORMS & INPUTS === */
+  --input-bg: #ffffff;
+  --border-color: #d1d5db;
   --focus-ring: rgba(0,210,255,0.35);
   --focus-ring-strong: rgba(0,210,255,0.5);
+  --form-gradient: #e5e7eb;
 
-  /* === Optional backgrounds === */
-  /* --body-noise: url('/images/noise.png'); */
-  /* --radial-bg: radial-gradient(circle at center, #fff, var(--brand-accent)); */
+  /* === LINKS === */
+  --link-color: var(--brand-accent);
+
+  /* === STATUS COLORS === */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error:   #ef4444;
+  --info:    #3b82f6;
+
+  /* === OPTIONAL FX === */
+  --noise-img: none;              /* url('/images/noise.png') */
+  --overlay-opacity: 0.2;         /* Strength of radial overlays */
 }
 
-/* Theme variables set via data-theme attribute */
-:root[data-theme="light"] {
-  --bg-start: var(--bg-start-light);
-  --bg-end:   var(--bg-end-light);
-  --fg:       var(--fg-light);
-  --card-gradient: linear-gradient(135deg, var(--bg-end-light) 0%, var(--bg-start-light) 100%);
-  --accent:   var(--brand-accent);
-}
+/* ------------------------------------------------------------------------- */
+/* DARK THEME PALETTE                                                        */
+/* ------------------------------------------------------------------------- */
 :root[data-theme="dark"] {
-  --bg-start: var(--bg-start-dark);
-  --bg-end:   var(--bg-end-dark);
-  --fg:       var(--fg-dark);
-  --card-gradient: linear-gradient(135deg, var(--bg-end-dark) 0%, var(--bg-start-dark) 100%);
-  --accent:   var(--brand-accent);
+  /* === BRAND & ACCENTS === */
+  --brand-accent: #00d2ff;
+
+  /* === BACKGROUNDS === */
+  --bg-start: #2c3e50;
+  --bg-end:   #4ca1af;
+  --overlay-1: rgba(0,210,255,0.4);
+  --overlay-2: rgba(255,142,232,0.4);
+  --overlay-3: rgba(89,255,180,0.4);
+  --fg:       #e0f8f7;
+  --page-gradient: linear-gradient(120deg, var(--bg-start), var(--bg-end));
+
+  /* === HEADER === */
+  --header-bg: var(--page-gradient);
+  --header-border: rgba(255,255,255,0.1);
+  --header-shadow: 0 2px 6px rgba(0,0,0,0.6);
+
+  /* === CARDS === */
+  --card-bg: #1f2937;
+  --card-border: #374151;
+  --card-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  --card-hover-shadow: 0 15px 45px rgba(0,0,0,0.45);
+  --card-gradient: linear-gradient(135deg, var(--bg-end) 0%, var(--bg-start) 100%);
+
+  /* === BUTTONS === */
+  --button-bg: rgba(255,255,255,0.1);
+  --button-gradient: linear-gradient(90deg, rgba(255,255,255,0.1) 50%, var(--brand-accent) 50%);
+  --button-text: var(--fg);
+  --button-border: rgba(255,255,255,0.2);
+  --button-shadow: none;
+  --button-hover-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  --button-hover-text: #ffffff;
+  --button-disabled-bg: rgba(255,255,255,0.05);
+  --button-disabled-text: rgba(255,255,255,0.3);
+  --button-disabled-border: rgba(255,255,255,0.1);
+
+  /* === FORMS & INPUTS === */
+  --input-bg: #111827;
+  --border-color: #374151;
+  --focus-ring: rgba(0,210,255,0.35);
+  --focus-ring-strong: rgba(0,210,255,0.5);
+  --form-gradient: #1f2937;
+
+  /* === LINKS === */
+  --link-color: var(--brand-accent);
+
+  /* === STATUS COLORS === */
+  --success: #34d399;
+  --warning: #fbbf24;
+  --error:   #f87171;
+  --info:    #60a5fa;
+
+  /* === OPTIONAL FX === */
+  --noise-img: none;
+  --overlay-opacity: 0.2;
 }
-/* === END LINKER DESIGN SYSTEM VARIABLES === */
+/* === END LINKER DESIGN SYSTEM VARIABLES ================================= */
 
 html, body {
   margin: 0;
@@ -105,6 +163,7 @@ header {
   padding: 1rem;
   background: var(--header-bg);
   border-bottom: 1px solid var(--header-border);
+  box-shadow: var(--header-shadow);
 }
 header img {
   height: var(--logo-size);
@@ -131,7 +190,7 @@ header img {
 body {
   color: var(--fg);
   font-family: 'Poppins', sans-serif;
-  background: linear-gradient(120deg, var(--bg-start), var(--bg-end));
+  background: var(--page-gradient);
 }
 a {
   color: var(--link-color);
@@ -142,7 +201,7 @@ a:hover {
 
 #startup-screen {
   position: fixed; inset: 0;
-  background: linear-gradient(120deg, var(--bg-start), var(--bg-end));
+  background: var(--page-gradient);
   display: flex; align-items: center; justify-content: center;
   z-index: 100;
 }
@@ -176,8 +235,8 @@ a:hover {
 /* C) SCROLLBAR STYLING                                                        */
 /* ──────────────────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+::-webkit-scrollbar-thumb { background: var(--brand-accent); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brand-accent); }
 
 /* ──────────────────────────────────────────────────────────────────────────── */
 /* D) FOCUS STYLES                                                             */
@@ -288,7 +347,7 @@ input, textarea, select {
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 input:focus, textarea:focus, select:focus {
-  border-color: var(--accent);
+  border-color: var(--brand-accent);
   box-shadow: 0 0 0 3px var(--focus-ring);
   outline: none;
 }
@@ -337,12 +396,12 @@ body::before {
   content: '';
   position: fixed; top:0; left:0; right:0; bottom:0;
   background:
-    radial-gradient(circle at 20% 30%, rgba(0,210,255,0.4), transparent 40%),
-    radial-gradient(circle at 80% 20%, rgba(255,142,232,0.4), transparent 40%),
-    radial-gradient(circle at 40% 80%, rgba(89,255,180,0.4), transparent 40%),
+    radial-gradient(circle at 20% 30%, var(--overlay-1), transparent 40%),
+    radial-gradient(circle at 80% 20%, var(--overlay-2), transparent 40%),
+    radial-gradient(circle at 40% 80%, var(--overlay-3), transparent 40%),
     linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
   background-size: 100% 100%;
-  opacity: 0.2; z-index: -1;
+  opacity: var(--overlay-opacity); z-index: -1;
   animation: moveGradient 20s infinite alternate ease-in-out;
 }
 @keyframes moveGradient {
