@@ -6,7 +6,7 @@
 //  - splashFadeDuration: how long (in ms) the splash overlay fades out after grow.
 const CONFIG = {
   // Path to your header logo (absolute on your machine):
-  logoSrc: "C:\\Users\\reyno\\OneDrive\\Desktop\\Coding\\Linktree\\public\\image\\73294b6e-8bc4-428f-ad24-a303947fb853.png",
+  logoSrc: '/images/logo.png',
   // Splash
   splashLogoScale:        0.85,          // e.g. use 0.85 for 85% scale
   splashLogoMaxWidth:     '180px',       // constrain logo width

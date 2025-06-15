@@ -2,7 +2,7 @@ const CACHE = 'linker-v2';
 const ASSETS = [
   '/', '/index.html', '/style.css', '/app.js',
   '/linker-icon-192.png', '/linker-icon-512.png', '/favicon.ico',
-  '/images/73294b6e-8bc4-428f-ad24-a303947fb853.png'
+  '/images/logo.png'
 ];
 self.addEventListener('install', e => e.waitUntil(
   caches.open(CACHE).then(c => c.addAll(ASSETS))
