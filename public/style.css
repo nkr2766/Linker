@@ -154,58 +154,9 @@ html, body {
   width: 100%;
   box-sizing: border-box;
   text-align: center;
-  padding-top: 7rem;
-  padding-bottom: 3rem;
-}
-@media (max-width: 640px) {
-  .screen { padding-top: 6rem; }
+  padding: 2rem;
 }
 
-/* dynamic header "island" at top */
-.dynamic-header {
-  position: fixed;
-  top: 2.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 85%;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 1.25rem 1.75rem;
-  background: var(--header-bg);
-  border: 1px solid var(--header-border);
-  border-radius: 1.75rem;
-  backdrop-filter: blur(14px);
-  box-shadow: var(--header-shadow);
-  z-index: 30;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.header-logo {
-  height: var(--logo-size);
-  width: auto;
-}
-
-@media (max-width: 640px) {
-  .dynamic-header {
-    top: 1.5rem;
-    width: calc(100% - 1rem);
-    margin-left: auto;
-    margin-right: auto;
-    padding: 1rem 1.25rem;
-  }
-}
 
 /* vertical stack for buttons inside any .screen */
 .screen .buttons {
@@ -225,9 +176,34 @@ html, body {
 }
 
 body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 2rem;
   color: var(--fg);
   font-family: 'Poppins', sans-serif;
   background: var(--page-gradient);
+}
+
+/* Floating theme toggle in top-right */
+#theme-toggle {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  z-index: 10;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+  color: var(--fg);
+}
+#theme-toggle:hover, #theme-toggle:focus {
+  transform: scale(1.1);
+  outline: none;
 }
 a {
   color: var(--link-color);
@@ -532,6 +508,20 @@ button:active {
   flex-direction: column;
   gap: 1.5rem;
   width: 100%;
+}
+
+.color-row {
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.color-input {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-color);
 }
 
 /* Fade-in/out helper for messages */
