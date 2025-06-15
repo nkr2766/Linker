@@ -82,16 +82,24 @@
     <div id="admin-login-screen" class="screen hidden">
         <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
             <h2 class="text-2xl font-semibold text-gray-900 mb-4">Admin Login</h2>
-            <form id="admin-login-form" class="stack-form space-y-4">
+            <form id="admin-login-form" class="stack-form">
                 <p id="admin-error" class="text-red-500 text-sm hidden" role="alert"></p>
-                <input id="admin-email" type="email" placeholder="admin@linkerapp.com" autocomplete="off"
-                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400" />
-                <input id="admin-password" type="password" placeholder="Password" autocomplete="off"
-                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400" />
-                <button id="admin-login-submit" type="submit"
-                    class="w-full py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
-                    Login
-                </button>
+                <div class="form-group">
+                    <label for="admin-email" class="font-medium text-gray-700">Email</label>
+                    <input id="admin-email" type="email" placeholder="admin@linkerapp.com" autocomplete="off"
+                        class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400" />
+                </div>
+                <div class="form-group">
+                    <label for="admin-password" class="font-medium text-gray-700">Password</label>
+                    <input id="admin-password" type="password" placeholder="Password" autocomplete="off"
+                        class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400" />
+                </div>
+                <div class="form-group">
+                    <button id="admin-login-submit" type="submit"
+                        class="w-full py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
+                        Login
+                    </button>
+                </div>
             </form>
             <button id="admin-login-back" class="mt-2 text-gray-700 hover:underline focus:outline-none">
                 ← Back
@@ -136,16 +144,24 @@
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="user-login-screen" class="screen hidden">
         <h2 class="text-2xl font-semibold text-gray-900 mb-4">User Login</h2>
-        <form id="user-login-form" class="stack-form space-y-4">
+        <form id="user-login-form" class="stack-form">
             <p id="user-error" class="text-red-500 text-sm hidden" role="alert"></p>
-            <input id="user-email" type="email" placeholder="you@example.com" autocomplete="off"
-                class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
-            <input id="user-password" type="password" placeholder="Password" autocomplete="off"
-                class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
-            <button id="user-login-submit" type="submit"
-                class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
-                Login
-            </button>
+            <div class="form-group">
+                <label for="user-email" class="font-medium text-gray-700">Email</label>
+                <input id="user-email" type="email" placeholder="you@example.com" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            </div>
+            <div class="form-group">
+                <label for="user-password" class="font-medium text-gray-700">Password</label>
+                <input id="user-password" type="password" placeholder="Password" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            </div>
+            <div class="form-group">
+                <button id="user-login-submit" type="submit"
+                    class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
+                    Login
+                </button>
+            </div>
         </form>
         <button id="user-login-back" class="mt-2 text-gray-700 hover:underline focus:outline-none">
             ← Back
@@ -157,18 +173,29 @@
     <!-- G) USER SIGNUP SCREEN (Access Code → Email → Password)                        -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="user-signup-screen" class="screen hidden">
-        <form id="user-signup-form" class="stack-form space-y-4">
+        <form id="user-signup-form" class="stack-form">
             <p id="signup-code-error" class="text-red-500 text-sm hidden" role="alert"></p>
-            <input id="signup-code" type="text" placeholder="Enter access code" autocomplete="off"
-                class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" />
-            <input id="signup-email" type="email" placeholder="you@example.com" autocomplete="off"
-                class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
-            <input id="signup-password" type="password" placeholder="Choose a password" autocomplete="off"
-                class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
-            <button id="signup-submit" type="submit"
-                class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
-                Create Account
-            </button>
+            <div class="form-group">
+                <label for="signup-code" class="font-medium text-gray-700">Access Code</label>
+                <input id="signup-code" type="text" placeholder="Enter access code" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+            <div class="form-group">
+                <label for="signup-email" class="font-medium text-gray-700">Email</label>
+                <input id="signup-email" type="email" placeholder="you@example.com" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            </div>
+            <div class="form-group">
+                <label for="signup-password" class="font-medium text-gray-700">Password</label>
+                <input id="signup-password" type="password" placeholder="Choose a password" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            </div>
+            <div class="form-group">
+                <button id="signup-submit" type="submit"
+                    class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Create Account
+                </button>
+            </div>
             <p id="signup-success" class="text-green-600 text-sm hidden">Account created!</p>
         </form>
         <button id="signup-back" class="mt-2 text-gray-700 hover:underline focus:outline-none">
@@ -197,25 +224,24 @@
             </p>
 
             <!-- Profile Picture -->
-            <div class="flex flex-col items-start">
-                <label for="profile-pic-file" class="font-medium text-gray-700 mb-1">Profile Picture</label>
+            <div class="form-group">
+                <label for="profile-pic-file" class="font-medium text-gray-700">Profile Picture</label>
                 <input id="profile-pic-file" type="file" accept="image/*" autocomplete="off"
                     class="w-full block text-sm text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-400" />
-                <p id="error-profile-pic" class="text-red-500 text-sm hidden mt-1">Please upload a valid image.</p>
+                <p id="error-profile-pic" class="text-red-500 text-sm hidden">Please upload a valid image.</p>
             </div>
 
             <!-- Username (Handle) -->
-            <div class="flex flex-col items-start">
-                <label for="username" class="font-medium text-gray-700 mb-1">Username (handle)</label>
+            <div class="form-group">
+                <label for="username" class="font-medium text-gray-700">Username (handle)</label>
                 <input id="username" type="text" placeholder="@yourhandle" autocomplete="off"
                     class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
-                <p id="error-username" class="text-red-500 text-sm hidden mt-1">Please enter a valid handle (e.g.
-                    @john_doe).</p>
+                <p id="error-username" class="text-red-500 text-sm hidden">Please enter a valid handle (e.g. @john_doe).</p>
             </div>
 
             <!-- Tagline (optional) -->
-            <div class="flex flex-col items-start">
-                <label for="tagline" class="font-medium text-gray-700 mb-1">Tagline (optional)</label>
+            <div class="form-group">
+                <label for="tagline" class="font-medium text-gray-700">Tagline (optional)</label>
                 <textarea id="tagline" rows="2" placeholder="Tell people what you do (max 100 chars)" maxlength="100"
                     autocomplete="off"
                     class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400"></textarea>
@@ -223,24 +249,24 @@
             </div>
 
             <!-- Theme Customization -->
-            <div class="flex flex-col items-start">
-                <label for="gradient-start" class="font-medium text-gray-700 mb-1">Background Gradient Start</label>
+            <div class="form-group">
+                <label for="gradient-start" class="font-medium text-gray-700">Background Gradient Start</label>
                 <input id="gradient-start" type="color" value="#a7f3d0" autocomplete="off" class="w-full h-10" />
             </div>
-            <div class="flex flex-col items-start">
-                <label for="gradient-end" class="font-medium text-gray-700 mb-1">Background Gradient End</label>
+            <div class="form-group">
+                <label for="gradient-end" class="font-medium text-gray-700">Background Gradient End</label>
                 <input id="gradient-end" type="color" value="#6ee7b7" autocomplete="off" class="w-full h-10" />
             </div>
-            <div class="flex flex-col items-start">
-                <label for="card-color" class="font-medium text-gray-700 mb-1">Card Background Color</label>
+            <div class="form-group">
+                <label for="card-color" class="font-medium text-gray-700">Card Background Color</label>
                 <input id="card-color" type="color" value="#ffffff" autocomplete="off" class="w-full h-10" />
             </div>
-            <div class="flex flex-col items-start">
-                <label for="card-text-color" class="font-medium text-gray-700 mb-1">Card Text Color</label>
+            <div class="form-group">
+                <label for="card-text-color" class="font-medium text-gray-700">Card Text Color</label>
                 <input id="card-text-color" type="color" value="#111827" autocomplete="off" class="w-full h-10" />
             </div>
-            <div class="flex flex-col items-start">
-                <label for="card-image" class="font-medium text-gray-700 mb-1">Card Background Image (optional)</label>
+            <div class="form-group">
+                <label for="card-image" class="font-medium text-gray-700">Card Background Image (optional)</label>
                 <div class="flex items-center space-x-2 w-full">
                     <input id="card-image" type="file" accept="image/*" autocomplete="off" class="flex-grow" />
                     <button id="remove-card-image" type="button"
@@ -252,10 +278,12 @@
 
             <!-- Links Wrapper (each link row is added via JS) -->
             <div id="links-wrapper" class="space-y-4 bg-gray-800 p-4 rounded-lg"></div>
-            <button id="add-link-btn"
-                class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
-                + Add New Link
-            </button>
+            <div class="form-group">
+                <button id="add-link-btn"
+                    class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
+                    + Add New Link
+                </button>
+            </div>
             <p id="error-links" class="text-red-500 text-sm hidden">
                 At least one valid link is required.
             </p>
@@ -264,10 +292,12 @@
             <hr class="my-8 border-t border-gray-300" />
 
             <!-- Generate Button -->
-            <button id="generate-btn" class="w-full py-3 bg-gray-600 text-gray-300 rounded-lg cursor-not-allowed"
-                disabled>
-                Generate My Linktree
-            </button>
+            <div class="form-group">
+                <button id="generate-btn" class="w-full py-3 bg-gray-600 text-gray-300 rounded-lg cursor-not-allowed"
+                    disabled>
+                    Generate My Linktree
+                </button>
+            </div>
         </div>
     </div>
 
@@ -288,14 +318,18 @@
                 </p>
             </div>
             <div id="links-container" class="space-y-4"></div>
-            <button id="back-btn"
-                class="w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
-                ← Back to Edit
-            </button>
-            <button id="download-btn"
-                class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
-                Download My Linktree
-            </button>
+            <div class="form-group">
+                <button id="back-btn"
+                    class="w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
+                    ← Back to Edit
+                </button>
+            </div>
+            <div class="form-group">
+                <button id="download-btn"
+                    class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Download My Linktree
+                </button>
+            </div>
         </div>
     </div>
 

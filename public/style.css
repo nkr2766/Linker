@@ -35,8 +35,9 @@
   /* === CARDS === */
   --card-bg: rgba(255,255,255,0.72);
   --card-border: rgba(167,134,254,0.10);
-  --card-shadow: 0 4px 28px 0 rgba(167,134,254,0.08);
-  --card-hover-shadow: 0 8px 38px 0 rgba(167,134,254,0.18);
+  /* slightly deeper shadow for a modern floating look */
+  --card-shadow: 0 8px 24px rgba(167,134,254,0.15);
+  --card-hover-shadow: 0 12px 36px rgba(167,134,254,0.25);
   --card-gradient: linear-gradient(110deg, #f0ecff 60%, #e7bfff 100%);
 
   /* === BUTTONS === */
@@ -97,8 +98,9 @@
   /* === CARDS === */
   --card-bg: rgba(30,32,46,0.93);
   --card-border: rgba(255,255,255,0.04);
-  --card-shadow: 0 8px 36px rgba(30,32,46,0.33);
-  --card-hover-shadow: 0 16px 50px rgba(255,228,86,0.16);
+  /* stronger shadows for dark mode */
+  --card-shadow: 0 8px 24px rgba(30,32,46,0.6);
+  --card-hover-shadow: 0 12px 40px rgba(255,228,86,0.25);
   --card-gradient: linear-gradient(120deg, #25283c 60%, #131521 100%);
 
   /* === BUTTONS === */
@@ -177,8 +179,8 @@ header img {
 .screen .buttons {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 1.25rem;
+  margin-top: 1.5rem;
 }
 
 /* version bottom-right */
@@ -290,8 +292,8 @@ a:hover {
     #form-screen .card-wrapper {
         background-color: var(--card-bg);
         border: 1px solid var(--card-border);
-        border-radius: 16px;
-        padding: 24px;
+        border-radius: 1.25rem;
+        padding: 2rem;
         box-shadow: var(--card-shadow);
         width: 100%;
         max-width: 500px;
@@ -374,7 +376,7 @@ input:focus, textarea:focus, select:focus {
   background: var(--card-gradient);
   color: var(--fg);
   border: 1px solid var(--card-border);
-  border-radius: 1rem;
+  border-radius: 1.25rem;
   box-shadow: var(--card-shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
@@ -470,19 +472,27 @@ button:active {
 .portal-grid {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 /* Generic vertical form layout */
 .stack-form {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 1rem;
+  align-items: stretch;
+  gap: 1.25rem;
   width: 100%;
-  max-width: 20rem;
+  max-width: 22rem;
 }
 .stack-form > * {
+  width: 100%;
+}
+
+/* field wrapper for labels and inputs */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
   width: 100%;
 }
 
