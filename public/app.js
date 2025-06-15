@@ -1066,15 +1066,9 @@ function renderOutput(data) {
             const btn = document.createElement("a");
             btn.href = link.url;
             btn.target = "_blank";
-            btn.className =
-                "flex items-center justify-center bg-emerald-500 text-white py-3 rounded-lg hover:bg-emerald-600 transition focus:outline-none focus:ring-2 focus:ring-emerald-400";
-            const icon = document.createElement("i");
-            icon.className = `fa ${link.icon} mr-2`;
-            icon.setAttribute("aria-hidden", "true");
-            const span = document.createElement("span");
-            span.textContent = link.label;
-            btn.appendChild(icon);
-            btn.appendChild(span);
+            btn.className = "output-link-btn";
+            // Icon (globe) + label, or change as needed:
+            btn.innerHTML = `<i class="fa fa-globe" aria-hidden="true" style="margin-right:0.7em"></i>${link.label}`;
             linksContainer.appendChild(btn);
         }
     });
