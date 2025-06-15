@@ -1,15 +1,69 @@
+/* === LINKER COLOR & THEME SETTINGS === */
+/* Edit colors, gradients, and shadows below */
+:root {
+  /* Brand accent color */
+  --brand-accent: #00d2ff; /* Change this for the main brand accent */
+
+  /* Light mode palette */
+  --bg-start-light: #f5f7fa; /* Change for light gradient start */
+  --bg-end-light:   #c3cfe2; /* Change for light gradient end */
+  --fg-light:       #1a1f2b; /* Light mode text color */
+
+  /* Dark mode palette */
+  --bg-start-dark: #2c3e50;  /* Change for dark gradient start */
+  --bg-end-dark:   #4ca1af;  /* Change for dark gradient end */
+  --fg-dark:       #e0f8f7;  /* Dark mode text color */
+
+  /* Borders and surfaces */
+  --border-color: #d1d5db;   /* Form/input borders */
+  --input-bg: #ffffff;       /* Input background */
+  --card-bg: #ffffff;        /* Card base color */
+  --form-gradient: #1f2937;  /* Builder screen background */
+
+  /* Button styling */
+  --button-bg: rgba(255,255,255,0.85);
+  --button-border: rgba(255,255,255,0.4);
+  --button-gradient: linear-gradient(90deg, rgba(255,255,255,0.85) 50%, var(--brand-accent) 50%);
+  --button-hover-shadow: 0 6px 16px rgba(0,0,0,0.15);
+  --button-hover-text: #ffffff;
+
+  /* Shadows */
+  --card-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  --card-hover-shadow: 0 15px 45px rgba(0,0,0,0.2);
+
+  /* Status colors */
+  --success: #10b981;
+  --warn:    #f59e0b;
+  --error:   #ef4444;
+
+  /* Focus ring */
+  --focus-ring: rgba(0,210,255,0.35);
+  --focus-ring-strong: rgba(0,210,255,0.5); /* Stronger focus outline */
+
+  /* === Optional experiment styles === */
+  /* Uncomment to try alternative looks */
+  /* --body-noise: url('/images/noise.png'); */
+  /* --alt-button-gradient: radial-gradient(circle, var(--brand-accent), #fff); */
+  /* --radial-bg: radial-gradient(circle at center, #fff, var(--brand-accent)); */
+}
+
+/* Theme variables set via data-theme attribute */
 :root[data-theme="light"] {
-  --bg-start: #f5f7fa;
-  --bg-end:   #c3cfe2;
-  --fg:       #1a1f2b;
-  --accent:   #00d2ff;
+  --bg-start: var(--bg-start-light);
+  --bg-end:   var(--bg-end-light);
+  --fg:       var(--fg-light);
+  --card-gradient: linear-gradient(135deg, var(--bg-end-light) 0%, var(--bg-start-light) 100%);
+  --accent:   var(--brand-accent);
 }
 :root[data-theme="dark"] {
-  --bg-start: #2c3e50;
-  --bg-end:   #4ca1af;
-  --fg:       #e0f8f7;
-  --accent:   #00d2ff;
+  --bg-start: var(--bg-start-dark);
+  --bg-end:   var(--bg-end-dark);
+  --fg:       var(--fg-dark);
+  --card-gradient: linear-gradient(135deg, var(--bg-end-dark) 0%, var(--bg-start-dark) 100%);
+  --accent:   var(--brand-accent);
 }
+/* === END LINKER COLOR & THEME SETTINGS === */
+
 html, body {
   margin: 0;
   padding: 0;
@@ -107,7 +161,7 @@ body {
 }
 
 :focus-visible {
-    outline: 2px solid #10b981;
+    outline: 2px solid var(--success);
     /* Tailwind’s emerald-500 */
     outline-offset: 2px;
 }
@@ -141,15 +195,15 @@ body {
         align-items: center;
         padding: 20px;
         overflow-y: auto;
-        background: var(--form-gradient, #1f2937);
+        background: var(--form-gradient);
         z-index: 10;
     }
 
     #form-screen .card-wrapper {
-        background-color: #ffffff;
+        background-color: var(--card-bg);
         border-radius: 16px;
         padding: 24px;
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--card-shadow);
         width: 100%;
         max-width: 500px;
         max-height: 90vh;
@@ -172,17 +226,13 @@ body {
 
 /* Buttons & Links */
 button, .btn-reset, .btn-remove, #generate-btn, #add-link-btn {
-  background-color: rgba(255,255,255,0.85);
+  background-color: var(--button-bg);
   color: var(--fg);
-  border: 1px solid rgba(255,255,255,0.4);
+  border: 1px solid var(--button-border);
   border-radius: 0.75rem;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
-  background-image: linear-gradient(
-    90deg,
-    rgba(255,255,255,0.85) 50%,
-    var(--accent) 50%
-  );
+  background-image: var(--button-gradient);
   background-size: 200% 100%;
   background-position: 0% 0%;
   transition: background-position 0.5s ease, transform 0.3s ease, box-shadow 0.3s ease;
@@ -192,27 +242,27 @@ button:hover,
 #generate-btn:hover, #add-link-btn:hover {
   transform: translateY(-2px) scale(1.03);
   background-position: 100% 0%;
-  box-shadow: 0 6px 16px rgba(0,0,0,0.15);
-  color: #fff;
+  box-shadow: var(--button-hover-shadow);
+  color: var(--button-hover-text);
 }
 button:focus,
 .btn-reset:focus, .btn-remove:focus,
 #generate-btn:focus, #add-link-btn:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(0,210,255,0.5);
+  box-shadow: 0 0 0 3px var(--focus-ring-strong);
 }
 
 input, textarea, select {
-  background: #fff;
+  background: var(--input-bg);
   color: var(--fg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-color);
   border-radius: 0.5rem;
   padding: 0.75rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 input:focus, textarea:focus, select:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(0,210,255,0.35);
+  box-shadow: 0 0 0 3px var(--focus-ring);
   outline: none;
 }
 
@@ -232,20 +282,16 @@ input:focus, textarea:focus, select:focus {
 
 .card-wrapper,
 #output-card {
-  background: linear-gradient(
-    135deg,
-    var(--bg-end) 0%,
-    var(--bg-start) 100%
-  );
+  background: var(--card-gradient);
   color: var(--fg);
   border-radius: 1rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  box-shadow: var(--card-shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .card-wrapper:hover,
 #output-card:hover {
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+  box-shadow: var(--card-hover-shadow);
 }
 
 @keyframes fadeInUp {
