@@ -169,6 +169,8 @@ html, body {
   transform: translateX(-50%);
   width: 85%;
   max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
   padding: 1.25rem 1.75rem;
   background: var(--header-bg);
   border: 1px solid var(--header-border);
@@ -199,6 +201,8 @@ html, body {
   .dynamic-header {
     top: 1.5rem;
     width: calc(100% - 1rem);
+    margin-left: auto;
+    margin-right: auto;
     padding: 1rem 1.25rem;
   }
 }
@@ -321,7 +325,7 @@ a:hover {
         background-color: var(--card-bg);
         border: 1px solid var(--card-border);
         border-radius: 1.5rem;
-        padding: 2rem;
+        padding: 2.5rem;
         box-shadow: var(--card-shadow);
         width: 100%;
         max-width: 560px;
@@ -526,7 +530,7 @@ button:active {
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1.5rem;
   width: 100%;
 }
 
