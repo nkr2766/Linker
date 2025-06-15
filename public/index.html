@@ -29,7 +29,7 @@
 
 </head>
 
-<body class="flex flex-col min-h-full">
+<body>
   <!-- hidden by default, we'll show it when needed -->
   <button
     id="reset-btn"
@@ -38,17 +38,7 @@
     🔄 Reset
   </button>
 
-  <div class="dynamic-header animate-fadeInUp" role="banner">
-    <div class="header-content">
-      <div class="header-left">
-        <img src="images/logo.png" alt="Linker Logo" class="header-logo" />
-        <span class="header-title">Linker</span>
-      </div>
-      <div class="header-right">
-        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">🌗</button>
-      </div>
-    </div>
-  </div>
+  <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">🌗</button>
 
 
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
@@ -260,21 +250,21 @@
             </div>
 
             <!-- Theme Customization -->
-            <div class="form-group">
+            <div class="form-group color-row">
                 <label for="gradient-start" class="font-medium text-gray-700">Background Gradient Start</label>
-                <input id="gradient-start" type="color" value="#a7f3d0" autocomplete="off" class="w-full h-10" />
+                <input id="gradient-start" type="color" value="#a7f3d0" autocomplete="off" class="color-input" />
             </div>
-            <div class="form-group">
+            <div class="form-group color-row">
                 <label for="gradient-end" class="font-medium text-gray-700">Background Gradient End</label>
-                <input id="gradient-end" type="color" value="#6ee7b7" autocomplete="off" class="w-full h-10" />
+                <input id="gradient-end" type="color" value="#6ee7b7" autocomplete="off" class="color-input" />
             </div>
-            <div class="form-group">
+            <div class="form-group color-row">
                 <label for="card-color" class="font-medium text-gray-700">Card Background Color</label>
-                <input id="card-color" type="color" value="#ffffff" autocomplete="off" class="w-full h-10" />
+                <input id="card-color" type="color" value="#ffffff" autocomplete="off" class="color-input" />
             </div>
-            <div class="form-group">
+            <div class="form-group color-row">
                 <label for="card-text-color" class="font-medium text-gray-700">Card Text Color</label>
-                <input id="card-text-color" type="color" value="#111827" autocomplete="off" class="w-full h-10" />
+                <input id="card-text-color" type="color" value="#111827" autocomplete="off" class="color-input" />
             </div>
             <div class="form-group">
                 <label for="card-image" class="font-medium text-gray-700">Card Background Image (optional)</label>
@@ -288,7 +278,7 @@
             </div>
 
             <!-- Links Wrapper (each link row is added via JS) -->
-            <div id="links-wrapper" class="space-y-4 bg-gray-800 p-4 rounded-lg"></div>
+            <div id="links-wrapper" class="space-y-6 bg-gray-800 p-4 rounded-lg"></div>
             <div class="form-group mt-6">
                 <button id="add-link-btn"
                     class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">

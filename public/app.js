@@ -649,9 +649,9 @@ function showBuilderForm(prefillData = null) {
     cardImageInput.value = "";
 
     // Hide errors
-    fadeOutElement(errorProfilePic, 0);
-    fadeOutElement(errorUsername, 0);
-    fadeOutElement(errorLinks, 0);
+    fadeOutElement(errorProfilePic);
+    fadeOutElement(errorUsername);
+    fadeOutElement(errorLinks);
 
     if (prefillData) {
         // Prefill picture (we’ll use data URL)
@@ -709,7 +709,7 @@ function showBuilderForm(prefillData = null) {
 function addLinkRow(prefill = null) {
     const rowIndex = linkRows.length;
     const rowDiv = document.createElement("div");
-    rowDiv.className = "space-y-1 bg-gray-800 p-4 rounded-lg";
+    rowDiv.className = "space-y-5 bg-gray-800 p-4 rounded-lg";
     rowDiv.setAttribute("draggable", "true");
 
     // 1) Label input
@@ -764,7 +764,7 @@ function addLinkRow(prefill = null) {
     // 4) Error text below URL
     const errorText = document.createElement("p");
     errorText.id = `error-url-${rowIndex}`;
-    errorText.className = "text-sm text-red-500 hidden";
+    errorText.className = "text-sm text-red-500 fade-message hidden";
     errorText.setAttribute("role", "alert");
     errorText.textContent = "Please enter a valid URL.";
 
