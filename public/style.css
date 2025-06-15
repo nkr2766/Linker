@@ -511,9 +511,20 @@ button:active {
 }
 
 .color-row {
+  display: flex;
   flex-direction: row;
   align-items: center;
   gap: 1rem;
+  width: 100%;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: row;
+  gap: 1.3rem;
+  width: 100%;
+  justify-content: center;
+  margin-bottom: 1.2rem;
 }
 
 .color-input {

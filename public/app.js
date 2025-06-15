@@ -773,7 +773,7 @@ function addLinkRow(prefill = null) {
     deleteBtn.type = "button";
     deleteBtn.innerHTML = '<i class="fa fa-trash text-red-500" aria-hidden="true"></i>';
     deleteBtn.setAttribute("aria-label", "Remove this link");
-    deleteBtn.className = "mt-2 focus:outline-none focus:ring-2 focus:ring-red-500 rounded-full";
+    deleteBtn.className = "focus:outline-none focus:ring-2 focus:ring-red-500 rounded-full";
     deleteBtn.addEventListener("click", () => {
         linksWrapper.removeChild(rowDiv);
         linkRows = linkRows.filter((r) => r.container !== rowDiv);
@@ -790,7 +790,7 @@ function addLinkRow(prefill = null) {
     moveUpBtn.innerHTML = '<i class="fa fa-arrow-up" aria-hidden="true"></i>';
     moveUpBtn.setAttribute("aria-label", "Move this link up");
     moveUpBtn.className =
-        "ml-2 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
+        "text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
     moveUpBtn.addEventListener("click", () => {
         const idx = linkRows.findIndex((r) => r.container === rowDiv);
         if (idx > 0) {
@@ -805,7 +805,7 @@ function addLinkRow(prefill = null) {
     moveDownBtn.innerHTML = '<i class="fa fa-arrow-down" aria-hidden="true"></i>';
     moveDownBtn.setAttribute("aria-label", "Move this link down");
     moveDownBtn.className =
-        "ml-1 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
+        "text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-emerald-400 rounded";
     moveDownBtn.addEventListener("click", () => {
         const idx = linkRows.findIndex((r) => r.container === rowDiv);
         if (idx < linkRows.length - 1) {
@@ -873,9 +873,13 @@ function addLinkRow(prefill = null) {
     rowDiv.appendChild(iconSelect);
     rowDiv.appendChild(urlInput);
     rowDiv.appendChild(errorText);
-    rowDiv.appendChild(deleteBtn);
-    rowDiv.appendChild(moveUpBtn);
-    rowDiv.appendChild(moveDownBtn);
+
+    const btnGroup = document.createElement("div");
+    btnGroup.className = "button-group";
+    btnGroup.appendChild(deleteBtn);
+    btnGroup.appendChild(moveUpBtn);
+    btnGroup.appendChild(moveDownBtn);
+    rowDiv.appendChild(btnGroup);
     linksWrapper.appendChild(rowDiv);
 
     linkRows.push({ container: rowDiv, labelInput, iconSelect, urlInput, errorText });
