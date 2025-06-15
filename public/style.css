@@ -159,16 +159,27 @@ html, body {
 /* header at top */
 header {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 2rem);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 0.75rem 1.25rem;
   background: var(--header-bg);
-  border-bottom: 1px solid var(--header-border);
+  border: 1px solid var(--header-border);
+  border-radius: 1rem;
+  backdrop-filter: blur(14px);
   box-shadow: var(--header-shadow);
+  gap: 1rem;
+  z-index: 30;
+}
+@media (max-width: 640px) {
+  header {
+    padding: 0.5rem 1rem;
+    width: calc(100% - 1rem);
+  }
 }
 header img {
   height: var(--logo-size);
@@ -374,10 +385,12 @@ input:focus, textarea:focus, select:focus {
 .card-wrapper,
 #output-card {
   background: var(--card-gradient);
+  backdrop-filter: blur(14px);
   color: var(--fg);
   border: 1px solid var(--card-border);
   border-radius: 1.25rem;
   box-shadow: var(--card-shadow);
+  padding: 2rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .card-wrapper:hover,

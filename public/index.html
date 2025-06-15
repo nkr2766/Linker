@@ -38,7 +38,7 @@
     🔄 Reset
   </button>
 
-  <header role="banner">
+  <header role="banner" class="animate-fadeInUp">
     <img src="/images/logo.png" alt="Linker Logo" />
     <button id="theme-toggle" aria-label="Toggle theme">🌗</button>
   </header>
@@ -64,11 +64,13 @@
     <!-- C) LOGIN SCREEN (Landing Page with three big buttons)                        -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
   <div id="login-screen" class="screen hidden">
-    <h1>Welcome to Linker</h1>
-    <div class="buttons">
-      <button id="btn-admin-login" class="py-3 px-6 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">Admin Login</button>
-      <button id="btn-user-login" class="py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">User Login</button>
-      <button id="btn-use-access-code" class="py-3 px-6 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">Sign Up with Access Code</button>
+    <div class="card-wrapper space-y-6 animate-fadeInUp">
+      <h1>Welcome to Linker</h1>
+      <div class="buttons">
+        <button id="btn-admin-login" class="py-3 px-6 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">Admin Login</button>
+        <button id="btn-user-login" class="py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">User Login</button>
+        <button id="btn-use-access-code" class="py-3 px-6 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">Sign Up with Access Code</button>
+      </div>
     </div>
   </div>
 
@@ -80,8 +82,8 @@
     <!-- D) ADMIN LOGIN SCREEN                                                         -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="admin-login-screen" class="screen hidden">
-        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md">
-            <h2 class="text-2xl font-semibold text-gray-900 mb-4">Admin Login</h2>
+        <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
+            <h2 class="text-2xl font-semibold text-gray-900">Admin Login</h2>
             <form id="admin-login-form" class="stack-form">
                 <p id="admin-error" class="text-red-500 text-sm hidden" role="alert"></p>
                 <div class="form-group">
@@ -111,7 +113,7 @@
     <!-- E) ADMIN PANEL (Create Codes / Build Form / Logout)                           -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="admin-panel" class="screen hidden">
-        <div class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6 portal-grid">
+        <div class="card-wrapper w-full max-w-md space-y-6 portal-grid animate-fadeInUp">
             <h2 class="text-2xl font-semibold text-gray-900">Admin Panel</h2>
 
             <!-- Create Access Code -->
@@ -143,7 +145,8 @@
     <!-- F) USER LOGIN SCREEN                                                          -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="user-login-screen" class="screen hidden">
-        <h2 class="text-2xl font-semibold text-gray-900 mb-4">User Login</h2>
+        <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
+        <h2 class="text-2xl font-semibold text-gray-900">User Login</h2>
         <form id="user-login-form" class="stack-form">
             <p id="user-error" class="text-red-500 text-sm hidden" role="alert"></p>
             <div class="form-group">
@@ -173,6 +176,7 @@
     <!-- G) USER SIGNUP SCREEN (Access Code → Email → Password)                        -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="user-signup-screen" class="screen hidden">
+        <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
         <form id="user-signup-form" class="stack-form">
             <p id="signup-code-error" class="text-red-500 text-sm hidden" role="alert"></p>
             <div class="form-group">
@@ -217,7 +221,7 @@
     <!-- I) BUILDER FORM SCREEN (Upload Picture / Handle / Tagline / Links)            -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
 <div id="form-screen" class="screen hidden overflow-y-auto pt-6 px-4">
-  <div class="card-wrapper w-full max-w-md bg-white/75 backdrop-blur-md rounded-2xl shadow-lg p-6 space-y-6">
+  <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
     <h2 class="text-2xl font-semibold text-gray-900">Build Your Linktree</h2>
             <p class="text-gray-800">
                 Upload a profile picture, add your handle, tagline, and links below.
@@ -310,7 +314,7 @@
     <!-- K) LINKTREE OUTPUT SCREEN (Profile + Links + Back / Download)                -->
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="linktree-screen" class="screen hidden px-4">
-        <div id="output-card" class="bg-white rounded-xl shadow-lg p-8 w-full max-w-md space-y-6 animate-fadeInUp">
+        <div id="output-card" class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
             <div class="flex flex-col items-center space-y-4">
                 <img id="output-profile-pic" src="" alt="Profile Picture"
                 <p id="output-tagline" class="text-gray-700">
