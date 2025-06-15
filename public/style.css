@@ -1,35 +1,48 @@
-/* === LINKER COLOR & THEME SETTINGS === */
-/* Edit colors, gradients, and shadows below */
+/* === LINKER DESIGN SYSTEM VARIABLES === */
+/* === Edit below for color surgery === */
 :root {
-  /* Brand accent color */
-  --brand-accent: #00d2ff; /* Change this for the main brand accent */
+  /* Brand accent used throughout the UI */
+  --brand-accent: #00d2ff;
 
-  /* Light mode palette */
-  --bg-start-light: #f5f7fa; /* Change for light gradient start */
-  --bg-end-light:   #c3cfe2; /* Change for light gradient end */
-  --fg-light:       #1a1f2b; /* Light mode text color */
+  /* Gradient background colors */
+  --bg-start-light: #f5f7fa; /* Light gradient start */
+  --bg-end-light:   #c3cfe2; /* Light gradient end */
+  --bg-start-dark: #2c3e50;  /* Dark gradient start */
+  --bg-end-dark:   #4ca1af;  /* Dark gradient end */
 
-  /* Dark mode palette */
-  --bg-start-dark: #2c3e50;  /* Change for dark gradient start */
-  --bg-end-dark:   #4ca1af;  /* Change for dark gradient end */
-  --fg-dark:       #e0f8f7;  /* Dark mode text color */
+  /* Base text colors */
+  --fg-light: #1a1f2b;
+  --fg-dark:  #e0f8f7;
 
-  /* Borders and surfaces */
-  --border-color: #d1d5db;   /* Form/input borders */
-  --input-bg: #ffffff;       /* Input background */
-  --card-bg: #ffffff;        /* Card base color */
-  --form-gradient: #1f2937;  /* Builder screen background */
+  /* Card appearance */
+  --card-bg: #ffffff;             /* Solid card background */
+  --card-border: #d1d5db;         /* Card border color */
+  --card-shadow: 0 10px 30px rgba(0,0,0,0.15);    /* Default card shadow */
+  --card-hover-shadow: 0 15px 45px rgba(0,0,0,0.2); /* Hover shadow */
 
-  /* Button styling */
-  --button-bg: rgba(255,255,255,0.85);
-  --button-border: rgba(255,255,255,0.4);
-  --button-gradient: linear-gradient(90deg, rgba(255,255,255,0.85) 50%, var(--brand-accent) 50%);
-  --button-hover-shadow: 0 6px 16px rgba(0,0,0,0.15);
-  --button-hover-text: #ffffff;
+  /* Button appearance */
+  --button-bg: rgba(255,255,255,0.85);            /* Button base color */
+  --button-text: var(--fg-light);                 /* Button text */
+  --button-border: rgba(255,255,255,0.4);         /* Button border */
+  --button-gradient: linear-gradient(90deg, rgba(255,255,255,0.85) 50%, var(--brand-accent) 50%); /* Sliding gradient */
+  --button-hover-shadow: 0 6px 16px rgba(0,0,0,0.15); /* Hover shadow */
+  --button-hover-text: #ffffff;                   /* Hover text */
 
-  /* Shadows */
-  --card-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  --card-hover-shadow: 0 15px 45px rgba(0,0,0,0.2);
+  /* Header & logo */
+  --header-bg: transparent;       /* Header background */
+  --header-border: transparent;   /* Header bottom border */
+  --logo-size: 3.6rem;            /* Logo height */
+  --splash-logo-width: 190px;     /* Splash logo width */
+
+  /* Links */
+  --link-color: var(--brand-accent);
+
+  /* Input fields */
+  --input-bg: #ffffff;            /* Input background */
+  --border-color: #d1d5db;        /* Generic border color */
+
+  /* Form screen background */
+  --form-gradient: #1f2937;
 
   /* Status colors */
   --success: #10b981;
@@ -38,12 +51,10 @@
 
   /* Focus ring */
   --focus-ring: rgba(0,210,255,0.35);
-  --focus-ring-strong: rgba(0,210,255,0.5); /* Stronger focus outline */
+  --focus-ring-strong: rgba(0,210,255,0.5);
 
-  /* === Optional experiment styles === */
-  /* Uncomment to try alternative looks */
+  /* === Optional backgrounds === */
   /* --body-noise: url('/images/noise.png'); */
-  /* --alt-button-gradient: radial-gradient(circle, var(--brand-accent), #fff); */
   /* --radial-bg: radial-gradient(circle at center, #fff, var(--brand-accent)); */
 }
 
@@ -62,7 +73,7 @@
   --card-gradient: linear-gradient(135deg, var(--bg-end-dark) 0%, var(--bg-start-dark) 100%);
   --accent:   var(--brand-accent);
 }
-/* === END LINKER COLOR & THEME SETTINGS === */
+/* === END LINKER DESIGN SYSTEM VARIABLES === */
 
 html, body {
   margin: 0;
@@ -92,6 +103,12 @@ header {
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+}
+header img {
+  height: var(--logo-size);
+  width: auto;
 }
 
 /* vertical stack for buttons inside any .screen */
@@ -114,20 +131,29 @@ header {
 body {
   color: var(--fg);
   font-family: 'Poppins', sans-serif;
+  background: linear-gradient(120deg, var(--bg-start), var(--bg-end));
+}
+a {
+  color: var(--link-color);
+}
+a:hover {
+  text-decoration: underline;
 }
 
 #startup-screen {
-  position: fixed; inset: 0; background: var(--bg-start);
+  position: fixed; inset: 0;
+  background: linear-gradient(120deg, var(--bg-start), var(--bg-end));
   display: flex; align-items: center; justify-content: center;
   z-index: 100;
 }
 #startup-logo {
   animation: logoGrow 1200ms ease-out forwards;
+  width: var(--splash-logo-width);
 }
 @keyframes logoGrow {
-  0%   { opacity: 0; transform: scale(0.5); }
-  80%  { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 1; transform: scale(1); }
+  0%   { opacity: 0;   transform: scale(1.35); }
+  80%  { opacity: 1;   transform: scale(3.4); }
+  100% { opacity: 1;   transform: scale(3.4); }
 }
 #startup-screen.reveal {
   animation: fadeOut 500ms ease-in-out 1200ms forwards;
@@ -201,6 +227,7 @@ body {
 
     #form-screen .card-wrapper {
         background-color: var(--card-bg);
+        border: 1px solid var(--card-border);
         border-radius: 16px;
         padding: 24px;
         box-shadow: var(--card-shadow);
@@ -227,7 +254,7 @@ body {
 /* Buttons & Links */
 button, .btn-reset, .btn-remove, #generate-btn, #add-link-btn {
   background-color: var(--button-bg);
-  color: var(--fg);
+  color: var(--button-text);
   border: 1px solid var(--button-border);
   border-radius: 0.75rem;
   padding: 0.75rem 1.5rem;
@@ -284,6 +311,7 @@ input:focus, textarea:focus, select:focus {
 #output-card {
   background: var(--card-gradient);
   color: var(--fg);
+  border: 1px solid var(--card-border);
   border-radius: 1rem;
   box-shadow: var(--card-shadow);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
