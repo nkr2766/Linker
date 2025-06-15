@@ -39,7 +39,10 @@
   </button>
 
   <header role="banner" class="animate-fadeInUp">
-    <img src="/images/logo.png" alt="Linker Logo" />
+    <div class="flex items-center space-x-3">
+      <img src="/images/logo.png" alt="Linker Logo" />
+      <span class="text-xl font-semibold">Linker</span>
+    </div>
     <button id="theme-toggle" aria-label="Toggle theme">🌗</button>
   </header>
 
@@ -85,7 +88,7 @@
         <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
             <h2 class="text-2xl font-semibold text-gray-900">Admin Login</h2>
             <form id="admin-login-form" class="stack-form">
-                <p id="admin-error" class="text-red-500 text-sm hidden" role="alert"></p>
+                <p id="admin-error" class="text-red-500 text-sm fade-message hidden" role="alert"></p>
                 <div class="form-group">
                     <label for="admin-email" class="font-medium text-gray-700">Email</label>
                     <input id="admin-email" type="email" placeholder="admin@linkerapp.com" autocomplete="off"
@@ -103,7 +106,7 @@
                     </button>
                 </div>
             </form>
-            <button id="admin-login-back" class="mt-2 text-gray-700 hover:underline focus:outline-none">
+            <button id="admin-login-back" class="mt-6 text-gray-700 hover:underline focus:outline-none">
                 ← Back
             </button>
         </div>
@@ -117,14 +120,14 @@
             <h2 class="text-2xl font-semibold text-gray-900">Admin Panel</h2>
 
             <!-- Create Access Code -->
-            <div class="space-y-2">
+            <div class="space-y-4">
                 <input id="new-access-code" type="text" placeholder="Enter new access code" autocomplete="off"
                     class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
                 <button id="create-code-btn"
                     class="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
                     Generate Access Code
                 </button>
-                <p id="admin-code-success" class="text-green-600 text-sm hidden"></p>
+                <p id="admin-code-success" class="text-green-600 text-sm fade-message hidden"></p>
             </div>
 
             <!-- Build Form Shortcut -->
@@ -148,7 +151,7 @@
         <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
         <h2 class="text-2xl font-semibold text-gray-900">User Login</h2>
         <form id="user-login-form" class="stack-form">
-            <p id="user-error" class="text-red-500 text-sm hidden" role="alert"></p>
+          <p id="user-error" class="text-red-500 text-sm fade-message hidden" role="alert"></p>
             <div class="form-group">
                 <label for="user-email" class="font-medium text-gray-700">Email</label>
                 <input id="user-email" type="email" placeholder="you@example.com" autocomplete="off"
@@ -166,7 +169,7 @@
                 </button>
             </div>
         </form>
-        <button id="user-login-back" class="mt-2 text-gray-700 hover:underline focus:outline-none">
+        <button id="user-login-back" class="mt-6 text-gray-700 hover:underline focus:outline-none">
             ← Back
         </button>
         </div>
@@ -178,7 +181,7 @@
     <div id="user-signup-screen" class="screen hidden">
         <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
         <form id="user-signup-form" class="stack-form">
-            <p id="signup-code-error" class="text-red-500 text-sm hidden" role="alert"></p>
+              <p id="signup-code-error" class="text-red-500 text-sm fade-message hidden" role="alert"></p>
             <div class="form-group">
                 <label for="signup-code" class="font-medium text-gray-700">Access Code</label>
                 <input id="signup-code" type="text" placeholder="Enter access code" autocomplete="off"
@@ -200,9 +203,9 @@
                     Create Account
                 </button>
             </div>
-            <p id="signup-success" class="text-green-600 text-sm hidden">Account created!</p>
+            <p id="signup-success" class="text-green-600 text-sm fade-message hidden">Account created!</p>
         </form>
-        <button id="signup-back" class="mt-2 text-gray-700 hover:underline focus:outline-none">
+        <button id="signup-back" class="mt-6 text-gray-700 hover:underline focus:outline-none">
             ← Back
         </button>
         </div>
@@ -232,7 +235,7 @@
                 <label for="profile-pic-file" class="font-medium text-gray-700">Profile Picture</label>
                 <input id="profile-pic-file" type="file" accept="image/*" autocomplete="off"
                     class="w-full block text-sm text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-400" />
-                <p id="error-profile-pic" class="text-red-500 text-sm hidden">Please upload a valid image.</p>
+                <p id="error-profile-pic" class="text-red-500 text-sm fade-message hidden">Please upload a valid image.</p>
             </div>
 
             <!-- Username (Handle) -->
@@ -240,7 +243,7 @@
                 <label for="username" class="font-medium text-gray-700">Username (handle)</label>
                 <input id="username" type="text" placeholder="@yourhandle" autocomplete="off"
                     class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
-                <p id="error-username" class="text-red-500 text-sm hidden">Please enter a valid handle (e.g. @john_doe).</p>
+                <p id="error-username" class="text-red-500 text-sm fade-message hidden">Please enter a valid handle (e.g. @john_doe).</p>
             </div>
 
             <!-- Tagline (optional) -->
@@ -282,15 +285,15 @@
 
             <!-- Links Wrapper (each link row is added via JS) -->
             <div id="links-wrapper" class="space-y-4 bg-gray-800 p-4 rounded-lg"></div>
-            <div class="form-group">
+            <div class="form-group mt-6">
                 <button id="add-link-btn"
                     class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
                     + Add New Link
                 </button>
             </div>
-            <p id="error-links" class="text-red-500 text-sm hidden">
-                At least one valid link is required.
-            </p>
+              <p id="error-links" class="text-red-500 text-sm fade-message hidden">
+                  At least one valid link is required.
+              </p>
 
 
             <hr class="my-8 border-t border-gray-300" />

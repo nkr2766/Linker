@@ -168,6 +168,28 @@ function delay(ms) {
     return new window.Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function fadeInElement(el, duration = 500) {
+    if (!el) return;
+    el.style.opacity = 0;
+    el.classList.remove('hidden');
+    el.style.transition = `opacity ${duration}ms`;
+    requestAnimationFrame(() => {
+        el.style.opacity = 1;
+    });
+}
+
+function fadeOutElement(el, duration = 500) {
+    if (!el) return;
+    el.style.opacity = 1;
+    el.style.transition = `opacity ${duration}ms`;
+    requestAnimationFrame(() => {
+        el.style.opacity = 0;
+    });
+    setTimeout(() => {
+        el.classList.add('hidden');
+    }, duration);
+}
+
 function hideAllScreens() {
     [
         loginScreen,
@@ -390,12 +412,12 @@ adminLoginForm.addEventListener("submit", async (e) => {
         } catch (err) {
             console.error("Admin signIn error:", err);
             adminError.textContent = "Authentication error—check console.";
-            adminError.classList.remove("hidden");
+            fadeInElement(adminError);
             showToast('Admin login failed', 'error');
         }
     } else {
         adminError.textContent = "Incorrect admin credentials.";
-        adminError.classList.remove("hidden");
+        fadeInElement(adminError);
     }
     hideGlobalLoader();
 });
@@ -404,6 +426,7 @@ adminLoginBack.addEventListener("click", () => {
     hideAllScreens();
     loginScreen.classList.remove("hidden");
     loginScreen.classList.add("flex");
+    fadeOutElement(adminError);
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -416,6 +439,7 @@ async function showAdminPanel() {
     adminPanel.classList.add("flex");
     newAccessCodeInput.value = "";
     adminCodeSuccess.classList.add("hidden");
+    fadeOutElement(adminError);
 }
 
 // Generate a new access code (Firestore “codes” collection)
@@ -427,13 +451,15 @@ createCodeBtn.addEventListener("click", async () => {
     const docRef = doc(db, "codes", code);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-        adminCodeSuccess.textContent = `Code “${code}" already exists.`;
-        adminCodeSuccess.classList.remove("hidden");
+        adminCodeSuccess.textContent = `Code "${code}" already exists.`;
+        fadeInElement(adminCodeSuccess);
+        setTimeout(() => fadeOutElement(adminCodeSuccess), 1500);
         showToast('Code already exists', 'warning');
     } else {
         await setDoc(docRef, { createdAt: serverTimestamp() });
-        adminCodeSuccess.textContent = `Code “${code}” created!`;
-        adminCodeSuccess.classList.remove("hidden");
+        adminCodeSuccess.textContent = `Code "${code}" created!`;
+        fadeInElement(adminCodeSuccess);
+        setTimeout(() => fadeOutElement(adminCodeSuccess), 1500);
         showToast('Access code created', 'success');
     }
     newAccessCodeInput.value = "";
@@ -470,7 +496,7 @@ userLoginForm.addEventListener("submit", async (e) => {
 
     if (!email || !pass) {
         userError.textContent = "Email & password are required.";
-        userError.classList.remove("hidden");
+        fadeInElement(userError);
         return;
     }
 
@@ -482,7 +508,7 @@ userLoginForm.addEventListener("submit", async (e) => {
     } catch (err) {
         console.error("User login error:", err);
         userError.textContent = "Invalid email or password.";
-        userError.classList.remove("hidden");
+        fadeInElement(userError);
         showToast('Login failed', 'error');
     }
     hideGlobalLoader();
@@ -506,7 +532,7 @@ userSignupForm.addEventListener("submit", async (e) => {
 
     if (!code || !email || !pass) {
         signupCodeError.textContent = "All fields are required.";
-        signupCodeError.classList.remove("hidden");
+        fadeInElement(signupCodeError);
         return;
     }
 
@@ -515,7 +541,7 @@ userSignupForm.addEventListener("submit", async (e) => {
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) {
         signupCodeError.textContent = "Invalid or expired access code.";
-        signupCodeError.classList.remove("hidden");
+        fadeInElement(signupCodeError);
         return;
     }
 
@@ -527,8 +553,9 @@ userSignupForm.addEventListener("submit", async (e) => {
 
         showToast('Account created', 'success');
 
-        signupCodeError.classList.add("hidden");
-        signupSuccess.classList.remove("hidden");
+        fadeOutElement(signupCodeError);
+        fadeInElement(signupSuccess);
+        setTimeout(() => fadeOutElement(signupSuccess), SIGNUP_SUCCESS_DELAY_MS);
 
         // Slight pause so user sees “Account created!” briefly
         setTimeout(() => {
@@ -538,7 +565,7 @@ userSignupForm.addEventListener("submit", async (e) => {
     } catch (err) {
         console.error("Error creating user:", err);
         signupCodeError.textContent = "Signup failed—email may already be in use.";
-        signupCodeError.classList.remove("hidden");
+        fadeInElement(signupCodeError);
         showToast('Signup failed', 'error');
     }
     hideGlobalLoader();
@@ -622,9 +649,9 @@ function showBuilderForm(prefillData = null) {
     cardImageInput.value = "";
 
     // Hide errors
-    errorProfilePic.classList.add("hidden");
-    errorUsername.classList.add("hidden");
-    errorLinks.classList.add("hidden");
+    fadeOutElement(errorProfilePic, 0);
+    fadeOutElement(errorUsername, 0);
+    fadeOutElement(errorLinks, 0);
 
     if (prefillData) {
         // Prefill picture (we’ll use data URL)
@@ -875,14 +902,14 @@ addLinkBtn.addEventListener("click", () => {
 profilePicFileInput.addEventListener("change", () => {
     const file = profilePicFileInput.files[0];
     if (file && file.type.startsWith("image/")) {
-        errorProfilePic.classList.add("hidden");
+        fadeOutElement(errorProfilePic);
         const reader = new FileReader();
         reader.onload = (e) => {
             profilePicDataURL = e.target.result;
         };
         reader.readAsDataURL(file);
     } else {
-        errorProfilePic.classList.remove("hidden");
+        fadeInElement(errorProfilePic);
         profilePicDataURL = "";
     }
     updateGenerateButtonState();
@@ -917,11 +944,11 @@ formUsernameInput.addEventListener("blur", () => {
     if (isValidHandle(val)) {
         formUsernameInput.classList.remove("border-red-500");
         formUsernameInput.classList.add("border-green-500");
-        errorUsername.classList.add("hidden");
+        fadeOutElement(errorUsername);
     } else {
         formUsernameInput.classList.remove("border-green-500");
         formUsernameInput.classList.add("border-red-500");
-        errorUsername.classList.remove("hidden");
+        fadeInElement(errorUsername);
     }
     updateGenerateButtonState();
 });
@@ -941,9 +968,9 @@ function updateGenerateButtonState() {
     });
 
     if (anyLinkValid) {
-        errorLinks.classList.add("hidden");
+        fadeOutElement(errorLinks);
     } else {
-        errorLinks.classList.remove("hidden");
+        fadeInElement(errorLinks);
     }
 
     if (picValid && unameValid && anyLinkValid) {
