@@ -74,6 +74,12 @@ let profilePicDataURL = "";
 // Optional background image for the card
 let cardImageDataURL = "";
 
+// --- SURGERY REGION: Splash & Loading Logic ---------------------------------
+let isAppReady = false;
+let isSplashShown = true;
+let loaderTimer = null;
+let splashFailTimer = null;
+
 // ───────────────────────────────────────────────────────────────────────────────
 // E) UI ELEMENT REFERENCES
 // ───────────────────────────────────────────────────────────────────────────────
@@ -99,6 +105,9 @@ const createCodeBtn = document.getElementById("create-code-btn");
 const adminCodeSuccess = document.getElementById("admin-code-success");
 const adminBuildFormBtn = document.getElementById("admin-build-form");
 const adminLogoutBtn = document.getElementById("admin-logout");
+
+const globalLoader = document.getElementById("global-loader");
+const toastContainer = document.getElementById("toast-container");
 
 const userLoginScreen = document.getElementById("user-login-screen");
 const userEmailInput = document.getElementById("user-email");
@@ -197,6 +206,22 @@ function downloadBlob(filename, blob) {
     URL.revokeObjectURL(url);
 }
 
+function showGlobalLoader() {
+    if (globalLoader) globalLoader.classList.remove('hidden');
+}
+function hideGlobalLoader() {
+    if (globalLoader) globalLoader.classList.add('hidden');
+}
+
+function showToast(msg, type = 'info') {
+    if (!toastContainer) return;
+    const div = document.createElement('div');
+    div.className = `toast ${type}`;
+    div.textContent = msg;
+    toastContainer.appendChild(div);
+    setTimeout(() => div.remove(), 4300);
+}
+
 function escapeHTML(str) {
     return str
         .replace(/&/g, "&amp;")
@@ -219,21 +244,43 @@ window.addEventListener('load', () => {
 
   const screen = document.getElementById('startup-screen');
   const logo   = document.getElementById('startup-logo');
-  if (screen && logo) {
-    // apply size
-    logo.style.maxWidth = '190px';
-    console.debug('[Splash] animate grow & fade');
-    screen.classList.add('reveal');
-    setTimeout(() => {
-      console.debug('[Splash] done, initApp');
-      screen.remove();
+  if (logo) logo.style.maxWidth = '190px';
+  if (screen) screen.classList.add('reveal');
+
+  loaderTimer = setTimeout(() => {
+    if (!isAppReady) showGlobalLoader();
+  }, 1000);
+
+  splashFailTimer = setTimeout(() => {
+    if (!isAppReady) {
+      console.warn('[Splash] failsafe triggered');
+      markAppReady();
       initApp();
-    }, 1100);
-  } else {
-    console.warn('[Splash] missing elements, initApp now');
-    initApp();
-  }
+    }
+  }, 3000);
+
+  setTimeout(() => {
+    if (!isAppReady) initApp();
+  }, 1200);
 });
+
+function removeSplash() {
+    const screen = document.getElementById('startup-screen');
+    if (screen) {
+        screen.classList.add('reveal');
+        setTimeout(() => screen.remove(), 500);
+    }
+    isSplashShown = false;
+}
+
+function markAppReady() {
+    if (isAppReady) return;
+    isAppReady = true;
+    clearTimeout(loaderTimer);
+    clearTimeout(splashFailTimer);
+    hideGlobalLoader();
+    if (isSplashShown) removeSplash();
+}
 
 // ───────────────────────────────────────────────────────────────────────────────
 // H) initApp(): Listen for Auth state changes → show the correct “screen”        //
@@ -246,19 +293,26 @@ function initApp() {
             loginScreen.classList.remove("hidden");
             loginScreen.classList.add("flex");
             resetBtn.style.display = "none";
+            markAppReady();
         } else {
             const email = firebaseUser.email.toLowerCase();
             if (email === ADMIN_EMAIL.toLowerCase()) {
                 // Admin signed in
                 showAdminPanel();
                 resetBtn.style.display = "block";
+                markAppReady();
             } else {
                 // Regular user signed in
                 hideAllScreens();
                 resetBtn.style.display = "block";
                 startAppFlow(firebaseUser.email);
+                markAppReady();
             }
         }
+    }, err => {
+        console.error('[Auth] onAuthStateChanged error', err);
+        showToast('Authentication error', 'error');
+        markAppReady();
     });
 }
 
@@ -303,6 +357,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // J) ADMIN LOGIN LOGIC                                                           //
 // ───────────────────────────────────────────────────────────────────────────────
 adminLoginSubmit.addEventListener("click", async () => {
+    showGlobalLoader();
     const email = adminEmailInput.value.trim().toLowerCase();
     const pass = adminPasswordInput.value.trim();
 
@@ -315,11 +370,13 @@ adminLoginSubmit.addEventListener("click", async () => {
             console.error("Admin signIn error:", err);
             adminError.textContent = "Authentication error—check console.";
             adminError.classList.remove("hidden");
+            showToast('Admin login failed', 'error');
         }
     } else {
         adminError.textContent = "Incorrect admin credentials.";
         adminError.classList.remove("hidden");
     }
+    hideGlobalLoader();
 });
 
 adminLoginBack.addEventListener("click", () => {
@@ -342,20 +399,24 @@ async function showAdminPanel() {
 
 // Generate a new access code (Firestore “codes” collection)
 createCodeBtn.addEventListener("click", async () => {
+    showGlobalLoader();
     const code = newAccessCodeInput.value.trim();
-    if (!code) return;
+    if (!code) { hideGlobalLoader(); return; }
 
     const docRef = doc(db, "codes", code);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-        adminCodeSuccess.textContent = `Code “${code}” already exists.`;
+        adminCodeSuccess.textContent = `Code “${code}" already exists.`;
         adminCodeSuccess.classList.remove("hidden");
+        showToast('Code already exists', 'warning');
     } else {
         await setDoc(docRef, { createdAt: serverTimestamp() });
         adminCodeSuccess.textContent = `Code “${code}” created!`;
         adminCodeSuccess.classList.remove("hidden");
+        showToast('Access code created', 'success');
     }
     newAccessCodeInput.value = "";
+    hideGlobalLoader();
 });
 
 // Build Form (skip directly to the Linktree builder)
@@ -381,6 +442,7 @@ adminLogoutBtn.addEventListener("click", async () => {
 // L) USER LOGIN LOGIC                                                            //
 // ───────────────────────────────────────────────────────────────────────────────
 userLoginSubmit.addEventListener("click", async () => {
+    showGlobalLoader();
     const email = userEmailInput.value.trim().toLowerCase();
     const pass = userPasswordInput.value.trim();
 
@@ -394,11 +456,14 @@ userLoginSubmit.addEventListener("click", async () => {
         await signInWithEmailAndPassword(auth, email, pass);
         hideAllScreens();
         startAppFlow(email);
+        showToast('Logged in', 'success');
     } catch (err) {
         console.error("User login error:", err);
         userError.textContent = "Invalid email or password.";
         userError.classList.remove("hidden");
+        showToast('Login failed', 'error');
     }
+    hideGlobalLoader();
 });
 
 userLoginBack.addEventListener("click", () => {
@@ -411,6 +476,7 @@ userLoginBack.addEventListener("click", () => {
 // M) USER SIGNUP LOGIC (Access Code → Create Auth User → Delete Code)            //
 // ───────────────────────────────────────────────────────────────────────────────
 signupSubmit.addEventListener("click", async () => {
+    showGlobalLoader();
     const code = signupCodeInput.value.trim();
     const email = signupEmailInput.value.trim().toLowerCase();
     const pass = signupPasswordInput.value.trim();
@@ -436,6 +502,8 @@ signupSubmit.addEventListener("click", async () => {
         // Delete the used code so it can’t be reused
         await deleteDoc(docRef);
 
+        showToast('Account created', 'success');
+
         signupCodeError.classList.add("hidden");
         signupSuccess.classList.remove("hidden");
 
@@ -448,7 +516,9 @@ signupSubmit.addEventListener("click", async () => {
         console.error("Error creating user:", err);
         signupCodeError.textContent = "Signup failed—email may already be in use.";
         signupCodeError.classList.remove("hidden");
+        showToast('Signup failed', 'error');
     }
+    hideGlobalLoader();
 });
 
 signupBackBtn.addEventListener("click", () => {
