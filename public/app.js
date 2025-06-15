@@ -1052,10 +1052,13 @@ function renderOutput(data) {
     }
 
     const textColor = data.cardTextColor || "#111827";
-    displayUsername.style.color = textColor;
-    outputTagline.style.color = textColor;
-
-    displayUsername.textContent = data.username || "@yourhandle";
+    if (displayUsername) {
+        displayUsername.style.color = textColor;
+        displayUsername.textContent = data.username || "@yourhandle";
+    }
+    if (outputTagline) {
+        outputTagline.style.color = textColor;
+    }
 
     linksContainer.innerHTML = "";
     data.links.forEach((link) => {

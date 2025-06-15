@@ -8,221 +8,338 @@
     <link rel="apple-touch-icon" href="/images/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Linker – Build Your Linktree</title>
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-        }
-    </style>
+    <style>body { font-family: 'Poppins', sans-serif; }</style>
+
     <meta name="theme-color" content="#00d2ff">
     <link rel="manifest" href="/manifest.json" onerror="this.href='/manifest.json'">
     <meta name="description" content="Build a professional Linktree-style page instantly.">
     <meta property="og:title" content="Linker – Your Custom Linktree">
     <meta property="og:description" content="Create a beautiful link page in seconds.">
+
+    <!-- Tailwind CSS -->
     <link href="/dist/output.css" rel="stylesheet">
     <link rel="stylesheet" href="/style.css" />
+
+    <!-- Font Awesome (for the link icons, trash, arrows, etc.) -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 </head>
 
 <body>
-    <button id="reset-btn" style="display:none;position:fixed;bottom:1rem;right:1rem;z-index:50;">🔄 Reset</button>
-    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">🌗</button>
+  <!-- hidden by default, we'll show it when needed -->
+  <button
+    id="reset-btn"
+    style="display:none;position:fixed;bottom:1rem;right:1rem;z-index:50;"
+  >
+    🔄 Reset
+  </button>
 
-    <!-- ───── STARTUP OVERLAY ───── -->
+  <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">🌗</button>
+
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- A) STARTUP OVERLAY (black → fade to transparent + slide‐up text)             -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="startup-screen">
-        <img id="startup-logo" src="/images/logo.png" alt="Linker Logo" />
+      <img id="startup-logo"
+           src="/images/logo.png"
+           alt="Linker Logo" />
     </div>
+
+    <!-- Global loading spinner + toasts -->
     <div id="global-loader" class="hidden" role="status">
-        <div class="spinner" aria-hidden="true"></div>
-        <span>Loading…</span>
+      <div class="spinner" aria-hidden="true"></div>
+      <span>Loading…</span>
     </div>
     <div id="toast-container" aria-live="polite"></div>
 
-    <!-- ───── LOGIN SCREEN ───── -->
-    <div id="login-screen" class="screen hidden">
-        <div class="card-wrapper animate-fadeInUp">
-            <h1>Welcome to Linker</h1>
-            <div class="button-stack">
-                <button id="btn-admin-login">Admin Login</button>
-                <button id="btn-user-login">User Login</button>
-                <button id="btn-use-access-code">Sign Up with Access Code</button>
-            </div>
-        </div>
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- C) LOGIN SCREEN (Landing Page with three big buttons)                        -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+  <div id="login-screen" class="screen hidden">
+    <div class="card-wrapper space-y-6 animate-fadeInUp">
+      <h1>Welcome to Linker</h1>
+      <div class="buttons">
+        <button id="btn-admin-login" class="py-3 px-6 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">Admin Login</button>
+        <button id="btn-user-login" class="py-3 px-6 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">User Login</button>
+        <button id="btn-use-access-code" class="py-3 px-6 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">Sign Up with Access Code</button>
+      </div>
     </div>
+  </div>
 
-    <!-- ───── ADMIN LOGIN ───── -->
+  <!-- repeat the "class=\"screen hidden\"" wrapper on every full-page <div> 
+       (#admin-panel, #user-login-screen, #user-signup-screen, 
+        #welcome-screen, #form-screen, #loader-screen, #linktree-screen) -->
+
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- D) ADMIN LOGIN SCREEN                                                         -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="admin-login-screen" class="screen hidden">
-        <div class="card-wrapper animate-fadeInUp">
-            <h2>Admin Login</h2>
+        <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
+            <h2 class="text-2xl font-semibold text-gray-900">Admin Login</h2>
             <form id="admin-login-form" class="stack-form">
-                <p id="admin-error" class="fade-message hidden" role="alert"></p>
+                <p id="admin-error" class="text-red-500 text-sm fade-message hidden" role="alert"></p>
                 <div class="form-group">
-                    <label for="admin-email">Email</label>
-                    <input id="admin-email" type="email" placeholder="admin@linkerapp.com" autocomplete="off" />
+                    <label for="admin-email" class="font-medium text-gray-700">Email</label>
+                    <input id="admin-email" type="email" placeholder="admin@linkerapp.com" autocomplete="off"
+                        class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400" />
                 </div>
                 <div class="form-group">
-                    <label for="admin-password">Password</label>
-                    <input id="admin-password" type="password" placeholder="Password" autocomplete="off" />
+                    <label for="admin-password" class="font-medium text-gray-700">Password</label>
+                    <input id="admin-password" type="password" placeholder="Password" autocomplete="off"
+                        class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400" />
                 </div>
-                <div class="button-stack">
-                    <button id="admin-login-submit" type="submit">Login</button>
-                    <button id="admin-login-back" type="button" class="secondary-btn">← Back</button>
+                <div class="form-group">
+                    <button id="admin-login-submit" type="submit"
+                        class="w-full py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
+                        Login
+                    </button>
                 </div>
             </form>
+            <button id="admin-login-back" class="mt-6 text-gray-700 hover:underline focus:outline-none">
+                ← Back
+            </button>
         </div>
     </div>
 
-    <!-- ───── ADMIN PANEL ───── -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- E) ADMIN PANEL (Create Codes / Build Form / Logout)                           -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="admin-panel" class="screen hidden">
-        <div class="card-wrapper animate-fadeInUp">
-            <h2>Admin Panel</h2>
-            <div>
+        <div class="card-wrapper w-full max-w-md space-y-6 portal-grid animate-fadeInUp">
+            <h2 class="text-2xl font-semibold text-gray-900">Admin Panel</h2>
+
+            <!-- Create Access Code -->
+            <div class="space-y-4">
                 <input id="new-access-code" type="text" placeholder="Enter new access code" autocomplete="off"
-                    class="admin-panel-input" />
-                <button id="create-code-btn">Generate Access Code</button>
-                <p id="admin-code-success" class="fade-message hidden"></p>
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+                <button id="create-code-btn"
+                    class="w-full py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Generate Access Code
+                </button>
+                <p id="admin-code-success" class="text-green-600 text-sm fade-message hidden"></p>
             </div>
-            <button id="admin-build-form">Build Form</button>
-            <button id="admin-logout">Logout</button>
+
+            <!-- Build Form Shortcut -->
+            <button id="admin-build-form"
+                class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
+                Build Form
+            </button>
+
+            <!-- Logout -->
+            <button id="admin-logout"
+                class="w-full py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition focus:outline-none focus:ring-2 focus:ring-red-400">
+                Logout
+            </button>
         </div>
     </div>
 
-    <!-- ───── USER LOGIN ───── -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- F) USER LOGIN SCREEN                                                          -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="user-login-screen" class="screen hidden">
-        <div class="card-wrapper animate-fadeInUp">
-            <h2>User Login</h2>
-            <form id="user-login-form" class="stack-form">
-                <p id="user-error" class="fade-message hidden" role="alert"></p>
-                <div class="form-group">
-                    <label for="user-email">Email</label>
-                    <input id="user-email" type="email" placeholder="you@example.com" autocomplete="off" />
-                </div>
-                <div class="form-group">
-                    <label for="user-password">Password</label>
-                    <input id="user-password" type="password" placeholder="Password" autocomplete="off" />
-                </div>
-                <div class="button-stack">
-                    <button id="user-login-submit" type="submit">Login</button>
-                    <button id="user-login-back" type="button" class="secondary-btn">← Back</button>
-                </div>
-            </form>
+        <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
+        <h2 class="text-2xl font-semibold text-gray-900">User Login</h2>
+        <form id="user-login-form" class="stack-form">
+          <p id="user-error" class="text-red-500 text-sm fade-message hidden" role="alert"></p>
+            <div class="form-group">
+                <label for="user-email" class="font-medium text-gray-700">Email</label>
+                <input id="user-email" type="email" placeholder="you@example.com" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            </div>
+            <div class="form-group">
+                <label for="user-password" class="font-medium text-gray-700">Password</label>
+                <input id="user-password" type="password" placeholder="Password" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            </div>
+            <div class="form-group">
+                <button id="user-login-submit" type="submit"
+                    class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
+                    Login
+                </button>
+            </div>
+        </form>
+        <button id="user-login-back" class="mt-6 text-gray-700 hover:underline focus:outline-none">
+            ← Back
+        </button>
         </div>
     </div>
 
-    <!-- ───── USER SIGNUP ───── -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- G) USER SIGNUP SCREEN (Access Code → Email → Password)                        -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="user-signup-screen" class="screen hidden">
-        <div class="card-wrapper animate-fadeInUp">
-            <form id="user-signup-form" class="stack-form">
-                <p id="signup-code-error" class="fade-message hidden" role="alert"></p>
-                <div class="form-group">
-                    <label for="signup-code">Access Code</label>
-                    <input id="signup-code" type="text" placeholder="Enter access code" autocomplete="off" />
-                </div>
-                <div class="form-group">
-                    <label for="signup-email">Email</label>
-                    <input id="signup-email" type="email" placeholder="you@example.com" autocomplete="off" />
-                </div>
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <input id="signup-password" type="password" placeholder="Choose a password" autocomplete="off" />
-                </div>
-                <div class="button-stack">
-                    <button id="signup-submit" type="submit">Create Account</button>
-                    <button id="signup-back" type="button" class="secondary-btn">← Back</button>
-                </div>
-                <p id="signup-success" class="fade-message hidden">Account created!</p>
-            </form>
+        <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
+        <form id="user-signup-form" class="stack-form">
+              <p id="signup-code-error" class="text-red-500 text-sm fade-message hidden" role="alert"></p>
+            <div class="form-group">
+                <label for="signup-code" class="font-medium text-gray-700">Access Code</label>
+                <input id="signup-code" type="text" placeholder="Enter access code" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400" />
+            </div>
+            <div class="form-group">
+                <label for="signup-email" class="font-medium text-gray-700">Email</label>
+                <input id="signup-email" type="email" placeholder="you@example.com" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            </div>
+            <div class="form-group">
+                <label for="signup-password" class="font-medium text-gray-700">Password</label>
+                <input id="signup-password" type="password" placeholder="Choose a password" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+            </div>
+            <div class="form-group">
+                <button id="signup-submit" type="submit"
+                    class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Create Account
+                </button>
+            </div>
+            <p id="signup-success" class="text-green-600 text-sm fade-message hidden">Account created!</p>
+        </form>
+        <button id="signup-back" class="mt-6 text-gray-700 hover:underline focus:outline-none">
+            ← Back
+        </button>
         </div>
     </div>
 
-    <!-- ───── WELCOME SCREEN ───── -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- H) WELCOME SCREEN (After Login, Before Builder)                               -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="welcome-screen" class="screen hidden fixed inset-0 z-40 bg-black bg-opacity-80">
         <h2 id="welcome-text" class="text-2xl font-semibold text-white opacity-0 transition-opacity duration-500">
             <!-- Filled dynamically -->
         </h2>
     </div>
 
-    <!-- ───── BUILDER FORM SCREEN ───── -->
-    <div id="form-screen" class="screen hidden overflow-y-auto pt-6 px-4">
-        <div class="card-wrapper animate-fadeInUp">
-            <h2>Build Your Linktree</h2>
-            <p>Upload a profile picture, add your handle, tagline, and links below.</p>
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- I) BUILDER FORM SCREEN (Upload Picture / Handle / Tagline / Links)            -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+<div id="form-screen" class="screen hidden overflow-y-auto pt-6 px-4">
+  <div class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
+    <h2 class="text-2xl font-semibold text-gray-900">Build Your Linktree</h2>
+            <p class="text-gray-800">
+                Upload a profile picture, add your handle, tagline, and links below.
+            </p>
+
+            <!-- Profile Picture -->
             <div class="form-group">
-                <label for="profile-pic-file">Profile Picture</label>
-                <input id="profile-pic-file" type="file" accept="image/*" autocomplete="off" />
-                <p id="error-profile-pic" class="fade-message hidden">Please upload a valid image.</p>
+                <label for="profile-pic-file" class="font-medium text-gray-700">Profile Picture</label>
+                <input id="profile-pic-file" type="file" accept="image/*" autocomplete="off"
+                    class="w-full block text-sm text-gray-700 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+                <p id="error-profile-pic" class="text-red-500 text-sm fade-message hidden">Please upload a valid image.</p>
             </div>
+
+            <!-- Username (Handle) -->
             <div class="form-group">
-                <label for="username">Username (handle)</label>
-                <input id="username" type="text" placeholder="@yourhandle" autocomplete="off" />
-                <p id="error-username" class="fade-message hidden">Please enter a valid handle (e.g. @john_doe).</p>
+                <label for="username" class="font-medium text-gray-700">Username (handle)</label>
+                <input id="username" type="text" placeholder="@yourhandle" autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400" />
+                <p id="error-username" class="text-red-500 text-sm fade-message hidden">Please enter a valid handle (e.g. @john_doe).</p>
             </div>
+
+            <!-- Tagline (optional) -->
             <div class="form-group">
-                <label for="tagline">Tagline (optional)</label>
+                <label for="tagline" class="font-medium text-gray-700">Tagline (optional)</label>
                 <textarea id="tagline" rows="2" placeholder="Tell people what you do (max 100 chars)" maxlength="100"
-                    autocomplete="off"></textarea>
+                    autocomplete="off"
+                    class="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-emerald-400"></textarea>
                 <p id="tagline-count" class="text-gray-600 text-sm">0/100</p>
             </div>
+
+            <!-- Theme Customization -->
             <div class="form-group color-row">
-                <label for="gradient-start">Background Gradient Start</label>
+                <label for="gradient-start" class="font-medium text-gray-700">Background Gradient Start</label>
                 <input id="gradient-start" type="color" value="#a7f3d0" autocomplete="off" class="color-input" />
             </div>
             <div class="form-group color-row">
-                <label for="gradient-end">Background Gradient End</label>
+                <label for="gradient-end" class="font-medium text-gray-700">Background Gradient End</label>
                 <input id="gradient-end" type="color" value="#6ee7b7" autocomplete="off" class="color-input" />
             </div>
             <div class="form-group color-row">
-                <label for="card-color">Card Background Color</label>
+                <label for="card-color" class="font-medium text-gray-700">Card Background Color</label>
                 <input id="card-color" type="color" value="#ffffff" autocomplete="off" class="color-input" />
             </div>
             <div class="form-group color-row">
-                <label for="card-text-color">Card Text Color</label>
+                <label for="card-text-color" class="font-medium text-gray-700">Card Text Color</label>
                 <input id="card-text-color" type="color" value="#111827" autocomplete="off" class="color-input" />
             </div>
-            <div class="form-group file-row">
-                <label for="card-image">Card Background Image (optional)</label>
-                <input id="card-image" type="file" accept="image/*" autocomplete="off" style="flex:1" />
-                <button id="remove-card-image" type="button">Remove</button>
+            <div class="form-group">
+                <label for="card-image" class="font-medium text-gray-700">Card Background Image (optional)</label>
+                <div class="flex items-center space-x-4 w-full">
+                    <input id="card-image" type="file" accept="image/*" autocomplete="off" class="flex-grow" />
+                    <button id="remove-card-image" type="button"
+                        class="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400">
+                        Remove
+                    </button>
+                </div>
             </div>
-            <div id="links-wrapper" class="space-y-6"></div>
-            <div class="button-stack">
-                <button id="add-link-btn">+ Add New Link</button>
+
+            <!-- Links Wrapper (each link row is added via JS) -->
+            <div id="links-wrapper" class="space-y-6 bg-gray-800 p-4 rounded-lg"></div>
+            <div class="form-group mt-6">
+                <button id="add-link-btn"
+                    class="w-full py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition focus:outline-none focus:ring-2 focus:ring-green-400">
+                    + Add New Link
+                </button>
             </div>
-            <p id="error-links" class="fade-message hidden">At least one valid link is required.</p>
-            <hr />
-            <div class="button-stack">
-                <button id="generate-btn" disabled>Generate My Linktree</button>
+              <p id="error-links" class="text-red-500 text-sm fade-message hidden">
+                  At least one valid link is required.
+              </p>
+
+
+            <hr class="my-8 border-t border-gray-300" />
+
+            <!-- Generate Button -->
+            <div class="form-group">
+                <button id="generate-btn" class="w-full py-3 bg-gray-600 text-gray-300 rounded-lg cursor-not-allowed"
+                    disabled>
+                    Generate My Linktree
+                </button>
             </div>
         </div>
     </div>
 
-    <!-- ───── LOADER SCREEN ───── -->
-    <div id="loader-screen" class="screen hidden">
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- J) LOADER SCREEN (Spinning Icon)                                             -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <div id="loader-screen" class="screen hidden bg-gray-900 bg-opacity-50">
         <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-green-400"></div>
     </div>
-
-    <!-- ───── LINKTREE OUTPUT SCREEN ───── -->
+    <!-- K) LINKTREE OUTPUT SCREEN (Profile + Links + Back / Download)                -->
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
     <div id="linktree-screen" class="screen hidden px-4">
-        <div id="output-card" class="card-wrapper animate-fadeInUp">
+        <div id="output-card" class="card-wrapper w-full max-w-md space-y-6 animate-fadeInUp">
             <div class="flex flex-col items-center space-y-4">
                 <img id="output-profile-pic" src="" alt="Profile Picture" />
-                <p id="output-tagline">
+                <p id="display-username" class="text-gray-700"></p>
+                <p id="output-tagline" class="text-gray-700">
                     <!-- tagline text here -->
                 </p>
             </div>
             <div id="links-container" class="space-y-4"></div>
-            <div class="button-stack">
-                <button id="back-btn">← Back to Edit</button>
-                <button id="download-btn">Download My Linktree</button>
+            <div class="form-group">
+                <button id="back-btn"
+                    class="w-full py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-700 transition focus:outline-none focus:ring-2 focus:ring-gray-700">
+                    ← Back to Edit
+                </button>
+            </div>
+            <div class="form-group">
+                <button id="download-btn"
+                    class="w-full py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    Download My Linktree
+                </button>
             </div>
         </div>
     </div>
 
-    <script type="module" src="app.js" defer></script>
+    <!-- ─────────────────────────────────────────────────────────────────────────────── -->
+    <!-- L) APP.JS (All the logic—auth, Firestore, UI flow, etc.)                      -->
+    <!--────────────────────────────────────────────────────────────────────────────────-->
+    <script type="module" src="app.js"></script>
     <footer class="version">v25</footer>
-    <script type="module" src="app.js" defer></script>
-
-</body>
+  </body>
 
 </html>
