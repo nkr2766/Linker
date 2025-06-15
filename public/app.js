@@ -93,6 +93,7 @@ const btnUserLogin = document.getElementById("btn-user-login");
 const btnUseAccessCode = document.getElementById("btn-use-access-code");
 
 const adminLoginScreen = document.getElementById("admin-login-screen");
+const adminLoginForm = document.getElementById("admin-login-form");
 const adminEmailInput = document.getElementById("admin-email");
 const adminPasswordInput = document.getElementById("admin-password");
 const adminError = document.getElementById("admin-error");
@@ -110,6 +111,7 @@ const globalLoader = document.getElementById("global-loader");
 const toastContainer = document.getElementById("toast-container");
 
 const userLoginScreen = document.getElementById("user-login-screen");
+const userLoginForm = document.getElementById("user-login-form");
 const userEmailInput = document.getElementById("user-email");
 const userPasswordInput = document.getElementById("user-password");
 const userError = document.getElementById("user-error");
@@ -117,6 +119,7 @@ const userLoginSubmit = document.getElementById("user-login-submit");
 const userLoginBack = document.getElementById("user-login-back");
 
 const userSignupScreen = document.getElementById("user-signup-screen");
+const userSignupForm = document.getElementById("user-signup-form");
 const signupCodeInput = document.getElementById("signup-code");
 const signupEmailInput = document.getElementById("signup-email");
 const signupPasswordInput = document.getElementById("signup-password");
@@ -235,6 +238,22 @@ function logStep(message, data = null) {
     console.log(`[Step] ${message}`, data);
 }
 
+function checkEssentialElements() {
+    const ids = [
+        'login-screen',
+        'admin-login-screen',
+        'admin-panel',
+        'user-login-screen',
+        'user-signup-screen'
+    ];
+    ids.forEach(id => {
+        if (!document.getElementById(id)) {
+            console.error(`[UI] Missing element: #${id}`);
+            showToast('Critical UI missing. Please reload.', 'error');
+        }
+    });
+}
+
 // ───────────────────────────────────────────────────────────────────────────────
 //                 Then FORCE sign-out any existing user, then call initApp()
 window.addEventListener('load', () => {
@@ -323,6 +342,7 @@ function initApp() {
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('[DOM Ready] All DOM-dependent logic starts here.');
+    checkEssentialElements();
 
     function safeAddEventListener(id, event, handler) {
         const el = document.getElementById(id);
@@ -356,7 +376,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // ───────────────────────────────────────────────────────────────────────────────
 // J) ADMIN LOGIN LOGIC                                                           //
 // ───────────────────────────────────────────────────────────────────────────────
-adminLoginSubmit.addEventListener("click", async () => {
+adminLoginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
     showGlobalLoader();
     const email = adminEmailInput.value.trim().toLowerCase();
     const pass = adminPasswordInput.value.trim();
@@ -441,7 +462,8 @@ adminLogoutBtn.addEventListener("click", async () => {
 // ───────────────────────────────────────────────────────────────────────────────
 // L) USER LOGIN LOGIC                                                            //
 // ───────────────────────────────────────────────────────────────────────────────
-userLoginSubmit.addEventListener("click", async () => {
+userLoginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
     showGlobalLoader();
     const email = userEmailInput.value.trim().toLowerCase();
     const pass = userPasswordInput.value.trim();
@@ -475,7 +497,8 @@ userLoginBack.addEventListener("click", () => {
 // ───────────────────────────────────────────────────────────────────────────────
 // M) USER SIGNUP LOGIC (Access Code → Create Auth User → Delete Code)            //
 // ───────────────────────────────────────────────────────────────────────────────
-signupSubmit.addEventListener("click", async () => {
+userSignupForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
     showGlobalLoader();
     const code = signupCodeInput.value.trim();
     const email = signupEmailInput.value.trim().toLowerCase();

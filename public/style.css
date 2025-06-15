@@ -473,5 +473,18 @@ button:active {
   gap: 1rem;
 }
 
+/* Generic vertical form layout */
+.stack-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 20rem;
+}
+.stack-form > * {
+  width: 100%;
+}
+
 
 
