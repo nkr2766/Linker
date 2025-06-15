@@ -1,4 +1,5 @@
 /* === LINKER DESIGN SYSTEM VARIABLES ====================================== */
+/* === SURGERY: theme variables live here for quick tweaks ================== */
 /* All visual styles are controlled through the variables below. Tweak them  */
 /* to create entirely new themes without touching the rest of the CSS.       */
 
@@ -204,6 +205,7 @@ a:hover {
   background: var(--page-gradient);
   display: flex; align-items: center; justify-content: center;
   z-index: 100;
+  flex-direction: column;
 }
 #startup-logo {
   animation: logoGrow 1200ms ease-out forwards;
@@ -219,6 +221,11 @@ a:hover {
 }
 @keyframes fadeOut {
   to { opacity: 0; visibility: hidden; }
+}
+#loading-text {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  color: var(--fg);
 }
 /* ──────────────────────────────────────────────────────────────────────────── */
 /* B) UTILITY: hide vs. flex (JS toggles these)                                */
@@ -407,6 +414,35 @@ body::before {
 @keyframes moveGradient {
   from { background-position: 0% 50%; }
   to   { background-position: 100% 50%; }
+}
+
+/* === SURGERY: Toast styles ================================================ */
+#toast-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 200;
+}
+.toast {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  color: #fff;
+  font-weight: 600;
+  animation: fadeToast 4s forwards;
+}
+.toast-success { background: var(--success); }
+.toast-error { background: var(--error); }
+.toast-info { background: var(--info); }
+.toast-warning { background: var(--warning); }
+
+@keyframes fadeToast {
+  0% { opacity: 0; transform: translateY(-10px); }
+ 10% { opacity: 1; transform: translateY(0); }
+ 90% { opacity: 1; }
+100% { opacity: 0; transform: translateY(-10px); }
 }
 
 

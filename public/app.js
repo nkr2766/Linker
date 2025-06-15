@@ -74,12 +74,18 @@ let profilePicDataURL = "";
 // Optional background image for the card
 let cardImageDataURL = "";
 
+// App state flags to prevent race conditions
+let isAppReady = false;
+let isSplashShown = true;
+
 // ───────────────────────────────────────────────────────────────────────────────
 // E) UI ELEMENT REFERENCES
 // ───────────────────────────────────────────────────────────────────────────────
 // (These IDs must match exactly what’s in index.html—don’t rename!)
 const startupScreen = document.getElementById("startup-screen");
+const loadingText = document.getElementById("loading-text");
 const resetBtn = document.getElementById("reset-btn");
+const toastContainer = document.getElementById("toast-container");
 
 const loginScreen = document.getElementById("login-screen");
 const btnAdminLogin = document.getElementById("btn-admin-login");
@@ -210,28 +216,57 @@ function logStep(message, data = null) {
     console.log(`[Step] ${message}`, data);
 }
 
+function showToast(type, message) {
+    if (!toastContainer) return;
+    const t = document.createElement('div');
+    t.className = `toast toast-${type}`;
+    t.textContent = message;
+    toastContainer.appendChild(t);
+    setTimeout(() => {
+        toastContainer.removeChild(t);
+    }, 4000);
+}
+
 // ───────────────────────────────────────────────────────────────────────────────
 //                 Then FORCE sign-out any existing user, then call initApp()
 window.addEventListener('load', () => {
   logStep('Starting splash animation');
   hideAllScreens();
-  document.body.appendChild(startupScreen);
+  if (startupScreen) document.body.appendChild(startupScreen);
 
-  const screen = document.getElementById('startup-screen');
-  const logo   = document.getElementById('startup-logo');
-  if (screen && logo) {
-    // apply size
+  const showLoading = setTimeout(() => {
+    loadingText?.classList.remove('hidden');
+  }, 1000);
+
+  const failsafe = setTimeout(() => {
+    if (!isAppReady) {
+      console.warn('[Splash] failsafe triggered');
+      finishInit();
+    }
+  }, 3000);
+
+  function finishInit() {
+    if (isAppReady) return;
+    isAppReady = true;
+    clearTimeout(showLoading);
+    clearTimeout(failsafe);
+    if (startupScreen && isSplashShown) {
+      startupScreen.classList.add('reveal');
+      isSplashShown = false;
+      setTimeout(() => startupScreen?.remove(), 500);
+    }
+    initApp();
+  }
+
+  const logo = document.getElementById('startup-logo');
+  if (startupScreen && logo) {
     logo.style.maxWidth = '190px';
     console.debug('[Splash] animate grow & fade');
-    screen.classList.add('reveal');
-    setTimeout(() => {
-      console.debug('[Splash] done, initApp');
-      screen.remove();
-      initApp();
-    }, 1100);
+    startupScreen.classList.add('reveal');
+    setTimeout(finishInit, 1700);
   } else {
-    console.warn('[Splash] missing elements, initApp now');
-    initApp();
+    console.warn('[Splash] missing elements, skipping animation');
+    finishInit();
   }
 });
 
@@ -315,10 +350,12 @@ adminLoginSubmit.addEventListener("click", async () => {
             console.error("Admin signIn error:", err);
             adminError.textContent = "Authentication error—check console.";
             adminError.classList.remove("hidden");
+            showToast('error', 'Admin login failed');
         }
     } else {
         adminError.textContent = "Incorrect admin credentials.";
         adminError.classList.remove("hidden");
+        showToast('error', 'Incorrect admin credentials');
     }
 });
 
@@ -350,10 +387,12 @@ createCodeBtn.addEventListener("click", async () => {
     if (docSnap.exists()) {
         adminCodeSuccess.textContent = `Code “${code}” already exists.`;
         adminCodeSuccess.classList.remove("hidden");
+        showToast('warning', 'Code already exists');
     } else {
         await setDoc(docRef, { createdAt: serverTimestamp() });
         adminCodeSuccess.textContent = `Code “${code}” created!`;
         adminCodeSuccess.classList.remove("hidden");
+        showToast('success', 'Access code created');
     }
     newAccessCodeInput.value = "";
 });
@@ -372,8 +411,10 @@ adminLogoutBtn.addEventListener("click", async () => {
         loginScreen.classList.remove("hidden");
         loginScreen.classList.add("flex");
         resetBtn.style.display = "none";
+        showToast('info', 'Logged out');
     } catch (err) {
         console.error("Error signing out admin:", err);
+        showToast('error', 'Logout failed');
     }
 });
 
@@ -394,10 +435,12 @@ userLoginSubmit.addEventListener("click", async () => {
         await signInWithEmailAndPassword(auth, email, pass);
         hideAllScreens();
         startAppFlow(email);
+        showToast('success', 'Logged in');
     } catch (err) {
         console.error("User login error:", err);
         userError.textContent = "Invalid email or password.";
         userError.classList.remove("hidden");
+        showToast('error', 'Login failed');
     }
 });
 
@@ -438,6 +481,7 @@ signupSubmit.addEventListener("click", async () => {
 
         signupCodeError.classList.add("hidden");
         signupSuccess.classList.remove("hidden");
+        showToast('success', 'Account created');
 
         // Slight pause so user sees “Account created!” briefly
         setTimeout(() => {
@@ -448,6 +492,7 @@ signupSubmit.addEventListener("click", async () => {
         console.error("Error creating user:", err);
         signupCodeError.textContent = "Signup failed—email may already be in use.";
         signupCodeError.classList.remove("hidden");
+        showToast('error', 'Signup failed');
     }
 });
 
@@ -1088,6 +1133,7 @@ resetBtn.addEventListener("click", async () => {
     } catch (err) {
         console.error("Error signing out:", err);
     }
+    showToast('info', 'Resetting…');
     location.reload();
 });
 

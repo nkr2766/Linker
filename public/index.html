@@ -5,6 +5,8 @@
 <head>
     <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" sizes="192x192" href="/images/icon-192.png" />
+    <link rel="apple-touch-icon" href="/images/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Linker – Build Your Linktree</title>
 
@@ -29,6 +31,7 @@
 </head>
 
 <body class="flex flex-col min-h-full">
+  <div id="toast-container" aria-live="polite"></div>
   <!-- hidden by default, we'll show it when needed -->
   <button
     id="reset-btn"
@@ -50,6 +53,7 @@
       <img id="startup-logo"
            src="/images/logo.png"
            alt="Linker Logo" />
+      <div id="loading-text" class="hidden">Loading…</div>
     </div>
 
     <!-- ─────────────────────────────────────────────────────────────────────────────── -->
