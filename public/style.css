@@ -71,10 +71,14 @@ body {
   animation: logoGrow 1200ms ease-out forwards;
 }
 @keyframes logoGrow {
-  0%   { opacity: 0; transform: scale(0.5); }
-  80%  { opacity: 1; transform: scale(1.2); }
-  100% { opacity: 1; transform: scale(1); }
+  0%   { opacity: 0;   transform: scale(1.35); }   /* (0.5 × 2.7) = 1.35, or just start however you want */
+  80%  { opacity: 1;   transform: scale(3.24); }   /* (1.2 × 2.7) = 3.24 */
+  100% { opacity: 1;   transform: scale(2.7); }    /* ends at 2.7x */
 }
+
+
+
+
 #startup-screen.reveal {
   animation: fadeOut 500ms ease-in-out 1200ms forwards;
 }
